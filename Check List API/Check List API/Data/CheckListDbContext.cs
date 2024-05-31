@@ -12,4 +12,16 @@ public class CheckListDbContext : DbContext
     }
 
     public DbSet<CheckList> CheckList { get; set; }
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        base.OnModelCreating(modelBuilder);      
+
+        modelBuilder.Entity<CheckList>()
+            .Property(x => x.Id)
+            .HasConversion(
+                id => id.checklistId,
+                value => new ChecklistId(value)
+            );
+    }
 }
