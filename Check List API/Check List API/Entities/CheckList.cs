@@ -8,7 +8,7 @@ public readonly record struct ChecklistId(Guid checklistId)
 
 public class CheckList
 {
-    public int Id { get; set; }
+    public ChecklistId Id { get; set; }
     public string Title { get; set; } = string.Empty;
     public string Description { get; set; } = string.Empty;
     public string Status { get; set; } = "Not Started";
