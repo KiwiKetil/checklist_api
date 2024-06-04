@@ -1,4 +1,5 @@
 using Check_List_API.Data;
+using Checklist_API.Middleware;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
 
@@ -10,6 +11,8 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+builder.Services.AddScoped<GlobalExceptionMiddleware>();
 
 builder.Host.UseSerilog((context, configuration) =>
 {
@@ -33,6 +36,8 @@ if (app.Environment.IsDevelopment())
 app.UseSerilogRequestLogging();
 
 app.UseHttpsRedirection();
+
+app.UseMiddleware<GlobalExceptionMiddleware>();
 
 app.UseAuthorization();
 

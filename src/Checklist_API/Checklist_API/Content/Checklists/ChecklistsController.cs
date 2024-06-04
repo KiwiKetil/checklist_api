@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
-namespace Checklist_API.CheckList;
+namespace Checklist_API.Content.Checklists;
 [Route("api/v1/checklists")]
 [ApiController]
 public class CheckListsController : ControllerBase
