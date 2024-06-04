@@ -6,13 +6,21 @@ public readonly record struct ChecklistId(Guid checklistId)
     public static ChecklistId Empty => new (Guid.Empty);
 };
 
+public enum Priority 
+{ 
+    Low,
+    Medium,
+    High,
+    Extreme
+};
+
 public class CheckList
 {
     public ChecklistId Id { get; set; }
     public string Title { get; set; } = string.Empty;
     public string Description { get; set; } = string.Empty;
     public string Status { get; set; } = "Not Started";
-    public string Priority { get; set; } = "Medium";
+    public Priority Priority { get; set; }
     public string AssignedTo { get; set; } = string.Empty;
     public string Comments { get; set; } = string.Empty;
     public DateTime? DueDate { get; set; }
