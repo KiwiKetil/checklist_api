@@ -1,4 +1,4 @@
-﻿using Check_List_API.Entities;
+﻿using Checklist_API.Features.Checklists.Entity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure.Internal;
 
