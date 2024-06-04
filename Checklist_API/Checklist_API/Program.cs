@@ -1,4 +1,8 @@
 using Check_List_API.Data;
+<<<<<<< HEAD
+using Check_List_API.Middleware;
+=======
+>>>>>>> 408ee054196819f8f9a9a1d3937ddd8eb909228e
 using Microsoft.EntityFrameworkCore;
 using Serilog;
 
@@ -11,6 +15,11 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+<<<<<<< HEAD
+builder.Services.AddScoped<GlobalException>();
+
+=======
+>>>>>>> 408ee054196819f8f9a9a1d3937ddd8eb909228e
 builder.Host.UseSerilog((context, configuration) =>
 {
     configuration.ReadFrom.Configuration(context.Configuration);
@@ -31,8 +40,13 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseSerilogRequestLogging();
+<<<<<<< HEAD
+=======
 
+>>>>>>> 408ee054196819f8f9a9a1d3937ddd8eb909228e
 app.UseHttpsRedirection();
+
+app.UseMiddleware<GlobalException>();
 
 app.UseAuthorization();
 
