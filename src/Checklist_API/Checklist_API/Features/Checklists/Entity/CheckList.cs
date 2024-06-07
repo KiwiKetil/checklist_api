@@ -1,9 +1,9 @@
-﻿ namespace Check_List_API.Entities;
+﻿namespace Checklist_API.Features.Checklists.Entity;
 
 public readonly record struct ChecklistId(Guid checklistId)
 {
-    public static ChecklistId NewId => new (Guid.NewGuid());
-    public static ChecklistId Empty => new (Guid.Empty);
+    public static ChecklistId NewId => new(Guid.NewGuid());
+    public static ChecklistId Empty => new(Guid.Empty);
 };
 
 public class CheckList
