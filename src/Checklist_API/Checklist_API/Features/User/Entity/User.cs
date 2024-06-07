@@ -1,4 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Checklist_API.Features.Checklists.Entity;
+using System.ComponentModel.DataAnnotations;
+using System.Numerics;
 
 namespace Checklist_API.Features.User.Entity;
 
@@ -27,4 +29,6 @@ public class User
     public DateTime Created { get; init; }
 
     public DateTime Updated { get; set; }
+
+    public virtual ICollection<CheckList> Checklists { get; set; } = new List<CheckList>();
 }

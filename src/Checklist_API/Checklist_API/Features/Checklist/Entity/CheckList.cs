@@ -1,4 +1,7 @@
-﻿namespace Checklist_API.Features.Checklists.Entity;
+﻿using Checklist_API.Features.User.Entity;
+using System.Numerics;
+
+namespace Checklist_API.Features.Checklists.Entity;
 
 public readonly record struct ChecklistId(Guid checklistId)
 {
@@ -9,6 +12,7 @@ public readonly record struct ChecklistId(Guid checklistId)
 public class CheckList
 {
     public ChecklistId Id { get; set; }
+    public UserId UserId { get; set; }
     public string Title { get; set; } = string.Empty;
     public string Description { get; set; } = string.Empty;
     public string Status { get; set; } = "Not Started";
@@ -19,4 +23,6 @@ public class CheckList
     public DateTime DateCreated { get; set; } = DateTime.Now;
     public DateTime DateUpdated { get; set; } = DateTime.Now;
     public DateTime? DateCompleted { get; set; }
+
+    public virtual Checklist_API.Features.User.Entity.User? User { get; set; }
 }
