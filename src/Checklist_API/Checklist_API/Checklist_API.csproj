@@ -31,6 +31,7 @@
     <Folder Include="Features\Checklist\DTOs\" />
     <Folder Include="Features\Login\Controller\" />
     <Folder Include="Features\Login\DTOs\" />
+    <Folder Include="Features\Login\Mappers\" />
     <Folder Include="Features\Login\Service\" />
     <Folder Include="Features\Login\Repository\" />
     <Folder Include="Features\User\DTOs\" />
