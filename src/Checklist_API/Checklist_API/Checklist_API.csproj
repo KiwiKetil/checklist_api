@@ -34,9 +34,10 @@
     <Folder Include="Features\Login\Mappers\" />
     <Folder Include="Features\Login\Service\" />
     <Folder Include="Features\Login\Repository\" />
-    <Folder Include="Features\User\Controller\" />
     <Folder Include="Features\User\DTOs\" />
+    <Folder Include="Features\User\Controller\" />
     <Folder Include="Features\User\Mappers\" />
+    <Folder Include="Features\User\Entity\" />
     <Folder Include="Features\User\Service\" />
     <Folder Include="Features\User\Repository\" />
   </ItemGroup>
