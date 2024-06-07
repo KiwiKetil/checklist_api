@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Text;
 
-namespace Checklist_API.Features.HealthCheck;
+namespace Checklist_API.Features.HealthCheck.Controller;
 
 [Route("api/v1/hello")]
 [ApiController]
