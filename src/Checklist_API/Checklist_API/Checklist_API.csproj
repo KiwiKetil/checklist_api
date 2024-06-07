@@ -27,7 +27,18 @@
 
   <ItemGroup>
     <Folder Include="Data\Migrations\" />
-    <Folder Include="Features\Checklists\Mappers\" />
+    <Folder Include="Features\Checklist\Mappers\" />
+    <Folder Include="Features\Checklist\DTOs\" />
+    <Folder Include="Features\Login\Controller\" />
+    <Folder Include="Features\Login\DTOs\" />
+    <Folder Include="Features\Login\Service\" />
+    <Folder Include="Features\Login\Repository\" />
+    <Folder Include="Features\User\DTOs\" />
+    <Folder Include="Features\User\Controller\" />
+    <Folder Include="Features\User\Mappers\" />
+    <Folder Include="Features\User\Entity\" />
+    <Folder Include="Features\User\Service\" />
+    <Folder Include="Features\User\Repository\" />
   </ItemGroup>
 
 </Project>
