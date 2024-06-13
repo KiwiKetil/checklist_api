@@ -44,7 +44,7 @@ public class CheckListDbContext : DbContext
         modelBuilder.Entity<CheckList>()
             .HasOne(x => x.User)
             .WithMany(x => x.Checklists)
-            .HasForeignKey(x => x.UserId);
+            .HasForeignKey(u => u.UserId);
 
         modelBuilder.Entity<CheckList>()
             .Property(x => x.Title)
@@ -104,6 +104,15 @@ public class CheckListDbContext : DbContext
               value => new UserId(value)
           );
 
+        modelBuilder.Entity<User>()
+          .HasKey(x => x.Id);
+
+       
+        modelBuilder.Entity<User>()
+           .HasMany(u => u.Checklists)
+           .WithOne(c => c.User)
+           .HasForeignKey(u => u.UserId);
+
         #endregion
 
         #region JWTRole
@@ -132,6 +141,27 @@ public class CheckListDbContext : DbContext
            id => id.userId,
            value => new UserId(value)
        );
+
+        modelBuilder.Entity<JWTUserRole>()
+        .Property(x => x.JwtRoleId)
+        .HasConversion(
+            id => id.jwtRoleId,
+            value => new JwtRoleId(value)
+        );
+
+        modelBuilder.Entity<JWTUserRole>()
+         .HasKey(x => x.Id);
+
+        modelBuilder.Entity<JWTUserRole>()
+         .HasOne(j => j.JWTRole)
+         .WithMany(j => j.JWTUserRoles)
+         .HasForeignKey(j => j.JwtRoleId);
+
+
+        modelBuilder.Entity<JWTUserRole>()
+         .HasOne(u => u.User)
+         .WithMany(j => j.JWTUserRoles)
+         .HasForeignKey(u => u.UserId);
 
         #endregion
     }

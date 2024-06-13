@@ -13,10 +13,10 @@ public readonly record struct JwtUserRoleId(Guid jwtUserRoleId)
 public class JWTUserRole
 {    
     public JwtUserRoleId Id { get; set; }
+    public UserId UserId { get; set; }
+    public JwtRoleId JwtRoleId { get; set; }
 
-    public UserId UserId { get; set; } 
-
-    public int JwtRoleId { get; set; }
 
     public virtual Checklist_API.Features.User.Entity.User? User { get; set; }
+    public virtual JWTRole? JWTRole { get; set; }
 }

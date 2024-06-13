@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Checklist_API.Features.Checklists.Entity;
+using System.ComponentModel.DataAnnotations;
 
 namespace Checklist_API.Features.Login.Entity;
 
@@ -13,4 +14,6 @@ public class JWTRole
     [Key]
     public JwtRoleId Id { get; set; }
     public string RoleName { get; set; } = string.Empty;
+
+    public virtual ICollection <JWTUserRole>? JWTUserRoles { get; set; } = new List<JWTUserRole>();
 }

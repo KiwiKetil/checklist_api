@@ -1,4 +1,5 @@
 ﻿using Checklist_API.Features.Checklists.Entity;
+using Checklist_API.Features.Login.Entity;
 using System.ComponentModel.DataAnnotations;
 using System.Numerics;
 
@@ -31,4 +32,5 @@ public class User
     public DateTime Updated { get; set; }
 
     public virtual ICollection<CheckList> Checklists { get; set; } = new List<CheckList>();
+    public virtual ICollection<JWTUserRole> JWTUserRoles { get; set; } = new List<JWTUserRole>();
 }

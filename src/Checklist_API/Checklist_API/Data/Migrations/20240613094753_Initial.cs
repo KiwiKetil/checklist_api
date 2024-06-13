@@ -95,11 +95,17 @@ namespace Checklist_API.Data.Migrations
                 {
                     Id = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
                     UserId = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
-                    JwtRoleId = table.Column<int>(type: "int", nullable: false)
+                    JwtRoleId = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci")
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_JWTUserRole", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_JWTUserRole_JWTRole_JwtRoleId",
+                        column: x => x.JwtRoleId,
+                        principalTable: "JWTRole",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_JWTUserRole_User_UserId",
                         column: x => x.UserId,
@@ -115,6 +121,11 @@ namespace Checklist_API.Data.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_JWTUserRole_JwtRoleId",
+                table: "JWTUserRole",
+                column: "JwtRoleId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_JWTUserRole_UserId",
                 table: "JWTUserRole",
                 column: "UserId");
@@ -127,10 +138,10 @@ namespace Checklist_API.Data.Migrations
                 name: "CheckList");
 
             migrationBuilder.DropTable(
-                name: "JWTRole");
+                name: "JWTUserRole");
 
             migrationBuilder.DropTable(
-                name: "JWTUserRole");
+                name: "JWTRole");
 
             migrationBuilder.DropTable(
                 name: "User");
