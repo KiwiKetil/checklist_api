@@ -161,6 +161,26 @@ public class CheckListDbContext : DbContext
               value => new JwtRoleId(value)
           );
 
+        modelBuilder.Entity<JWTRole>()
+            .HasKey(x => x.Id);
+
+        modelBuilder.Entity<JWTRole>()
+            .HasMany(x => x.JWTUserRoles)
+            .WithOne(x => x.JWTRole);
+
+        modelBuilder.Entity<JWTRole>()
+            .Property(x => x.RoleName)
+            .HasMaxLength(20)
+            .IsRequired();
+
+        modelBuilder.Entity<JWTRole>()
+           .Property(x => x.DateCreated)
+           .IsRequired();
+
+        modelBuilder.Entity<JWTRole>()
+            .Property(x => x.DateUpdated)
+            .IsRequired();
+
         #endregion
 
         #region JWTUserRole
@@ -200,6 +220,13 @@ public class CheckListDbContext : DbContext
          .WithMany(j => j.JWTUserRoles)
          .HasForeignKey(u => u.UserId);
 
+        modelBuilder.Entity<JWTUserRole>()
+         .Property(x => x.DateCreated)
+         .IsRequired();
+
+        modelBuilder.Entity<JWTUserRole>()
+         .Property(x => x.DateUpdated)
+         .IsRequired();
         #endregion
     }
 }

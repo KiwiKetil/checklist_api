@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Checklist_API.Data.Migrations
 {
     [DbContext(typeof(CheckListDbContext))]
-    [Migration("20240618083949_Initial")]
-    partial class Initial
+    [Migration("20240618093132_Checklist")]
+    partial class Checklist
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -143,11 +143,13 @@ namespace Checklist_API.Data.Migrations
 
                     b.Property<string>("Email")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasMaxLength(30)
+                        .HasColumnType("varchar(30)");
 
                     b.Property<string>("FirstName")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasMaxLength(100)
+                        .HasColumnType("varchar(100)");
 
                     b.Property<string>("HashedPassword")
                         .IsRequired()
@@ -155,11 +157,13 @@ namespace Checklist_API.Data.Migrations
 
                     b.Property<string>("LastName")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasMaxLength(100)
+                        .HasColumnType("varchar(100)");
 
                     b.Property<string>("PhoneNumber")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasMaxLength(8)
+                        .HasColumnType("varchar(8)");
 
                     b.Property<string>("Salt")
                         .IsRequired()
