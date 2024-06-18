@@ -24,72 +24,72 @@ public class CheckListDbContext : DbContext
 
         #region CheckList
 
-        modelBuilder.Entity<CheckList>()
+        modelBuilder.Entity<CheckList>()  // Strongly typed id deklarert
             .Property(x => x.Id)
             .HasConversion(
                 id => id.checklistId,
                 value => new ChecklistId(value)
          );
 
-        modelBuilder.Entity<CheckList>()
+        modelBuilder.Entity<CheckList>()  // Strongly typed id deklarert
             .Property(x => x.UserId)
             .HasConversion(
                id => id.userId,
                value => new UserId(value)
          );
 
-        modelBuilder.Entity<CheckList>()
+        modelBuilder.Entity<CheckList>()  // set up primary key
             .HasKey(x => x.Id);
 
-        modelBuilder.Entity<CheckList>()
+        modelBuilder.Entity<CheckList>() // setter opp relationship og foreignkey
             .HasOne(x => x.User)
             .WithMany(x => x.Checklists)
-            .HasForeignKey(x => x.UserId);
+            .HasForeignKey(u => u.UserId);
 
-        modelBuilder.Entity<CheckList>()
+        modelBuilder.Entity<CheckList>() // validering med FluentAPI
             .Property(x => x.Title)
             .IsRequired()
             .HasMaxLength(100);
 
-        modelBuilder.Entity<CheckList>()
+        modelBuilder.Entity<CheckList>() // validering med FluentAPI
             .Property(x => x.Description)
             .IsRequired()
             .HasMaxLength(100);
 
-        modelBuilder.Entity<CheckList>()
+        modelBuilder.Entity<CheckList>() // validering med FluentAPI
             .Property(x => x.Status)
             .IsRequired()
             .HasMaxLength(100);
 
-        modelBuilder.Entity<CheckList>()
+        modelBuilder.Entity<CheckList>() // validering med FluentAPI
             .Property(x => x.Priority)
             .IsRequired()
             .HasMaxLength(100);
 
-        modelBuilder.Entity<CheckList>()
+        modelBuilder.Entity<CheckList>() // validering med FluentAPI
             .Property(x => x.AssignedTo)
             .IsRequired()
             .HasMaxLength(100);
 
-        modelBuilder.Entity<CheckList>()
+        modelBuilder.Entity<CheckList>() // validering med FluentAPI
             .Property(x => x.Comments)
             .IsRequired()
             .HasMaxLength(100);
 
-        modelBuilder.Entity<CheckList>()
+        modelBuilder.Entity<CheckList>() // validering med FluentAPI
             .Property(x => x.DueDate)
             .IsRequired();
 
 
-        modelBuilder.Entity<CheckList>()
+        modelBuilder.Entity<CheckList>() // validering med FluentAPI
             .Property(x => x.DateCreated)
             .IsRequired();
 
-        modelBuilder.Entity<CheckList>()
+        modelBuilder.Entity<CheckList>() // validering med FluentAPI
             .Property(x => x.DateUpdated)
             .IsRequired(); 
         
-        modelBuilder.Entity<CheckList>()
+        modelBuilder.Entity<CheckList>() // validering med FluentAPI
             .Property(x => x.DateCompleted)
             .IsRequired();
 
@@ -103,6 +103,52 @@ public class CheckListDbContext : DbContext
               id => id.userId,
               value => new UserId(value)
           );
+
+        modelBuilder.Entity<User>()
+          .HasKey(x => x.Id);
+
+
+        modelBuilder.Entity<User>()
+           .HasMany(u => u.Checklists)
+           .WithOne(c => c.User);
+        // .HasForeignKey(u => u.UserId);
+
+        modelBuilder.Entity<User>()
+            .Property(x => x.FirstName)
+            .HasMaxLength(100)
+            .IsRequired();
+
+        modelBuilder.Entity<User>()
+            .Property(x => x.LastName)
+            .HasMaxLength(100)
+            .IsRequired();
+
+        modelBuilder.Entity<User>()
+            .Property(x => x.PhoneNumber)
+            .HasMaxLength(8)
+            .IsRequired();
+
+        modelBuilder.Entity<User>()
+            .Property(x => x.Email)
+            .HasMaxLength(30)
+            .IsRequired();
+
+        modelBuilder.Entity<User>()
+           .Property(x => x.HashedPassword)
+           .IsRequired();
+
+        modelBuilder.Entity<User>()
+           .Property(x => x.Salt)
+           .IsRequired();
+
+        modelBuilder.Entity<User>() 
+            .Property(x => x.DateCreated)
+            .IsRequired();
+
+        modelBuilder.Entity<User>() 
+            .Property(x => x.DateUpdated)
+            .IsRequired();
+
 
         #endregion
 
@@ -132,6 +178,27 @@ public class CheckListDbContext : DbContext
            id => id.userId,
            value => new UserId(value)
        );
+
+        modelBuilder.Entity<JWTUserRole>()
+        .Property(x => x.JwtRoleId)
+        .HasConversion(
+            id => id.jwtRoleId,
+            value => new JwtRoleId(value)
+        );
+
+        modelBuilder.Entity<JWTUserRole>()
+         .HasKey(x => x.Id);
+
+        modelBuilder.Entity<JWTUserRole>()
+         .HasOne(j => j.JWTRole)
+         .WithMany(j => j.JWTUserRoles)
+         .HasForeignKey(j => j.JwtRoleId);
+
+
+        modelBuilder.Entity<JWTUserRole>()
+         .HasOne(u => u.User)
+         .WithMany(j => j.JWTUserRoles)
+         .HasForeignKey(u => u.UserId);
 
         #endregion
     }

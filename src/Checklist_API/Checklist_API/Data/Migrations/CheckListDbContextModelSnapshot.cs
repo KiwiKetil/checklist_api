@@ -86,6 +86,12 @@ namespace Checklist_API.Data.Migrations
                     b.Property<Guid>("Id")
                         .HasColumnType("char(36)");
 
+                    b.Property<DateTime>("DateCreated")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<DateTime>("DateUpdated")
+                        .HasColumnType("datetime(6)");
+
                     b.Property<string>("RoleName")
                         .IsRequired()
                         .HasColumnType("longtext");
@@ -100,13 +106,21 @@ namespace Checklist_API.Data.Migrations
                     b.Property<Guid>("Id")
                         .HasColumnType("char(36)");
 
-                    b.Property<int>("JwtRoleId")
-                        .HasColumnType("int");
+                    b.Property<DateTime>("DateCreated")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<DateTime>("DateUpdated")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<Guid>("JwtRoleId")
+                        .HasColumnType("char(36)");
 
                     b.Property<Guid>("UserId")
                         .HasColumnType("char(36)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("JwtRoleId");
 
                     b.HasIndex("UserId");
 
@@ -118,7 +132,10 @@ namespace Checklist_API.Data.Migrations
                     b.Property<Guid>("Id")
                         .HasColumnType("char(36)");
 
-                    b.Property<DateTime>("Created")
+                    b.Property<DateTime>("DateCreated")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<DateTime>("DateUpdated")
                         .HasColumnType("datetime(6)");
 
                     b.Property<string>("Email")
@@ -145,9 +162,6 @@ namespace Checklist_API.Data.Migrations
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<DateTime>("Updated")
-                        .HasColumnType("datetime(6)");
-
                     b.HasKey("Id");
 
                     b.ToTable("User");
@@ -166,18 +180,33 @@ namespace Checklist_API.Data.Migrations
 
             modelBuilder.Entity("Checklist_API.Features.Login.Entity.JWTUserRole", b =>
                 {
+                    b.HasOne("Checklist_API.Features.Login.Entity.JWTRole", "JWTRole")
+                        .WithMany("JWTUserRoles")
+                        .HasForeignKey("JwtRoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("Checklist_API.Features.User.Entity.User", "User")
-                        .WithMany()
+                        .WithMany("JWTUserRoles")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.Navigation("JWTRole");
+
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Checklist_API.Features.Login.Entity.JWTRole", b =>
+                {
+                    b.Navigation("JWTUserRoles");
                 });
 
             modelBuilder.Entity("Checklist_API.Features.User.Entity.User", b =>
                 {
                     b.Navigation("Checklists");
+
+                    b.Navigation("JWTUserRoles");
                 });
 #pragma warning restore 612, 618
         }
