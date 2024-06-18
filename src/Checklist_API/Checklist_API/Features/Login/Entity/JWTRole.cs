@@ -14,6 +14,9 @@ public class JWTRole
     [Key]
     public JwtRoleId Id { get; set; }
     public string RoleName { get; set; } = string.Empty;
+    public DateTime DateCreated { get; init; }
+    public DateTime DateUpdated { get; set; }
+
 
     public virtual ICollection <JWTUserRole>? JWTUserRoles { get; set; } = new List<JWTUserRole>();
 }

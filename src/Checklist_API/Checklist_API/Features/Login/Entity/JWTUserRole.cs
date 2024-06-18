@@ -15,6 +15,9 @@ public class JWTUserRole
     public JwtUserRoleId Id { get; set; }
     public UserId UserId { get; set; }
     public JwtRoleId JwtRoleId { get; set; }
+    public DateTime DateCreated { get; init; }
+    public DateTime DateUpdated { get; set; }
+
 
 
     public virtual Checklist_API.Features.User.Entity.User? User { get; set; }

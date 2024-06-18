@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Checklist_API.Data.Migrations
 {
     [DbContext(typeof(CheckListDbContext))]
-    [Migration("20240613094753_Initial")]
+    [Migration("20240618083949_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -89,6 +89,12 @@ namespace Checklist_API.Data.Migrations
                     b.Property<Guid>("Id")
                         .HasColumnType("char(36)");
 
+                    b.Property<DateTime>("DateCreated")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<DateTime>("DateUpdated")
+                        .HasColumnType("datetime(6)");
+
                     b.Property<string>("RoleName")
                         .IsRequired()
                         .HasColumnType("longtext");
@@ -102,6 +108,12 @@ namespace Checklist_API.Data.Migrations
                 {
                     b.Property<Guid>("Id")
                         .HasColumnType("char(36)");
+
+                    b.Property<DateTime>("DateCreated")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<DateTime>("DateUpdated")
+                        .HasColumnType("datetime(6)");
 
                     b.Property<Guid>("JwtRoleId")
                         .HasColumnType("char(36)");
@@ -123,7 +135,10 @@ namespace Checklist_API.Data.Migrations
                     b.Property<Guid>("Id")
                         .HasColumnType("char(36)");
 
-                    b.Property<DateTime>("Created")
+                    b.Property<DateTime>("DateCreated")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<DateTime>("DateUpdated")
                         .HasColumnType("datetime(6)");
 
                     b.Property<string>("Email")
@@ -149,9 +164,6 @@ namespace Checklist_API.Data.Migrations
                     b.Property<string>("Salt")
                         .IsRequired()
                         .HasColumnType("longtext");
-
-                    b.Property<DateTime>("Updated")
-                        .HasColumnType("datetime(6)");
 
                     b.HasKey("Id");
 
