@@ -11,7 +11,6 @@ public readonly record struct JwtRoleId(Guid jwtRoleId)
 
 public class JWTRole
 {
-    [Key]
     public JwtRoleId Id { get; set; }
     public string RoleName { get; set; } = string.Empty;
     public DateTime DateCreated { get; init; }
