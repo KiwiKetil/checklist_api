@@ -1,7 +1,7 @@
 ﻿using Checklist_API.Features.Checklists.Entity;
 using System.ComponentModel.DataAnnotations;
 
-namespace Checklist_API.Features.Login.Entity;
+namespace Checklist_API.Features.JWT.Entity;
 
 public readonly record struct JwtRoleId(Guid jwtRoleId)
 {
@@ -17,5 +17,5 @@ public class JWTRole
     public DateTime DateUpdated { get; set; }
 
 
-    public virtual ICollection <JWTUserRole>? JWTUserRoles { get; set; } = new List<JWTUserRole>();
+    public virtual ICollection<JWTUserRole>? JWTUserRoles { get; set; } = new List<JWTUserRole>();
 }

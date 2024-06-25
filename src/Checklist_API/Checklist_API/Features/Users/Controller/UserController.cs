@@ -1,8 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Checklist_API.Features.Users.Service.Interfaces;
+using Microsoft.AspNetCore.Mvc;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
-namespace Checklist_API.Features.User.Controller;
+namespace Checklist_API.Features.Users.Controller;
 [Route("api/v1/users")]
 [ApiController]
 public class UserController : ControllerBase

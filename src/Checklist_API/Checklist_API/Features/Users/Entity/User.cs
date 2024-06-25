@@ -1,9 +1,9 @@
 ﻿using Checklist_API.Features.Checklists.Entity;
-using Checklist_API.Features.Login.Entity;
+using Checklist_API.Features.JWT.Entity;
 using System.ComponentModel.DataAnnotations;
 using System.Numerics;
 
-namespace Checklist_API.Features.User.Entity;
+namespace Checklist_API.Features.Users.Entity;
 
 public readonly record struct UserId(Guid userId)
 {

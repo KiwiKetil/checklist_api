@@ -1,4 +1,4 @@
-﻿using Checklist_API.Features.User.Entity;
+﻿using Checklist_API.Features.Users.Entity;
 using System.Numerics;
 
 namespace Checklist_API.Features.Checklists.Entity;
@@ -24,5 +24,5 @@ public class CheckList
     public DateTime DateUpdated { get; set; } = DateTime.Now;
     public DateTime? DateCompleted { get; set; }
 
-    public virtual Checklist_API.Features.User.Entity.User? User { get; set; }
+    public virtual User? User { get; set; }
 }
