@@ -7,7 +7,7 @@ namespace Checklist_API.Features.Login.Controller;
 [ApiController]
 public class LoginController : ControllerBase
 {
-    private IConfiguration _config;
+    private IConfiguration _config; // trengs for tilgang til appsettings pga JWT secretkey etc ligger der
     private readonly CheckListDbContext _DbContext;
     private readonly ILogger<LoginController> _logger;
     public LoginController()
