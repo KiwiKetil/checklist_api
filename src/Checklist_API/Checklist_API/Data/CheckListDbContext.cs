@@ -1,6 +1,6 @@
 ﻿using Checklist_API.Features.Checklists.Entity;
-using Checklist_API.Features.Login.Entity;
-using Checklist_API.Features.User.Entity;
+using Checklist_API.Features.JWT.Entity;
+using Checklist_API.Features.Users.Entity;
 using Microsoft.EntityFrameworkCore;
 
 namespace Check_List_API.Data;
