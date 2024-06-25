@@ -197,14 +197,13 @@ public class CheckListDbContext : DbContext
        .HasConversion(
            id => id.userId,
            value => new UserId(value)
-       );
+          );
 
         modelBuilder.Entity<JWTUserRole>()
         .Property(x => x.JwtRoleId)
         .HasConversion(
             id => id.jwtRoleId,
-            value => new JwtRoleId(value)
-        );
+            value => new JwtRoleId(value));
 
         modelBuilder.Entity<JWTUserRole>()
          .HasKey(x => x.Id);
@@ -213,7 +212,6 @@ public class CheckListDbContext : DbContext
          .HasOne(j => j.JWTRole)
          .WithMany(j => j.JWTUserRoles)
          .HasForeignKey(j => j.JwtRoleId);
-
 
         modelBuilder.Entity<JWTUserRole>()
          .HasOne(u => u.User)

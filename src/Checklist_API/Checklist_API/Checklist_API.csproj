@@ -36,8 +36,7 @@
     <Folder Include="Features\User\DTOs\" />
     <Folder Include="Features\User\Mappers\" />
     <Folder Include="Features\User\Entity\" />
-    <Folder Include="Features\User\Service\" />
-    <Folder Include="Features\User\Repository\" />
+    <Folder Include="Features\User\Repository\Interfaces\" />
   </ItemGroup>
 
 </Project>
