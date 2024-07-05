@@ -1,4 +1,6 @@
 using Check_List_API.Data;
+using Checklist_API.Features.Users.Service;
+using Checklist_API.Features.Users.Service.Interfaces;
 using Checklist_API.Middleware;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
@@ -11,6 +13,7 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddScoped<IUserService, UserService>();
 
 builder.Services.AddScoped<GlobalExceptionMiddleware>();
 
