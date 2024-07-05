@@ -1,4 +1,6 @@
-﻿namespace Checklist_API.Features.Users.Service.Interfaces;
+﻿using Checklist_API.Features.Users.DTOs;
+
+namespace Checklist_API.Features.Users.Service.Interfaces;
 
 public interface IUserService
 {
@@ -6,5 +8,5 @@ public interface IUserService
     Task<UserDTO> GetByIdAsync(Guid UserId);
     Task<UserDTO> UpdateAsync(Guid id, UserDTO dto);
     Task<UserDTO> DeleteAsync(Guid id);
-    Task<UserDTO> RegisterUserAsync(UserRegisterDTO dto);
+    Task<UserDTO> RegisterUserAsync(UserRegistrationDTO dto);
 }
