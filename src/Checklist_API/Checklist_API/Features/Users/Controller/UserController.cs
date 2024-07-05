@@ -18,11 +18,11 @@ public class UserController : ControllerBase
     }
 
     // GET: api/<UserController>
-    [HttpGet]
-    public IEnumerable<string> Get()
-    {
-        return new string[] { "value1", "value2" };
-    }
+    //[HttpGet]
+    //public async Task<ActionResult<IEnumerable<UserDTO>>> GetAll()
+    //{
+    //    return new string[] { "value1", "value2" };
+    //}
 
     // GET api/<UserController>/5
     [HttpGet("{id}")]

@@ -10,8 +10,11 @@ public class LoginController : ControllerBase
     private IConfiguration _config; // trengs for tilgang til appsettings pga JWT secretkey etc ligger der
     private readonly CheckListDbContext _DbContext;
     private readonly ILogger<LoginController> _logger;
-    public LoginController()
+
+    public LoginController(IConfiguration config, CheckListDbContext dbContext, ILogger<LoginController> logger)
     {
-        
+        _config = config;
+        _DbContext = dbContext;
+        _logger = logger;
     }
 }
