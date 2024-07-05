@@ -1,4 +1,5 @@
-﻿using Checklist_API.Features.Users.Service.Interfaces;
+﻿using Checklist_API.Features.Users.DTOs;
+using Checklist_API.Features.Users.Service.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -11,16 +12,20 @@ public class UserController : ControllerBase
     private readonly IUserService _userService;
     private readonly ILogger<UserController> _logger;
 
-    public UserController()
+    public UserController(IUserService userService, ILogger<UserController> logger)
     {
-        
+        _userService = userService;
+        _logger = logger;
     }
 
-    // GET: api/<UserController>
+    //GET: api/<UserController>
     [HttpGet]
-    public IEnumerable<string> Get()
+    public async Task<ActionResult<IEnumerable<UserDTO>>> GetAll() // husk paginering
     {
-        return new string[] { "value1", "value2" };
+        _logger.LogInformation("Getting all Users");
+        var res = await _userService.GetAllAsync();
+
+        return res != null ? Ok(res) : NotFound("Could not find any users");
     }
 
     // GET api/<UserController>/5
@@ -28,12 +33,6 @@ public class UserController : ControllerBase
     public string Get(int id)
     {
         return "value";
-    }
-
-    // POST api/<UserController>
-    [HttpPost]
-    public void Post([FromBody] string value)
-    {
     }
 
     // PUT api/<UserController>/5
@@ -45,6 +44,12 @@ public class UserController : ControllerBase
     // DELETE api/<UserController>/5
     [HttpDelete("{id}")]
     public void Delete(int id)
+    {
+    }
+
+    // POST api/<UserController>
+    [HttpPost]
+    public void Post([FromBody] string value)
     {
     }
 }
