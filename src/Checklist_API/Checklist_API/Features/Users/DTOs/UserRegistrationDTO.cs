@@ -1,5 +1,9 @@
 ﻿namespace Checklist_API.Features.Users.DTOs;
 
-public class UserRegistrationDTO
-{
-}
+public record UserRegistrationDTO(
+    string FirstName,
+    string LastName,
+    string PhoneNumber,
+    string Email,
+    string Password
+    );
