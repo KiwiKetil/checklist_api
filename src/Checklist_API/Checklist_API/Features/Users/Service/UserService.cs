@@ -15,12 +15,14 @@ public class UserService : IUserService
         _logger = logger;
     }
 
-    //public async Task<IEnumerable<UserDTO>> GetAllAsync()
-    //{
-    //    _logger.LogInformation("Getting all Users");
+    public async Task<IEnumerable<UserDTO>> GetAllAsync()
+    {
+        _logger.LogInformation("getting all users");
 
-    //    return ();
-    //}
+        await Task.Delay(10); // remove this
+
+        return Enumerable.Empty<UserDTO>(); //husk bytte
+    }
 
     public Task<UserDTO> GetByIdAsync(Guid UserId)
     {

@@ -20,7 +20,7 @@ public class UserController : ControllerBase
 
     //GET: api/<UserController>
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<UserDTO>>> GetAll() // husk paginering
+    public async Task<ActionResult<IEnumerable<UserDTO>>> GetAll() // husk paginering og asNoTracking() i dbcontext
     {
         _logger.LogInformation("Getting all Users");
         var res = await _userService.GetAllAsync();
