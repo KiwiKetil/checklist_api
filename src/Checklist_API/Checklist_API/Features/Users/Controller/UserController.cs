@@ -1,6 +1,7 @@
 ﻿using Checklist_API.Features.Users.DTOs;
 using Checklist_API.Features.Users.Service.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -20,10 +21,18 @@ public class UserController : ControllerBase
 
     //GET: api/<UserController>
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<UserDTO>>> GetAll() // husk paginering og asNoTracking() i dbcontext
+    public async Task<ActionResult<IEnumerable<UserDTO>>> GetAll(int page = 1, int pageSize = 10) // husk paginering og asNoTracking() i dbcontext
     {
         _logger.LogInformation("Getting all Users");
-        var res = await _userService.GetAllAsync();
+
+        if (page < 1 || pageSize < 1 || pageSize > 50)
+        {
+            _logger.LogWarning("Invalid pagination parameters Page: {page}, PageSize: {pageSize}", page, pageSize);
+
+            return BadRequest("Invalid pagination parameters - MIN page = 1, MAX pageSize = 50 ");
+        }
+
+        var res = await _userService.GetAllAsync(page, pageSize);
 
         return res != null ? Ok(res) : NotFound("Could not find any users");
     }
