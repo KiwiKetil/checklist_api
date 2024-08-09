@@ -1,4 +1,5 @@
 using Check_List_API.Data;
+using Checklist_API.Features.Users.Repository.Interfaces;
 using Checklist_API.Features.Users.Service;
 using Checklist_API.Features.Users.Service.Interfaces;
 using Checklist_API.Middleware;
@@ -14,6 +15,12 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+
+builder.Services.AddDbContext<CheckListDbContext>(options =>
+    options.UseMySql(builder.Configuration.GetConnectionString("DefaultConnection"),
+    new MySqlServerVersion(new Version(8, 0)))
+    );
 
 builder.Services.AddScoped<GlobalExceptionMiddleware>();
 
@@ -21,11 +28,6 @@ builder.Host.UseSerilog((context, configuration) =>
 {
     configuration.ReadFrom.Configuration(context.Configuration);
 });
-
-builder.Services.AddDbContext<CheckListDbContext>(options =>
-    options.UseMySql(builder.Configuration.GetConnectionString("DefaultConnection"),
-    new MySqlServerVersion(new Version(8, 0)))
-    );
 
 var app = builder.Build();
 
