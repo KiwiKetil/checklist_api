@@ -1,4 +1,5 @@
 using Check_List_API.Data;
+using Checklist_API.Extensions;
 using Checklist_API.Features.Users.Repository.Interfaces;
 using Checklist_API.Features.Users.Service;
 using Checklist_API.Features.Users.Service.Interfaces;
@@ -16,6 +17,8 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+
+builder.RegisterMappers();
 
 builder.Services.AddDbContext<CheckListDbContext>(options =>
     options.UseMySql(builder.Configuration.GetConnectionString("DefaultConnection"),

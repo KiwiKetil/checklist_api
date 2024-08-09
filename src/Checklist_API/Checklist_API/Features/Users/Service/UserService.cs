@@ -1,4 +1,7 @@
-﻿using Checklist_API.Features.Users.DTOs;
+﻿using Checklist_API.Features.Common.Interfaces;
+using Checklist_API.Features.Users.DTOs;
+using Checklist_API.Features.Users.Entity;
+using Checklist_API.Features.Users.Mappers;
 using Checklist_API.Features.Users.Repository.Interfaces;
 using Checklist_API.Features.Users.Service.Interfaces;
 
@@ -8,20 +11,23 @@ public class UserService : IUserService
 {
     private readonly IUserRepository _userRepository;
     private readonly ILogger<UserService> _logger;
+    private readonly IMapper<User, UserDTO> _userMapper;
 
-    public UserService(IUserRepository userRepository, ILogger<UserService> logger)
+    public UserService(IUserRepository userRepository, ILogger<UserService> logger, IMapper<User, UserDTO> userMapper)
     {
         _userRepository = userRepository;
         _logger = logger;
+        _userMapper = userMapper;
     }
 
-    public async Task<IEnumerable<UserDTO>> GetAllAsync()
+    public async Task<IEnumerable<UserDTO>> GetAllAsync(int page, int pageSize)
     {
         _logger.LogInformation("getting all users");
 
-        await Task.Delay(10); // remove this
+        var res = await _userRepository.GetAllAsync(page, pageSize);
 
-        return Enumerable.Empty<UserDTO>(); //husk bytte
+        var dtos = res.Select(user => _userMapper.MapToDTO(user)).ToList();
+        return dtos;
     }
 
     public Task<UserDTO> GetByIdAsync(Guid UserId)

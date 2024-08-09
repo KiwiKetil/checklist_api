@@ -1,17 +1,33 @@
-﻿using Checklist_API.Features.Users.Entity;
+﻿using Check_List_API.Data;
+using Checklist_API.Features.Users.Entity;
+using Microsoft.EntityFrameworkCore;
 
 namespace Checklist_API.Features.Users.Repository.Interfaces;
 
 public class UserRepository : IUserRepository
 {
-    public Task<User> DeleteAsync(UserId id)
+    private readonly CheckListDbContext _dbContext;
+    private readonly ILogger<UserRepository> _logger;
+
+    public UserRepository(CheckListDbContext dbContext, ILogger<UserRepository> logger)
     {
-        throw new NotImplementedException();
+        _dbContext = dbContext;
+        _logger = logger;
     }
 
-    public Task<IEnumerable<User>> GetAllAsync()
+    public async Task<IEnumerable<User>> GetAllAsync(int page, int pageSize)
     {
-        throw new NotImplementedException();
+        _logger.LogDebug("Getting users from db");
+
+        int itemToSkip = (page - 1) * pageSize;
+
+        return await _dbContext.User
+            .OrderBy(x => x.Id)
+            .Skip(itemToSkip)
+            .Take(pageSize)
+            .Distinct()
+            .AsNoTracking()
+            .ToListAsync();
     }
 
     public Task<User> GetByIdAsync(UserId id)
@@ -19,12 +35,16 @@ public class UserRepository : IUserRepository
         throw new NotImplementedException();
     }
 
-    public Task<User> RegisterAsync(User user)
+    public Task<User> UpdateAsync(UserId id, User user)
     {
         throw new NotImplementedException();
     }
 
-    public Task<User> UpdateAsync(UserId id, User user)
+    public Task<User> DeleteAsync(UserId id)
+    {
+        throw new NotImplementedException();
+    }
+    public Task<User> RegisterAsync(User user)
     {
         throw new NotImplementedException();
     }
