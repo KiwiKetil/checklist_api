@@ -30,23 +30,32 @@ public class UserService : IUserService
         return dtos;
     }
 
-    public Task<UserDTO> GetByIdAsync(Guid UserId)
+    public Task<UserDTO?> GetByIdAsync(Guid UserId)
     {
         throw new NotImplementedException();
     }
 
-    public Task<UserDTO> UpdateAsync(Guid id, UserDTO dto)
+    public Task<UserDTO?> UpdateAsync(Guid id, UserDTO dto)
     {
         throw new NotImplementedException();
     }
 
-    public Task<UserDTO> DeleteAsync(Guid id)
+    public Task<UserDTO?> DeleteAsync(Guid id)
     {
         throw new NotImplementedException();
     }
 
-    public Task<UserDTO> RegisterUserAsync(UserRegistrationDTO dto)
+    public async Task<UserDTO?> RegisterUserAsync(UserRegistrationDTO dto)
     {
-        throw new NotImplementedException();
+        _logger.LogDebug("Registering new user: {email}", dto.Email);
+
+        var existingUser = await _userRepository.GetByEmailAsync(dto.Email);
+        if (existingUser != null)
+        {
+            _logger.LogDebug("User already exist: {Email}", dto.Email);
+            return null;
+        }
+        
+        var user = _
     }
 }

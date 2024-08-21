@@ -19,7 +19,7 @@ public class UserController : ControllerBase
         _logger = logger;
     }
 
-    //GET: api/<UserController>
+    // GET https://localhost:7070/api/v1/users?page=1&pageSize=10
     [HttpGet]
     public async Task<ActionResult<IEnumerable<UserDTO>>> GetAll(int page = 1, int pageSize = 10) 
     {
@@ -56,9 +56,13 @@ public class UserController : ControllerBase
     {
     }
 
-    // POST api/<UserController>
-    [HttpPost]
-    public void Post([FromBody] string value)
+    // POST https://localhost:7070/api/v1/users/register
+    [HttpPost("register", Name = "RegisterUser")]
+    public async Task<ActionResult<UserDTO>> RegisterUser([FromBody] UserRegistrationDTO dto)
     {
+        _logger.LogDebug("Registering new user: {email}", dto.Email);
+
+        var res = await _userService.RegisterUserAsync(dto);
+        return res != null ? Ok(res) : BadRequest("Could not register new user");
     }
 }
