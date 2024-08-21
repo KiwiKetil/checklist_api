@@ -26,26 +26,34 @@ public class UserRepository : IUserRepository
             .Skip(itemToSkip)
             .Take(pageSize)
             .Distinct()
-          //  .AsNoTracking()
+            .AsNoTracking()
             .ToListAsync();
     }
 
-    public Task<User> GetByIdAsync(UserId id)
+    public Task<User?> GetByIdAsync(UserId id)
     {
         throw new NotImplementedException();
     }
 
-    public Task<User> UpdateAsync(UserId id, User user)
+    public Task<User?> UpdateAsync(UserId id, User user)
     {
         throw new NotImplementedException();
     }
 
-    public Task<User> DeleteAsync(UserId id)
+    public Task<User?> DeleteAsync(UserId id)
     {
         throw new NotImplementedException();
     }
-    public Task<User> RegisterAsync(User user)
+    public Task<User?> RegisterAsync(User user)
     {
         throw new NotImplementedException();
+    }
+
+    public async Task<User?> GetByEmailAsync(string email)
+    {
+        _logger.LogDebug("Getting user by email: {email} from db", email);
+
+        var res = await _dbContext.User.FirstOrDefaultAsync(x => x.Email.Equals(email));
+        return res;
     }
 }
