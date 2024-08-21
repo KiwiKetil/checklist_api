@@ -26,7 +26,7 @@ public class UserRepository : IUserRepository
             .Skip(itemToSkip)
             .Take(pageSize)
             .Distinct()
-            .AsNoTracking()
+          //  .AsNoTracking()
             .ToListAsync();
     }
 

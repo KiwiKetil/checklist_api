@@ -21,7 +21,7 @@ public class UserController : ControllerBase
 
     //GET: api/<UserController>
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<UserDTO>>> GetAll(int page = 1, int pageSize = 10) // husk paginering og asNoTracking() i dbcontext
+    public async Task<ActionResult<IEnumerable<UserDTO>>> GetAll(int page = 1, int pageSize = 10) 
     {
         _logger.LogInformation("Getting all Users");
 
@@ -37,9 +37,9 @@ public class UserController : ControllerBase
         return res != null ? Ok(res) : NotFound("Could not find any users");
     }
 
-    // GET api/<UserController>/5
+    // GET api/<UserController>/5 
     [HttpGet("{id}")]
-    public string Get(int id)
+    public string Get(int id) // legge til asnotracking()?
     {
         return "value";
     }
