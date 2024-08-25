@@ -1,12 +1,9 @@
 ﻿namespace Checklist_API.Middleware;
 
-public class GlobalExceptionMiddleware : IMiddleware
+public class GlobalExceptionMiddleware(ILogger<GlobalExceptionMiddleware> logger) : IMiddleware
 {
-    private readonly ILogger<GlobalExceptionMiddleware> _logger;
-    public GlobalExceptionMiddleware(ILogger<GlobalExceptionMiddleware> logger)
-    {
-        _logger = logger;
-    }
+    private readonly ILogger<GlobalExceptionMiddleware> _logger = logger;
+  
     public async Task InvokeAsync(HttpContext context, RequestDelegate next)
     {
         try
