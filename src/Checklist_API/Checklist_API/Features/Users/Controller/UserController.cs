@@ -21,7 +21,7 @@ public class UserController : ControllerBase
 
     // GET https://localhost:7070/api/v1/users?page=1&pageSize=10
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<UserDTO>>> GetAll(int page = 1, int pageSize = 10) 
+    public async Task<ActionResult<IEnumerable<UserDTO>>> GetAll(int page = 1, int pageSize = 10)
     {
         _logger.LogInformation("Getting all Users");
 
