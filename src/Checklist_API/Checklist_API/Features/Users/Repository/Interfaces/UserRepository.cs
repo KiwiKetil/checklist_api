@@ -44,9 +44,14 @@ public class UserRepository : IUserRepository
     {
         throw new NotImplementedException();
     }
-    public Task<User?> RegisterAsync(User user)
+    public async Task<User?> RegisterAsync(User user)
     {
-        throw new NotImplementedException();
+        _logger.LogDebug("Adding user: {user} to Db", user.Email);
+
+        var res = await _dbContext.User.AddAsync(user);
+        await _dbContext.SaveChangesAsync();
+
+        return res.Entity;
     }
 
     public async Task<User?> GetByEmailAsync(string email)

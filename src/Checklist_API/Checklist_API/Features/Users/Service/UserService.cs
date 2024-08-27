@@ -12,12 +12,14 @@ public class UserService : IUserService
     private readonly IUserRepository _userRepository;
     private readonly ILogger<UserService> _logger;
     private readonly IMapper<User, UserDTO> _userMapper;
+    private readonly IMapper<User, UserRegistrationDTO> _userRegistrationMapper;
 
-    public UserService(IUserRepository userRepository, ILogger<UserService> logger, IMapper<User, UserDTO> userMapper)
+    public UserService(IUserRepository userRepository, ILogger<UserService> logger, IMapper<User, UserDTO> userMapper, IMapper<User, UserRegistrationDTO> userRegistrationMapper)
     {
         _userRepository = userRepository;
         _logger = logger;
         _userMapper = userMapper;
+        _userRegistrationMapper = userRegistrationMapper;
     }
 
     public async Task<IEnumerable<UserDTO>> GetAllAsync(int page, int pageSize)
@@ -55,7 +57,15 @@ public class UserService : IUserService
             _logger.LogDebug("User already exist: {Email}", dto.Email);
             return null;
         }
+
+        var user = _userRegistrationMapper.MapToEntity(dto);
         
-        var user = _
+        user.Id = UserId.NewId;
+        user.Salt = BCrypt.Net.BCrypt.GenerateSalt();
+        user.HashedPassword = BCrypt.Net.BCrypt.HashPassword(dto.Password, user.Salt);
+
+        var res = await _userRepository.RegisterAsync(user);
+
+        return res != null ? _userMapper.MapToDTO(res) : null;
     }
 }
