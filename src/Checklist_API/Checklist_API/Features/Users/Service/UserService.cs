@@ -58,6 +58,7 @@ public class UserService : IUserService
         if (existingUser != null)
         {
             _logger.LogDebug("User already exist: {Email}", dto.Email);
+
             throw new UserAlreadyExistsException("user already exists");
             //return null;
         }       
