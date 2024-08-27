@@ -1,9 +1,11 @@
-﻿using Checklist_API.Features.Common.Interfaces;
+﻿using Checklist_API.Extensions;
+using Checklist_API.Features.Common.Interfaces;
 using Checklist_API.Features.Users.DTOs;
 using Checklist_API.Features.Users.Entity;
 using Checklist_API.Features.Users.Mappers;
 using Checklist_API.Features.Users.Repository.Interfaces;
 using Checklist_API.Features.Users.Service.Interfaces;
+using static Checklist_API.Extensions.CustomExceptions;
 
 namespace Checklist_API.Features.Users.Service;
 
@@ -14,7 +16,8 @@ public class UserService : IUserService
     private readonly IMapper<User, UserDTO> _userMapper;
     private readonly IMapper<User, UserRegistrationDTO> _userRegistrationMapper;
 
-    public UserService(IUserRepository userRepository, ILogger<UserService> logger, IMapper<User, UserDTO> userMapper, IMapper<User, UserRegistrationDTO> userRegistrationMapper)
+    public UserService(IUserRepository userRepository, ILogger<UserService> logger, IMapper<User, UserDTO> userMapper,
+                        IMapper<User, UserRegistrationDTO> userRegistrationMapper)
     {
         _userRepository = userRepository;
         _logger = logger;
@@ -55,14 +58,16 @@ public class UserService : IUserService
         if (existingUser != null)
         {
             _logger.LogDebug("User already exist: {Email}", dto.Email);
-            return null;
-        }
+
+            throw new UserAlreadyExistsException("user already exists");
+            //return null;
+        }       
 
         var user = _userRegistrationMapper.MapToEntity(dto);
-        
+
         user.Id = UserId.NewId;
         user.Salt = BCrypt.Net.BCrypt.GenerateSalt();
-        user.HashedPassword = BCrypt.Net.BCrypt.HashPassword(dto.Password, user.Salt);
+        user.HashedPassword = BCrypt.Net.BCrypt.HashPassword(dto.Password);
 
         var res = await _userRepository.RegisterAsync(user);
 

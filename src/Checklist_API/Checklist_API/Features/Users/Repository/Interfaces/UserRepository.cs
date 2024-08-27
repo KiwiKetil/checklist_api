@@ -46,7 +46,7 @@ public class UserRepository : IUserRepository
     }
     public async Task<User?> RegisterAsync(User user)
     {
-        _logger.LogDebug("Adding user: {user} to Db", user.Email);
+        _logger.LogDebug("Adding user: {user} to db", user.Email);
 
         var res = await _dbContext.User.AddAsync(user);
         await _dbContext.SaveChangesAsync();
