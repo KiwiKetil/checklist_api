@@ -1,4 +1,6 @@
-﻿namespace Checklist_API.Middleware;
+﻿using static Checklist_API.Extensions.CustomExceptions;
+
+namespace Checklist_API.Middleware;
 
 public class GlobalExceptionMiddleware(ILogger<GlobalExceptionMiddleware> logger) : IMiddleware
 {
@@ -16,9 +18,21 @@ public class GlobalExceptionMiddleware(ILogger<GlobalExceptionMiddleware> logger
             Environment.MachineName,
             System.Diagnostics.Activity.Current?.Id);
 
+            var statusCode = ex switch
+            {
+                UserAlreadyExistsException => StatusCodes.Status409Conflict,
+                _ => StatusCodes.Status500InternalServerError
+            };
+
+            var title = ex switch
+            {
+                UserAlreadyExistsException => "User already exists",
+                _ => "Something terrible has happened!!"
+            };
+
             await Results.Problem(
-                title: "Something terrible has happened!!",
-                statusCode: StatusCodes.Status500InternalServerError,
+                title: title,
+                statusCode: statusCode,
                 extensions: new Dictionary<string, object?>
                 {
                     { "traceId", System.Diagnostics.Activity.Current?.Id },

@@ -1,9 +1,11 @@
-﻿using Checklist_API.Features.Common.Interfaces;
+﻿using Checklist_API.Extensions;
+using Checklist_API.Features.Common.Interfaces;
 using Checklist_API.Features.Users.DTOs;
 using Checklist_API.Features.Users.Entity;
 using Checklist_API.Features.Users.Mappers;
 using Checklist_API.Features.Users.Repository.Interfaces;
 using Checklist_API.Features.Users.Service.Interfaces;
+using static Checklist_API.Extensions.CustomExceptions;
 
 namespace Checklist_API.Features.Users.Service;
 
@@ -12,12 +14,15 @@ public class UserService : IUserService
     private readonly IUserRepository _userRepository;
     private readonly ILogger<UserService> _logger;
     private readonly IMapper<User, UserDTO> _userMapper;
+    private readonly IMapper<User, UserRegistrationDTO> _userRegistrationMapper;
 
-    public UserService(IUserRepository userRepository, ILogger<UserService> logger, IMapper<User, UserDTO> userMapper)
+    public UserService(IUserRepository userRepository, ILogger<UserService> logger, IMapper<User, UserDTO> userMapper,
+                        IMapper<User, UserRegistrationDTO> userRegistrationMapper)
     {
         _userRepository = userRepository;
         _logger = logger;
         _userMapper = userMapper;
+        _userRegistrationMapper = userRegistrationMapper;
     }
 
     public async Task<IEnumerable<UserDTO>> GetAllAsync(int page, int pageSize)
@@ -53,9 +58,18 @@ public class UserService : IUserService
         if (existingUser != null)
         {
             _logger.LogDebug("User already exist: {Email}", dto.Email);
-            return null;
-        }
-        
-        var user = _
+            throw new UserAlreadyExistsException("user already exists");
+            //return null;
+        }       
+
+        var user = _userRegistrationMapper.MapToEntity(dto);
+
+        user.Id = UserId.NewId;
+        user.Salt = BCrypt.Net.BCrypt.GenerateSalt();
+        user.HashedPassword = BCrypt.Net.BCrypt.HashPassword(dto.Password);
+
+        var res = await _userRepository.RegisterAsync(user);
+
+        return res != null ? _userMapper.MapToDTO(res) : null;
     }
 }
