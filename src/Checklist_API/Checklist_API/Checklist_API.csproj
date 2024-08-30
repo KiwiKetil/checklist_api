@@ -28,6 +28,8 @@
 
   <ItemGroup>
     <Folder Include="Data\Migrations\" />
+    <Folder Include="Docker\MySQL\" />
+    <Folder Include="Docker\Nginx\" />
     <Folder Include="Features\CheckList\Mappers\" />
     <Folder Include="Features\CheckList\DTOs\" />
     <Folder Include="Features\Login\DTOs\" />
