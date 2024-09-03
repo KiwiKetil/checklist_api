@@ -21,9 +21,8 @@
     <Using Include="Xunit" />
   </ItemGroup>
 
-	<ItemGroup>
-		<projectReference Include="\ga\Semester_4\Checklist_API\src\Checklist_API\Checklist_API\Checklist_API.csproj" />
-	</ItemGroup>
-	
+  <ItemGroup>
+	  <ProjectReference Include="..\..\src\Checklist_API\Checklist_API\Checklist_API.csproj" />
+  </ItemGroup>	
 
 </Project>
