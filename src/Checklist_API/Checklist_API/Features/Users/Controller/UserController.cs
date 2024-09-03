@@ -39,11 +39,10 @@ public class UserController : ControllerBase
 
     // GET api/<UserController>/5 
     [HttpGet("{id}")]
-    public string Get(int id) // legge til asnotracking()?
+    public string Get(int id)
     {
         return "value";
     }
-
     // PUT api/<UserController>/5
     [HttpPut("{id}")]
     public void Put(int id, [FromBody] string value)
