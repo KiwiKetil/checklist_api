@@ -22,7 +22,7 @@
   </ItemGroup>
 
   <ItemGroup>
-	 <ProjectReference Include="C:\Projects\Checklist_API\src\Checklist_API\Checklist_API\Checklist_API.csproj" />
+	  <ProjectReference Include="..\..\src\Checklist_API\Checklist_API\Checklist_API.csproj" />
   </ItemGroup>
 	
 	
