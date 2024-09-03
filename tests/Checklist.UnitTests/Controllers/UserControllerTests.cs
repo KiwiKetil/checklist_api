@@ -4,8 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Checklist.UnitTests.Mappers;
-
-public class UserMapperTests
+namespace Checklist.UnitTests.Controllers;
+public class UserControllerTests
 {
+
 }
