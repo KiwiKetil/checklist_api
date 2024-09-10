@@ -5,5 +5,7 @@ public record UserDTO
     string FirstName,
     string LastName,
     string Phonenumber,
-    string Email    
+    string Email,
+    DateTime DateCreated,
+    DateTime DateUpdated
 );
