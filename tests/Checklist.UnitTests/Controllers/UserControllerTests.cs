@@ -2,6 +2,7 @@
 using Checklist_API.Features.Users.Controller;
 using Checklist_API.Features.Users.DTOs;
 using Checklist_API.Features.Users.Service.Interfaces;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Moq;
 using System;
@@ -37,6 +38,8 @@ public class UserControllerTests
         };
 
         _userServiceMock.Setup(x => x.GetAllAsync(page, pageSize)).ReturnsAsync(dtos);
+        // _loggerMock ikke setup nå her da vi er usikre på hva som e "riktig" måte.
+        // Kan bruke It.is for å sette opp manuellt, eller lage koblling til appsettings og ta inn her.
 
         // Act
 
@@ -44,6 +47,9 @@ public class UserControllerTests
 
         // Assert
 
+        var actionResult = Assert.IsType<ActionResult<IEnumerable<UserDTO>>>(res);
+        var returnValue = Assert.IsType<OkObjectResult>(actionResult);  // test med okresult, bør feile
+        var dtoCollection = Assert.IsType<List<UserDTO>>(returnValue.Value);// bruker liste pga dersom Ienumerable må bruke Assert.IsAssignableFrom<T>(object) osv
 
     }
 }
