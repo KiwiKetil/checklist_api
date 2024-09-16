@@ -3,6 +3,7 @@ using Checklist_API.Features.Users.Controller;
 using Checklist_API.Features.Users.DTOs;
 using Checklist_API.Features.Users.Service.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 using Moq;
 using MySqlX.XDevAPI.Common;
@@ -57,7 +58,7 @@ public class UserControllerTests
         {
             Assert.Equal(expected.FirstName, actual.FirstName);
             Assert.Equal(expected.LastName, actual.LastName);
-            Assert.Equal(expected.Phonenumber, actual.Phonenumber);
+            Assert.Equal(expected.PhoneNumber, actual.PhoneNumber);
             Assert.Equal(expected.Email, actual.Email);
             Assert.Equal(expected.DateCreated, actual.DateCreated);
             Assert.Equal(expected.DateUpdated, actual.DateUpdated);
@@ -85,4 +86,58 @@ public class UserControllerTests
         var errorMessage = Assert.IsType<string>(returnValue.Value); // This asserts that the Value inside the OkObjectResult is a List<UserDTO>, AND IT CONTAINS ALL THE DATA.
         Assert.Equal("Could not find any users", errorMessage);
     }
-}
+
+    public static TheoryData<UserRegistrationDTO> GetUserRegistrationDTOs()
+    {
+        return new TheoryData<UserRegistrationDTO>
+        {
+        new("Ketil", "Sveberg", "12345678", "Sveberg@gmail.com", "password"),
+        new("Quyen", "Ho", "42534253", "Quyen99@gmail.com", "password2"),
+        new("Nico", "Ho", "42534253", "Nico@gmail.com", "password3")
+        };
+    }
+
+    [Theory]
+    [MemberData(nameof(GetUserRegistrationDTOs))]
+    // hvorfor ikke abre lage liste med regdtos og list med userdtos, kjøre, og sammenlikne med zip? Fact?
+    // hvorfor ikke abre lage liste med regdtos og list med userdtos, kjøre, og sammenlikne med zip? Fact?
+    // hvorfor ikke abre lage liste med regdtos og list med userdtos, kjøre, og sammenlikne med zip? Fact?
+    // hvorfor ikke abre lage liste med regdtos og list med userdtos, kjøre, og sammenlikne med zip? Fact?
+    // hvorfor ikke abre lage liste med regdtos og list med userdtos, kjøre, og sammenlikne med zip? Fact?
+    // hvorfor ikke abre lage liste med regdtos og list med userdtos, kjøre, og sammenlikne med zip? Fact?
+    public async Task RegisterUserAsync_ShouldReturnOK_AndUserDTO(UserRegistrationDTO dto)
+    {
+        // arrange
+
+        var dtNow = DateTime.UtcNow;
+
+        var expectedUserDTO = new UserDTO(
+            dto.FirstName,
+            dto.LastName,
+            dto.PhoneNumber,
+            dto.Email,
+            dtNow,
+            dtNow);
+        _userServiceMock.Setup(x => x.RegisterUserAsync(dto)).ReturnsAsync(expectedUserDTO);
+
+        // Act
+
+        var result = await _userController.RegisterUser(dto);
+
+        // Assert
+
+        var actionResult = Assert.IsType<ActionResult<UserDTO>>(result);
+        var returnValue = Assert.IsType<OkObjectResult>(actionResult.Result);
+        var returnedDTO = Assert.IsType<UserDTO>(returnValue.Value);
+        Assert.Equal(expectedUserDTO, returnedDTO);
+
+        // disse trengs ikke da vi samenlikner hele objectet her:Assert.Equal(expectedUserDTO, returnedDTO); Velg hvilken man vil bruke.
+
+        //Assert.Equal(expectedUserDTO.FirstName, returnedDTO.FirstName);
+        //Assert.Equal(expectedUserDTO.LastName, returnedDTO.LastName);
+        //Assert.Equal(expectedUserDTO.PhoneNumber, returnedDTO.PhoneNumber);
+        //Assert.Equal(expectedUserDTO.Email, returnedDTO.Email);
+        //Assert.Equal(expectedUserDTO.DateCreated, returnedDTO.DateCreated);  
+        //Assert.Equal(expectedUserDTO.DateUpdated, returnedDTO.DateUpdated); 
+    }
+} // hvorfor ikke abre lage liste med regdtos og list med userdtos, kjøre, og sammenlikne med zip? Fact?
