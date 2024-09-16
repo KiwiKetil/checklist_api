@@ -1,5 +1,6 @@
 using Check_List_API.Data;
 using Checklist_API.Extensions;
+using Checklist_API.Features.Users.Repository;
 using Checklist_API.Features.Users.Repository.Interfaces;
 using Checklist_API.Features.Users.Service;
 using Checklist_API.Features.Users.Service.Interfaces;
