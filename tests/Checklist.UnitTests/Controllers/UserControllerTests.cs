@@ -53,6 +53,23 @@ public class UserControllerTests
 
         Assert.Equal(dtos.Count, dtoCollection.Count);
 
+        foreach (var (expected, actual) in dtos.Zip(dtoCollection, (expected, actual) => (expected, actual)))
+        {
+            Assert.Equal(expected.FirstName, actual.FirstName);
+            Assert.Equal(expected.LastName, actual.LastName);
+            Assert.Equal(expected.Phonenumber, actual.Phonenumber);
+            Assert.Equal(expected.Email, actual.Email);
+            Assert.Equal(expected.DateCreated, actual.DateCreated);
+            Assert.Equal(expected.DateUpdated, actual.DateUpdated);
+        }
+    }
+        // disse unpacker res:
+        var actionResult = Assert.IsType<ActionResult<IEnumerable<UserDTO>>>(res); // This checks that res is of type ActionResult<IEnumerable<UserDTO>>.
+        var returnValue = Assert.IsType<OkObjectResult>(actionResult.Result); // This asserts that the Result inside actionResult is of type OkObjectResult.
+        var dtoCollection = Assert.IsType<List<UserDTO>>(returnValue.Value); // This asserts that the Value inside the OkObjectResult is a List<UserDTO>, AND IT CONTAINS ALL THE DATA.
+
+        Assert.Equal(dtos.Count, dtoCollection.Count);
+
         foreach (var (expected, actual) in dtos.Zip(dtoCollection, (expected, actual) => (expected, actual))) 
         {
             Assert.Equal(expected.FirstName, actual.FirstName);
