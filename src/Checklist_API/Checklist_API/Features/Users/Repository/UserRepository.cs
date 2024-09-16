@@ -1,8 +1,9 @@
 ﻿using Check_List_API.Data;
 using Checklist_API.Features.Users.Entity;
+using Checklist_API.Features.Users.Repository.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
-namespace Checklist_API.Features.Users.Repository.Interfaces;
+namespace Checklist_API.Features.Users.Repository;
 
 public class UserRepository : IUserRepository
 {

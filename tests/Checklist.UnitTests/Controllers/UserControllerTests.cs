@@ -2,8 +2,10 @@
 using Checklist_API.Features.Users.Controller;
 using Checklist_API.Features.Users.DTOs;
 using Checklist_API.Features.Users.Service.Interfaces;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Moq;
+using MySqlX.XDevAPI.Common;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -44,6 +46,43 @@ public class UserControllerTests
 
         // Assert
 
+        // disse unpacker res:
+        var actionResult = Assert.IsType<ActionResult<IEnumerable<UserDTO>>>(res); // This checks that res is of type ActionResult<IEnumerable<UserDTO>>.
+        var returnValue = Assert.IsType<OkObjectResult>(actionResult.Result); // This asserts that the Result inside actionResult is of type OkObjectResult.
+        var dtoCollection = Assert.IsType<List<UserDTO>>(returnValue.Value); // This asserts that the Value inside the OkObjectResult is a List<UserDTO>, AND IT CONTAINS ALL THE DATA.
 
+        Assert.Equal(dtos.Count, dtoCollection.Count);
+
+        foreach (var (expected, actual) in dtos.Zip(dtoCollection, (expected, actual) => (expected, actual)))
+        {
+            Assert.Equal(expected.FirstName, actual.FirstName);
+            Assert.Equal(expected.LastName, actual.LastName);
+            Assert.Equal(expected.Phonenumber, actual.Phonenumber);
+            Assert.Equal(expected.Email, actual.Email);
+            Assert.Equal(expected.DateCreated, actual.DateCreated);
+            Assert.Equal(expected.DateUpdated, actual.DateUpdated);
+        }
+    }
+
+    [Theory]
+    [InlineData(1, 10)]
+
+    public async Task GetAllUsersAsync_ShouldReturnNotFound_AllUsers_WithPagingValues(int page, int pageSize)
+    {
+        // arrange
+
+        _userServiceMock.Setup(x => x.GetAllAsync(page, pageSize)).ReturnsAsync(() => null!);
+
+        // Act
+
+        var res = await _userController.GetAll();
+
+        // Assert
+
+        // disse unpacker res:
+        var actionResult = Assert.IsType<ActionResult<IEnumerable<UserDTO>>>(res); // This checks that res is of type ActionResult<IEnumerable<UserDTO>>.
+        var returnValue = Assert.IsType<NotFoundObjectResult>(actionResult.Result); // This asserts that the Result inside actionResult is of type NotFoundObjectResult.
+        var errorMessage = Assert.IsType<string>(returnValue.Value); // This asserts that the Value inside the OkObjectResult is a List<UserDTO>, AND IT CONTAINS ALL THE DATA.
+        Assert.Equal("Could not find any users", errorMessage);
     }
 }
