@@ -17,7 +17,7 @@ public class UserMapper : IMapper<User, UserDTO>
         {
             FirstName = dto.FirstName,
             LastName = dto.LastName,
-            PhoneNumber = dto.Phonenumber,
+            PhoneNumber = dto.PhoneNumber,
             Email = dto.Email,
         };
     }
