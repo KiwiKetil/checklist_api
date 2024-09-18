@@ -285,6 +285,8 @@ public class UserControllerTests
 
     #region using ClassData V4
 
+    // ikke implementert. Er bare en annen måte å gjøre Theorydata på men med bruks av egen klasse (arv fra IEnumerable<object[]>) for testdata.
+
     #endregion using ClassData V4
 
     #endregion RegisterUserTests
