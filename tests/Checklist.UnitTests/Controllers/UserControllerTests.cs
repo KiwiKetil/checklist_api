@@ -29,7 +29,7 @@ public class UserControllerTests
         _userController = new UserController(_userServiceMock.Object, _loggerMock.Object);
     }
 
-    #region GetAllUsers
+    #region GetAllUsersTests
 
     [Theory]
     [InlineData(1, 10)]
@@ -94,16 +94,19 @@ public class UserControllerTests
         Assert.Equal("Could not find any users", errorMessage);
     }
 
-    #endregion GetAllUsers
+    #endregion GetAllUsersTests
 
-    #region RegisterUser
+    #region RegisterUserTests
+
+    #region using ZIP
 
     //Use approach(with Zip) if:
 
     //The expected UserDTO differs from the UserRegistrationDTO in complex ways.
     //You want to clearly separate the input from the expected output.
 
-    #region med bruk av ZIP
+    // ------------
+
     //public static IEnumerable<object[]> GetUserRegistrationDTOsWithExpectedResults()
     //{
 
@@ -126,14 +129,14 @@ public class UserControllerTests
     //    return registrationDTOs.Zip(expectedUserDTOs, (registrationDTO, expectedUserDTO) => new object[] { registrationDTO, expectedUserDTO });
     //}
 
-    #endregion
+    #endregion using ZIP   
 
-    //Use the second approach (with TheoryData) if:
+    #region using TheoryData V1
+
+    //Use approach with TheoryData if:
 
     //The expected UserDTO is always a direct transformation of the input.
     //You want a more concise and easily maintainable test.
-    
-    #region med bruk av TheoryData V1
 
     public static TheoryData<UserRegistrationDTO, UserDTO> GetUserRegistrationDTOsWithExpectedResults()
     {
@@ -175,9 +178,14 @@ public class UserControllerTests
         Assert.Equal(expectedUserDTO, returnedDTO);
     }
 
-    #endregion med bruk av TheoryData V1
+    #endregion using TheoryData V1
 
-    #region med bruk av TheoryData V2
+    #region using TheoryData V2
+
+    //Use approach with TheoryData if:
+
+    //The expected UserDTO is always a direct transformation of the input.
+    //You want a more concise and easily maintainable test.
 
     public static TheoryData<UserRegistrationDTO> GetUserRegistrationDTOs()
     {
@@ -229,13 +237,55 @@ public class UserControllerTests
         //Assert.Equal(expectedUserDTO.DateCreated, returnedDTO.DateCreated);  
         //Assert.Equal(expectedUserDTO.DateUpdated, returnedDTO.DateUpdated); 
     }
-    #endregion med bruk av TheoryData V2
+    #endregion using TheoryData V2
 
-    #region med bruk av InlineData
+    #region using InlineData V3
 
+    [Theory]
+    [InlineData("Ketil", "Sveberg", "12345678", "Sveberg@gmail.com", "password")]
+    [InlineData("Quyen", "Ho", "42534253", "Quyen99@gmail.com", "password2")]
+    [InlineData("Nico", "Ho", "42534253", "Nico@gmail.com", "password3")]
 
+    public async Task RegisterUserAsync_ShouldReturnOK_AndUserDTOV3(string firstName, string lastName, string phoneNumber, string email, string password)
+    {
+        // Arrange
 
-    #endregion med bruk av InlineData
+        var userRegistrationDTO = new UserRegistrationDTO(firstName, lastName, phoneNumber, email, password);
 
-    #endregion RegisterUser
+        _userServiceMock.Setup(x => x.RegisterUserAsync(userRegistrationDTO))
+                    .ReturnsAsync(new UserDTO(
+                        userRegistrationDTO.FirstName,
+                        userRegistrationDTO.LastName,
+                        userRegistrationDTO.PhoneNumber,
+                        userRegistrationDTO.Email,
+                        DateTime.UtcNow,
+                        DateTime.UtcNow)
+                    );
+
+        // Act
+
+        var res = await _userController.RegisterUser(userRegistrationDTO);
+
+        // Assert
+
+        var actionResult = Assert.IsType<ActionResult<UserDTO>>(res);
+        var returnValue = Assert.IsType<OkObjectResult>(actionResult.Result);
+        var returnedDTO = Assert.IsType<UserDTO>(returnValue.Value);
+
+        Assert.Equal(userRegistrationDTO.FirstName, returnedDTO.FirstName);
+        Assert.Equal(userRegistrationDTO.LastName, returnedDTO.LastName);
+        Assert.Equal(userRegistrationDTO.PhoneNumber, returnedDTO.PhoneNumber);
+        Assert.Equal(userRegistrationDTO.Email, returnedDTO.Email);
+
+        Assert.True(returnedDTO.DateCreated <= DateTime.UtcNow);
+        Assert.True(returnedDTO.DateUpdated <= DateTime.UtcNow);
+    }
+
+    #endregion using InlineData V3
+
+    #region using ClassData V4
+
+    #endregion using ClassData V4
+
+    #endregion RegisterUserTests
 }
