@@ -85,4 +85,23 @@ public class UserControllerTests
         var errorMessage = Assert.IsType<string>(returnValue.Value); // This asserts that the Value inside the OkObjectResult is a List<UserDTO>, AND IT CONTAINS ALL THE DATA.
         Assert.Equal("Could not find any users", errorMessage);
     }
+
+    //[Theory]
+    //[InlineData()]
+    //public async Task RegisterUserAsync_ShouldReturnOk_AndUserDTO(UserRegistrationDTO dto)
+    //{
+    //    // arrange
+    //    var 
+    //    var dto = new UserDTO 
+
+    //    // Act
+
+        
+
+    //    // Assert
+
+    //    // disse unpacker res:
+       
+    //}
+
 }
