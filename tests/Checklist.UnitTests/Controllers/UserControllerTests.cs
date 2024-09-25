@@ -1,4 +1,4 @@
-﻿using Checklist_API.Features.Users.Controller;
+using Checklist_API.Features.Users.Controller;
 using Checklist_API.Features.Users.DTOs;
 using Checklist_API.Features.Users.Service.Interfaces;
 using Microsoft.AspNetCore.Mvc;
@@ -84,7 +84,7 @@ public class UserControllerTests
 
     #endregion GetAllUsersTests
 
-    #region RegisterUserTests 
+    #region RegisterUserTests    
 
     #region using TheoryData V1
 
