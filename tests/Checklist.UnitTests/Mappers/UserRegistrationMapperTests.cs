@@ -1,4 +1,4 @@
-﻿using Checklist_API.Features.Common.Interfaces;
+using Checklist_API.Features.Common.Interfaces;
 using Checklist_API.Features.Users.DTOs;
 using Checklist_API.Features.Users.Entity;
 using Checklist_API.Features.Users.Mappers;
@@ -23,15 +23,15 @@ public class UserRegistrationMapperTests
 
         // Act
 
-        var user = _userRegistrationMapper.MapToEntity(userRegistrationDTO);
+        var user = _userRegistrationMapper.MapToEntity( userRegistrationDTO );
 
-        // Assert|
+        // Assert
 
-        Assert.NotNull(user);
+        Assert.NotNull( user );
         Assert.Equal(user.FirstName, userRegistrationDTO.FirstName);
         Assert.Equal(user.LastName, userRegistrationDTO.LastName);
-        Assert.Equal(user.Email, userRegistrationDTO.Email);
         Assert.Equal(user.PhoneNumber, userRegistrationDTO.PhoneNumber);
+        Assert.Equal(user.Email, userRegistrationDTO.Email);
 
         Assert.True(user.DateCreated > DateTime.Now.AddSeconds(-1) && user.DateCreated <= DateTime.Now, "DateCreated is not set correctly");
         Assert.True(user.DateUpdated > DateTime.Now.AddSeconds(-1) && user.DateUpdated <= DateTime.Now, "DateUpdated is not set correctly");
