@@ -49,7 +49,7 @@ public class UserMapperTests
     }
 
     [Fact]
-    public void MapToUser_WhenMappingUserDTOToUser_ShouldReturnUser()
+    public void MapToEntity_WhenMappingUserDTOToUser_ShouldReturnUser()
     {
         // Arrange
 

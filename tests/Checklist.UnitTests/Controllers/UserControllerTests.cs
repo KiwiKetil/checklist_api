@@ -62,7 +62,6 @@ public class UserControllerTests
 
     [Theory]
     [InlineData(1, 10)]
-
     public async Task GetAllUsersAsync_ShouldReturnNotFound_AllUsers_WithPagingValues(int page, int pageSize)
     {
         // arrange
