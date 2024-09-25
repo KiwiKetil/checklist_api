@@ -15,7 +15,6 @@ public class UserMapperTests
     private readonly IMapper<User, UserDTO> _userMapper = new UserMapper();
 
     [Fact]  
-
     public void MapToDTO_WhenMappingUserToUserDTO_ShouldReturnUserDTO()
     {
         // Arrange

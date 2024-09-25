@@ -1,12 +1,7 @@
-﻿using Checklist_API.Features.Common.Interfaces;
+using Checklist_API.Features.Common.Interfaces;
 using Checklist_API.Features.Users.DTOs;
 using Checklist_API.Features.Users.Entity;
 using Checklist_API.Features.Users.Mappers;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Checklist.UnitTests.Mappers;
 public class UserRegistrationMapperTests
@@ -18,13 +13,12 @@ public class UserRegistrationMapperTests
     {
         // Arrange
 
-        UserRegistrationDTO userRegistrationDTO = new
-            (
+        UserRegistrationDTO userRegistrationDTO = new(
             "Ketil",
             "Sveberg",
             "11112222",
-            "Ketilsveberg@gmail.com",
-            "123456"
+            "ketilsveberg@gmail.com",
+            "123456"          
             );
 
         // Act
