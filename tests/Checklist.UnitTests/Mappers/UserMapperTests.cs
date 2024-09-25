@@ -1,4 +1,4 @@
-﻿using Checklist_API.Features.Common.Interfaces;
+using Checklist_API.Features.Common.Interfaces;
 using Checklist_API.Features.Users.DTOs;
 using Checklist_API.Features.Users.Entity;
 using Checklist_API.Features.Users.Mappers;
@@ -12,20 +12,21 @@ namespace Checklist.UnitTests.Mappers;
 
 public class UserMapperTests
 {
-    private readonly UserMapper _userMapper = new();
+    private readonly IMapper<User, UserDTO> _userMapper = new UserMapper();
 
-    [Fact]
-    public void MapToDTO_WhenMappingUserToUserDTO_ShouldReturnUserDTO() 
+    [Fact]  
+
+    public void MapToDTO_WhenMappingUserToUserDTO_ShouldReturnUserDTO()
     {
         // Arrange
 
-        User user = new()
+        User user = new User()
         {
             Id = UserId.NewId,
             FirstName = "Ketil",
             LastName = "Sveberg",
             PhoneNumber = "11112222",
-            Email = "ketilsveberg@gmail.com",
+            Email = "Ketilsveberg@gmail.com",
             HashedPassword = "$2a$11$6LeztI8J.RjEFt62ctA8a.yyM1V6X3bOEe6Rv5we2iPIe9namsjU6",
             Salt = "$2a$11$9p6QfwD5gdrrg4Mvzf/Mgu",
             DateCreated = new DateTime(2023, 12, 13, 11, 00, 00),
@@ -33,7 +34,7 @@ public class UserMapperTests
         };
 
         // Act
-
+      
         var userDTO = _userMapper.MapToDTO(user);
 
         // Assert

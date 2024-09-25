@@ -1,4 +1,4 @@
-﻿using Checklist_API.Features.Users.Controller;
+using Checklist_API.Features.Users.Controller;
 using Checklist_API.Features.Users.DTOs;
 using Checklist_API.Features.Users.Service.Interfaces;
 using Microsoft.AspNetCore.Mvc;
