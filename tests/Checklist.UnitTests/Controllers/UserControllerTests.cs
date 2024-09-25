@@ -1,21 +1,9 @@
-﻿using Castle.Core.Logging;
-using Checklist_API.Features.Users.Controller;
+﻿using Checklist_API.Features.Users.Controller;
 using Checklist_API.Features.Users.DTOs;
 using Checklist_API.Features.Users.Service.Interfaces;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 using Moq;
-using MySqlX.XDevAPI.Common;
-using Org.BouncyCastle.Crypto;
-using Org.BouncyCastle.Utilities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Numerics;
-using System.Text;
-using System.Threading.Tasks;
-using Xunit;
 
 namespace Checklist.UnitTests.Controllers;
 public class UserControllerTests
@@ -96,40 +84,7 @@ public class UserControllerTests
 
     #endregion GetAllUsersTests
 
-    #region RegisterUserTests
-
-    #region using ZIP
-
-    //Use approach(with Zip) if:
-
-    //The expected UserDTO differs from the UserRegistrationDTO in complex ways.
-    //You want to clearly separate the input from the expected output.
-
-    // ------------
-
-    //public static IEnumerable<object[]> GetUserRegistrationDTOsWithExpectedResults()
-    //{
-
-    //    var dtNow = DateTime.UtcNow;
-
-    //    var registrationDTOs = new List<UserRegistrationDTO>
-    //{
-    //    new("Ketil", "Sveberg", "12345678", "Sveberg@gmail.com", "password"),
-    //    new("Quyen", "Ho", "42534253", "Quyen99@gmail.com", "password2"),
-    //    new("Nico", "Ho", "42534253", "Nico@gmail.com", "password3")
-    //};
-
-    //    var expectedUserDTOs = new List<UserDTO>
-    //{
-    //    new("Ketil", "Sveberg", "12345678", "Sveberg@gmail.com", dtNow, dtNow),
-    //    new("Quyen", "Ho", "42534253", "Quyen99@gmail.com", dtNow, dtNow),
-    //    new("Nico", "Ho", "42534253", "Nico@gmail.com", dtNow, dtNow)
-    //};
-
-    //    return registrationDTOs.Zip(expectedUserDTOs, (registrationDTO, expectedUserDTO) => new object[] { registrationDTO, expectedUserDTO });
-    //}
-
-    #endregion using ZIP   
+    #region RegisterUserTests 
 
     #region using TheoryData V1
 
