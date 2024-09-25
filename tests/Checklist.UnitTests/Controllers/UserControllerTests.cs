@@ -21,6 +21,7 @@ public class UserControllerTests
 
     [Theory]
     [InlineData(1, 10)]
+    [InlineData(1, 5)]
 
     public async Task GetAllUsersAsync_ShouldReturn_AllUsers_WithPagingValues(int page, int pageSize)
     {
@@ -37,7 +38,7 @@ public class UserControllerTests
 
         // Act
 
-        var res = await _userController.GetAll();
+        var res = await _userController.GetAll(page, pageSize);
 
         // Assert
 
@@ -62,6 +63,7 @@ public class UserControllerTests
 
     [Theory]
     [InlineData(1, 10)]
+    [InlineData(1, 5)]
 
     public async Task GetAllUsersAsync_ShouldReturnNotFound_AllUsers_WithPagingValues(int page, int pageSize)
     {
@@ -71,7 +73,7 @@ public class UserControllerTests
 
         // Act
 
-        var res = await _userController.GetAll();
+        var res = await _userController.GetAll(page, pageSize);
 
         // Assert
 

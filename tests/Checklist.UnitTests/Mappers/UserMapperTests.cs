@@ -15,7 +15,6 @@ public class UserMapperTests
     private readonly IMapper<User, UserDTO> _userMapper = new UserMapper();
 
     [Fact]  
-
     public void MapToDTO_WhenMappingUserToUserDTO_ShouldReturnUserDTO()
     {
         // Arrange
@@ -49,7 +48,7 @@ public class UserMapperTests
     }
 
     [Fact]
-    public void MapToUser_WhenMappingUserDTOToUser_ShouldReturnUser()
+    public void MapToEntity_WhenMappingUserDTOToUser_ShouldReturnUser()
     {
         // Arrange
 
