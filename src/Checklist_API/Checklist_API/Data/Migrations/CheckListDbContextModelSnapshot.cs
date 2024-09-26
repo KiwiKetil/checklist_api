@@ -17,7 +17,7 @@ namespace Checklist_API.Data.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.2")
+                .HasAnnotation("ProductVersion", "8.0.8")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
             MySqlModelBuilderExtensions.AutoIncrementColumns(modelBuilder);
@@ -81,30 +81,28 @@ namespace Checklist_API.Data.Migrations
                     b.ToTable("CheckList");
                 });
 
-            modelBuilder.Entity("Checklist_API.Features.Login.Entity.JWTRole", b =>
+            modelBuilder.Entity("Checklist_API.Features.JWT.Entity.JWTRole", b =>
                 {
-                    b.Property<Guid>("Id")
-                        .HasColumnType("char(36)");
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
 
-                    b.Property<DateTime>("DateCreated")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<DateTime>("DateUpdated")
-                        .HasColumnType("datetime(6)");
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("RoleName")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasMaxLength(20)
+                        .HasColumnType("varchar(20)");
 
                     b.HasKey("Id");
 
                     b.ToTable("JWTRole");
                 });
 
-            modelBuilder.Entity("Checklist_API.Features.Login.Entity.JWTUserRole", b =>
+            modelBuilder.Entity("Checklist_API.Features.JWT.Entity.JWTUserRole", b =>
                 {
-                    b.Property<Guid>("Id")
-                        .HasColumnType("char(36)");
+                    b.Property<int>("JwtRoleId")
+                        .HasColumnType("int");
 
                     b.Property<DateTime>("DateCreated")
                         .HasColumnType("datetime(6)");
@@ -112,22 +110,17 @@ namespace Checklist_API.Data.Migrations
                     b.Property<DateTime>("DateUpdated")
                         .HasColumnType("datetime(6)");
 
-                    b.Property<Guid>("JwtRoleId")
-                        .HasColumnType("char(36)");
-
                     b.Property<Guid>("UserId")
                         .HasColumnType("char(36)");
 
-                    b.HasKey("Id");
-
-                    b.HasIndex("JwtRoleId");
+                    b.HasKey("JwtRoleId");
 
                     b.HasIndex("UserId");
 
                     b.ToTable("JWTUserRole");
                 });
 
-            modelBuilder.Entity("Checklist_API.Features.User.Entity.User", b =>
+            modelBuilder.Entity("Checklist_API.Features.Users.Entity.User", b =>
                 {
                     b.Property<Guid>("Id")
                         .HasColumnType("char(36)");
@@ -173,7 +166,7 @@ namespace Checklist_API.Data.Migrations
 
             modelBuilder.Entity("Checklist_API.Features.Checklists.Entity.CheckList", b =>
                 {
-                    b.HasOne("Checklist_API.Features.User.Entity.User", "User")
+                    b.HasOne("Checklist_API.Features.Users.Entity.User", "User")
                         .WithMany("Checklists")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -182,15 +175,15 @@ namespace Checklist_API.Data.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Checklist_API.Features.Login.Entity.JWTUserRole", b =>
+            modelBuilder.Entity("Checklist_API.Features.JWT.Entity.JWTUserRole", b =>
                 {
-                    b.HasOne("Checklist_API.Features.Login.Entity.JWTRole", "JWTRole")
+                    b.HasOne("Checklist_API.Features.JWT.Entity.JWTRole", "JWTRole")
                         .WithMany("JWTUserRoles")
                         .HasForeignKey("JwtRoleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Checklist_API.Features.User.Entity.User", "User")
+                    b.HasOne("Checklist_API.Features.Users.Entity.User", "User")
                         .WithMany("JWTUserRoles")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -201,12 +194,12 @@ namespace Checklist_API.Data.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Checklist_API.Features.Login.Entity.JWTRole", b =>
+            modelBuilder.Entity("Checklist_API.Features.JWT.Entity.JWTRole", b =>
                 {
                     b.Navigation("JWTUserRoles");
                 });
 
-            modelBuilder.Entity("Checklist_API.Features.User.Entity.User", b =>
+            modelBuilder.Entity("Checklist_API.Features.Users.Entity.User", b =>
                 {
                     b.Navigation("Checklists");
 

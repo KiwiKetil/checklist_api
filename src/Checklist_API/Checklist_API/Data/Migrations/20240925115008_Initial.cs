@@ -1,4 +1,5 @@
 ﻿using System;
+using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
@@ -6,7 +7,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Checklist_API.Data.Migrations
 {
     /// <inheritdoc />
-    public partial class Checklist : Migration
+    public partial class Initial : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -18,11 +19,10 @@ namespace Checklist_API.Data.Migrations
                 name: "JWTRole",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
-                    RoleName = table.Column<string>(type: "longtext", nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    DateCreated = table.Column<DateTime>(type: "datetime(6)", nullable: false),
-                    DateUpdated = table.Column<DateTime>(type: "datetime(6)", nullable: false)
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    RoleName = table.Column<string>(type: "varchar(20)", maxLength: 20, nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4")
                 },
                 constraints: table =>
                 {
@@ -95,15 +95,14 @@ namespace Checklist_API.Data.Migrations
                 name: "JWTUserRole",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
+                    JwtRoleId = table.Column<int>(type: "int", nullable: false),
                     UserId = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
-                    JwtRoleId = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
                     DateCreated = table.Column<DateTime>(type: "datetime(6)", nullable: false),
                     DateUpdated = table.Column<DateTime>(type: "datetime(6)", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_JWTUserRole", x => x.Id);
+                    table.PrimaryKey("PK_JWTUserRole", x => x.JwtRoleId);
                     table.ForeignKey(
                         name: "FK_JWTUserRole_JWTRole_JwtRoleId",
                         column: x => x.JwtRoleId,
@@ -123,11 +122,6 @@ namespace Checklist_API.Data.Migrations
                 name: "IX_CheckList_UserId",
                 table: "CheckList",
                 column: "UserId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_JWTUserRole_JwtRoleId",
-                table: "JWTUserRole",
-                column: "JwtRoleId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_JWTUserRole_UserId",
