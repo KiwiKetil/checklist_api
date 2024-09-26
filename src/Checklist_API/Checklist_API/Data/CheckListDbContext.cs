@@ -20,6 +20,14 @@ public class CheckListDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        // Mulig fix for capital letter issue tables when using docker:
+
+        //modelBuilder.Entity<CheckList>().ToTable("checklist");
+        //modelBuilder.Entity<User>().ToTable("user");
+        //modelBuilder.Entity<JWTRole>().ToTable("jwtrole");
+        //modelBuilder.Entity<JWTUserRole>().ToTable("jwtuserrole");
+
+        base.OnModelCreating(modelBuilder);
         base.OnModelCreating(modelBuilder);
 
         #region CheckList
@@ -38,58 +46,58 @@ public class CheckListDbContext : DbContext
                value => new UserId(value)
          );
 
-        modelBuilder.Entity<CheckList>()  // set up primary key
+        modelBuilder.Entity<CheckList>() 
             .HasKey(x => x.Id);
 
-        modelBuilder.Entity<CheckList>() // setter opp relationship og foreignkey
-            .HasOne(x => x.User)
-            .WithMany(x => x.Checklists)
-            .HasForeignKey(u => u.UserId);
+        modelBuilder.Entity<CheckList>() 
+            .HasOne(c => c.User)
+            .WithMany(u => u.Checklists)
+            .HasForeignKey(c => c.UserId);
 
-        modelBuilder.Entity<CheckList>() // validering med FluentAPI
+        modelBuilder.Entity<CheckList>() 
             .Property(x => x.Title)
             .IsRequired()
             .HasMaxLength(100);
 
-        modelBuilder.Entity<CheckList>() // validering med FluentAPI
+        modelBuilder.Entity<CheckList>() 
             .Property(x => x.Description)
             .IsRequired()
             .HasMaxLength(100);
 
-        modelBuilder.Entity<CheckList>() // validering med FluentAPI
+        modelBuilder.Entity<CheckList>() 
             .Property(x => x.Status)
             .IsRequired()
             .HasMaxLength(100);
 
-        modelBuilder.Entity<CheckList>() // validering med FluentAPI
+        modelBuilder.Entity<CheckList>() 
             .Property(x => x.Priority)
             .IsRequired()
             .HasMaxLength(100);
 
-        modelBuilder.Entity<CheckList>() // validering med FluentAPI
+        modelBuilder.Entity<CheckList>() 
             .Property(x => x.AssignedTo)
             .IsRequired()
             .HasMaxLength(100);
 
-        modelBuilder.Entity<CheckList>() // validering med FluentAPI
+        modelBuilder.Entity<CheckList>() 
             .Property(x => x.Comments)
             .IsRequired()
             .HasMaxLength(100);
 
-        modelBuilder.Entity<CheckList>() // validering med FluentAPI
+        modelBuilder.Entity<CheckList>() 
             .Property(x => x.DueDate)
             .IsRequired();
 
 
-        modelBuilder.Entity<CheckList>() // validering med FluentAPI
+        modelBuilder.Entity<CheckList>() 
             .Property(x => x.DateCreated)
             .IsRequired();
 
-        modelBuilder.Entity<CheckList>() // validering med FluentAPI
+        modelBuilder.Entity<CheckList>() 
             .Property(x => x.DateUpdated)
             .IsRequired(); 
         
-        modelBuilder.Entity<CheckList>() // validering med FluentAPI
+        modelBuilder.Entity<CheckList>() 
             .Property(x => x.DateCompleted)
             .IsRequired();
 
@@ -110,8 +118,13 @@ public class CheckListDbContext : DbContext
 
         modelBuilder.Entity<User>()
            .HasMany(u => u.Checklists)
-           .WithOne(c => c.User);
-        // .HasForeignKey(u => u.UserId);
+           .WithOne(c => c.User)
+           .HasForeignKey(c => c.UserId);
+
+        modelBuilder.Entity<User>()
+           .HasMany(u => u.JWTUserRoles)
+           .WithOne(ur => ur.User)
+           .HasForeignKey(ur => ur.UserId);
 
         modelBuilder.Entity<User>()
             .Property(x => x.FirstName)
@@ -149,64 +162,36 @@ public class CheckListDbContext : DbContext
             .Property(x => x.DateUpdated)
             .IsRequired();
 
-
         #endregion
 
-        #region JWTRole
-
-        modelBuilder.Entity<JWTRole>()
-          .Property(x => x.Id)
-          .HasConversion(
-              id => id.jwtRoleId,
-              value => new JwtRoleId(value)
-          );
+        #region JWTRole       
 
         modelBuilder.Entity<JWTRole>()
             .HasKey(x => x.Id);
 
         modelBuilder.Entity<JWTRole>()
             .HasMany(x => x.JWTUserRoles)
-            .WithOne(x => x.JWTRole);
+            .WithOne(x => x.JWTRole)
+            .HasForeignKey(j => j.JwtRoleId);
 
         modelBuilder.Entity<JWTRole>()
             .Property(x => x.RoleName)
             .HasMaxLength(20)
             .IsRequired();
 
-        modelBuilder.Entity<JWTRole>()
-           .Property(x => x.DateCreated)
-           .IsRequired();
-
-        modelBuilder.Entity<JWTRole>()
-            .Property(x => x.DateUpdated)
-            .IsRequired();
-
         #endregion
 
-        #region JWTUserRole
+        #region JWTUserRole      
 
         modelBuilder.Entity<JWTUserRole>()
-          .Property(x => x.Id)
-          .HasConversion(
-              id => id.jwtUserRoleId,
-              value => new JwtUserRoleId(value)
-          );
+         .Property(x => x.UserId)
+         .HasConversion(
+               id => id.userId,
+               value => new UserId(value)
+         );
 
         modelBuilder.Entity<JWTUserRole>()
-       .Property(x => x.UserId)
-       .HasConversion(
-           id => id.userId,
-           value => new UserId(value)
-          );
-
-        modelBuilder.Entity<JWTUserRole>()
-        .Property(x => x.JwtRoleId)
-        .HasConversion(
-            id => id.jwtRoleId,
-            value => new JwtRoleId(value));
-
-        modelBuilder.Entity<JWTUserRole>()
-         .HasKey(x => x.Id);
+         .HasKey(ur => new { ur.JwtRoleId, ur.UserId }); // Composite key
 
         modelBuilder.Entity<JWTUserRole>()
          .HasOne(j => j.JWTRole)

@@ -1,4 +1,5 @@
 ﻿using Check_List_API.Data;
+using Checklist_API.Features.JWT.Entity;
 using Checklist_API.Features.Users.Entity;
 using Checklist_API.Features.Users.Repository.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -45,11 +46,23 @@ public class UserRepository : IUserRepository
     {
         throw new NotImplementedException();
     }
+
     public async Task<User?> RegisterAsync(User user)
     {
         _logger.LogDebug("Adding user: {user} to db", user.Email);
 
         var res = await _dbContext.User.AddAsync(user);
+
+        JWTUserRole roleAssignment = new()
+        {
+            JwtRoleId = 1,
+            UserId = user.Id,            
+            DateCreated = DateTime.Now,
+            DateUpdated = DateTime.Now
+        }; // kjør jævla db migration pga endret mye.. // husk hellocontroller........
+
+        await _dbContext.JWTUserRole.AddAsync(roleAssignment);
+
         await _dbContext.SaveChangesAsync();
 
         return res.Entity;
