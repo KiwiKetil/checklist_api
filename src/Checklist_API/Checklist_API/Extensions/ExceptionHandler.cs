@@ -20,7 +20,7 @@ public class ExceptionHandler
 
         var (statusCode, title) = ex switch
         {
-            UserAlreadyExistsException => (StatusCodes.Status409Conflict, "User already exists"),
+            UserAlreadyExistsException => (StatusCodes.Status409Conflict, ex.Message),
             _ => (StatusCodes.Status500InternalServerError, "An unexpected error occurred")
         };
 
