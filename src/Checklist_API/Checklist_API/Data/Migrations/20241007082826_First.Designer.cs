@@ -9,11 +9,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace Checklist_API.Data.Migrations
+namespace Checklist_API.data.migrations
 {
     [DbContext(typeof(CheckListDbContext))]
-    [Migration("20240925115008_Initial")]
-    partial class Initial
+    [Migration("20241007082826_First")]
+    partial class First
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -86,26 +86,32 @@ namespace Checklist_API.Data.Migrations
 
             modelBuilder.Entity("Checklist_API.Features.JWT.Entity.JWTRole", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
-
                     b.Property<string>("RoleName")
-                        .IsRequired()
                         .HasMaxLength(20)
                         .HasColumnType("varchar(20)");
 
-                    b.HasKey("Id");
+                    b.HasKey("RoleName");
 
                     b.ToTable("JWTRole");
+
+                    b.HasData(
+                        new
+                        {
+                            RoleName = "Admin"
+                        },
+                        new
+                        {
+                            RoleName = "User"
+                        });
                 });
 
             modelBuilder.Entity("Checklist_API.Features.JWT.Entity.JWTUserRole", b =>
                 {
-                    b.Property<int>("JwtRoleId")
-                        .HasColumnType("int");
+                    b.Property<string>("RoleName")
+                        .HasColumnType("varchar(20)");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("char(36)");
 
                     b.Property<DateTime>("DateCreated")
                         .HasColumnType("datetime(6)");
@@ -113,10 +119,7 @@ namespace Checklist_API.Data.Migrations
                     b.Property<DateTime>("DateUpdated")
                         .HasColumnType("datetime(6)");
 
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("char(36)");
-
-                    b.HasKey("JwtRoleId");
+                    b.HasKey("RoleName", "UserId");
 
                     b.HasIndex("UserId");
 
@@ -182,7 +185,7 @@ namespace Checklist_API.Data.Migrations
                 {
                     b.HasOne("Checklist_API.Features.JWT.Entity.JWTRole", "JWTRole")
                         .WithMany("JWTUserRoles")
-                        .HasForeignKey("JwtRoleId")
+                        .HasForeignKey("RoleName")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
