@@ -1,6 +1,5 @@
 ﻿using Check_List_API.Data;
 using Checklist_API.Features.Login.DTOs;
-using Checklist_API.Features.Users.DTOs;
 using Checklist_API.Features.Users.Entity;
 using Microsoft.EntityFrameworkCore;
 
