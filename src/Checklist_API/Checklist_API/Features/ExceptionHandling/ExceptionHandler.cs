@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using static Checklist_API.Extensions.CustomExceptions;
+using static Checklist_API.Features.ExceptionHandling.CustomExceptions;
 
-namespace Checklist_API.Extensions;
+namespace Checklist_API.Features.ExceptionHandling;
 
 public class ExceptionHandler
 {
