@@ -19,7 +19,7 @@ public class LoginController(AuthenticationService authService, TokenGenerator t
     [AllowAnonymous]
     // POST https://localhost:7070/api/v1/login
     [HttpPost]
-    public async Task<IActionResult> Login([FromBody] LoginDTO loginDTO) // spør gpt om ok Task her
+    public async Task<IActionResult> Login([FromBody] LoginDTO loginDTO) 
     {
         _logger.LogInformation("User logging in: {username}", loginDTO.UserName);
 
