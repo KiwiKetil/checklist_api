@@ -47,7 +47,8 @@ builder.Services.AddDbContext<CheckListDbContext>(options =>
     new MySqlServerVersion(new Version(8, 0)))
     );
 
-builder.Services.AddScoped<GlobalExceptionMiddleware>(); // samle senere: public static IServiceCollection ConfigureServices(this IServiceCollection services, IConfiguration configuration)
+builder.Services.AddAuthorization();
+builder.Services.AddScoped<GlobalExceptionMiddleware>(); // samle disse senere: public static IServiceCollection ConfigureServices(this IServiceCollection services, IConfiguration configuration)
 builder.Services.AddSingleton<ExceptionHandler>();
 builder.Services.AddScoped<AuthenticationService>();
 builder.Services.AddScoped<TokenGenerator>();
@@ -72,6 +73,7 @@ app.UseHttpsRedirection();
 
 app.UseMiddleware<GlobalExceptionMiddleware>();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();

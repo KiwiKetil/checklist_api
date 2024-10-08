@@ -36,9 +36,6 @@
     <Folder Include="Docker\Nginx\" />
     <Folder Include="Features\CheckList\Mappers\" />
     <Folder Include="Features\CheckList\DTOs\" />
-    <Folder Include="Features\Login\Mappers\" />
-    <Folder Include="Features\Login\Service\" />
-    <Folder Include="Features\Login\Repository\" />
   </ItemGroup>
 
 </Project>

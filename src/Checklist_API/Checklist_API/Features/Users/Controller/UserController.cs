@@ -3,6 +3,7 @@ using Checklist_API.Features.Users.Service.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using System.Security.Claims;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -49,6 +50,8 @@ public class UserController : ControllerBase
     [HttpPut("{id}")]
     public void Put(int id, [FromBody] string value)
     {
+        //var userId = User.FindFirst("UserId")?.Value; // brukes for å sjekke at en bruker kun kan endre sine gne checklists
+
     }
 
     // DELETE api/<UserController>/5
