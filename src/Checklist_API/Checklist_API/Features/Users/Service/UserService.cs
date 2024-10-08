@@ -1,11 +1,10 @@
-﻿using Checklist_API.Extensions;
-using Checklist_API.Features.Common.Interfaces;
+﻿using Checklist_API.Features.Common.Interfaces;
 using Checklist_API.Features.Users.DTOs;
 using Checklist_API.Features.Users.Entity;
 using Checklist_API.Features.Users.Mappers;
 using Checklist_API.Features.Users.Repository.Interfaces;
 using Checklist_API.Features.Users.Service.Interfaces;
-using static Checklist_API.Extensions.CustomExceptions;
+using static Checklist_API.Features.ExceptionHandling.CustomExceptions;
 
 namespace Checklist_API.Features.Users.Service;
 

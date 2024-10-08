@@ -1,5 +1,5 @@
-﻿using Checklist_API.Extensions;
-using static Checklist_API.Extensions.CustomExceptions;
+﻿using Checklist_API.Features.ExceptionHandling;
+using static Checklist_API.Features.ExceptionHandling.CustomExceptions;
 
 namespace Checklist_API.Middleware;
 public class GlobalExceptionMiddleware : IMiddleware

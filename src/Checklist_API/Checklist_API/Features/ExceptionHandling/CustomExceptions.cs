@@ -1,4 +1,4 @@
-﻿namespace Checklist_API.Extensions;
+﻿namespace Checklist_API.Features.ExceptionHandling;
 
 public static class CustomExceptions
 {
