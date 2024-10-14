@@ -2,15 +2,17 @@ using Checklist_API.Features.Users.Controller;
 using Checklist_API.Features.Users.DTOs;
 using Checklist_API.Features.Users.Service.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 using Moq;
+using System.Drawing.Printing;
 
 namespace Checklist.UnitTests.Controllers;
 public class UserControllerTests
 {
     private readonly UserController _userController;
-    private readonly Mock<IUserService> _userServiceMock = new Mock<IUserService>();
-    private readonly Mock<ILogger<UserController>> _loggerMock = new Mock<ILogger<UserController>>();
+    private readonly Mock<IUserService> _userServiceMock = new();
+    private readonly Mock<ILogger<UserController>> _loggerMock = new();
 
     public UserControllerTests()
     {
@@ -58,6 +60,8 @@ public class UserControllerTests
             Assert.Equal(expected.DateCreated, actual.DateCreated);
             Assert.Equal(expected.DateUpdated, actual.DateUpdated);
         }
+
+        _userServiceMock.Verify(x => x.GetAllAsync(page, pageSize), Times.Once);
     }
 
 
@@ -82,6 +86,8 @@ public class UserControllerTests
         var returnValue = Assert.IsType<NotFoundObjectResult>(actionResult.Result); // This asserts that the Result inside actionResult is of type NotFoundObjectResult.
         var errorMessage = Assert.IsType<string>(returnValue.Value); // This asserts that the Value inside the OkObjectResult is a List<UserDTO>, AND IT CONTAINS ALL THE DATA.
         Assert.Equal("Could not find any users", errorMessage);
+
+        _userServiceMock.Verify(x => x.GetAllAsync(page, pageSize), Times.Once);
     }
 
     #endregion GetAllUsersTests
@@ -131,8 +137,9 @@ public class UserControllerTests
         var actionResult = Assert.IsType<ActionResult<UserDTO>>(result);
         var returnValue = Assert.IsType<OkObjectResult>(actionResult.Result);
         var returnedDTO = Assert.IsType<UserDTO>(returnValue.Value);
-
         Assert.Equal(expectedUserDTO, returnedDTO);
+
+        _userServiceMock.Verify(x => x.RegisterUserAsync(dto), Times.Once);
     }
 
     #endregion using TheoryData V1
@@ -153,7 +160,6 @@ public class UserControllerTests
         new("Nico", "Ho", "42534253", "Nico@gmail.com", "password3")
         };
     }
-
 
     [Theory]
     [MemberData(nameof(GetUserRegistrationDTOs))] // warning i tilfelle ikke er serializable: ikke primitive datatyper i DTO.
@@ -185,14 +191,7 @@ public class UserControllerTests
         var returnedDTO = Assert.IsType<UserDTO>(returnValue.Value);
         Assert.Equal(expectedUserDTO, returnedDTO);
 
-        // disse trengs ikke da vi samenlikner hele objectet her:Assert.Equal(expectedUserDTO, returnedDTO); Velg hvilken man vil bruke:
-
-        //Assert.Equal(expectedUserDTO.FirstName, returnedDTO.FirstName);
-        //Assert.Equal(expectedUserDTO.LastName, returnedDTO.LastName);
-        //Assert.Equal(expectedUserDTO.PhoneNumber, returnedDTO.PhoneNumber);
-        //Assert.Equal(expectedUserDTO.Email, returnedDTO.Email);
-        //Assert.Equal(expectedUserDTO.DateCreated, returnedDTO.DateCreated);  
-        //Assert.Equal(expectedUserDTO.DateUpdated, returnedDTO.DateUpdated); 
+        _userServiceMock.Verify(x => x.RegisterUserAsync(dto), Times.Once);
     }
     #endregion using TheoryData V2
 
@@ -236,6 +235,8 @@ public class UserControllerTests
 
         Assert.True(returnedDTO.DateCreated <= DateTime.UtcNow);
         Assert.True(returnedDTO.DateUpdated <= DateTime.UtcNow);
+
+        _userServiceMock.Verify(x => x.RegisterUserAsync(userRegistrationDTO), Times.Once);
     }
 
     #endregion using InlineData V3

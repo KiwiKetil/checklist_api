@@ -1,14 +1,15 @@
 ﻿using Check_List_API.Data;
+using Checklist_API.Features.JWT.Features.Interfaces;
 using Checklist_API.Features.Login.DTOs;
 using Checklist_API.Features.Users.Entity;
 using Microsoft.EntityFrameworkCore;
 
 namespace Checklist_API.Features.JWT.Features;
 
-public class AuthenticationService(CheckListDbContext dbContext, ILogger<AuthenticationService> logger)
+public class UserAuthenticationService(CheckListDbContext dbContext, ILogger<UserAuthenticationService> logger) : IUserAuthenticationService
 {
     private readonly CheckListDbContext _dbContext = dbContext;
-    private readonly ILogger<AuthenticationService> _logger = logger;
+    private readonly ILogger<UserAuthenticationService> _logger = logger;
 
 
     public async Task<User?> AuthenticateUserAsync(LoginDTO loginDTO) 
