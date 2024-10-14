@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using Checklist_API.Features.JWT.Features.Interfaces;
 
 namespace Checklist_API.Extensions;
 
@@ -47,8 +48,8 @@ public static class ServiceCollectionExtensions
 
         services.AddScoped<GlobalExceptionMiddleware>();
         services.AddSingleton<ExceptionHandler>();
-        services.AddScoped<AuthenticationService>();
-        services.AddScoped<TokenGenerator>();
+        services.AddScoped<IUserAuthenticationService, UserAuthenticationService>();
+        services.AddScoped<ITokenGenerator, TokenGenerator>();
 
         return services;
     }
