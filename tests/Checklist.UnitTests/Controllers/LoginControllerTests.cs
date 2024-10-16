@@ -15,16 +15,13 @@ namespace Checklist.UnitTests.Controllers
     public class LoginControllerTests
     {
         private readonly LoginController _loginController;
-        private readonly Mock<IUserAuthenticationService> _authServiceMock; 
-        private readonly Mock<ITokenGenerator> _tokenGeneratorMock; 
+        private readonly Mock<IUserAuthenticationService> _authServiceMock = new(); 
+        private readonly Mock<ITokenGenerator> _tokenGeneratorMock = new();
+        private readonly Mock<ILogger<LoginController>> _controllerLoggerMock = new();
 
         public LoginControllerTests()
         {
-            var controllerLoggerMock = new Mock<ILogger<LoginController>>();
-
-            _authServiceMock = new Mock<IUserAuthenticationService>();
-            _tokenGeneratorMock = new Mock<ITokenGenerator>();
-            _loginController = new LoginController(_authServiceMock.Object, _tokenGeneratorMock.Object, controllerLoggerMock.Object);
+            _loginController = new LoginController(_authServiceMock.Object, _tokenGeneratorMock.Object, _controllerLoggerMock.Object);
         }
 
         [Fact]
