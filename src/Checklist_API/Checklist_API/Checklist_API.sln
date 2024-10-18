@@ -9,7 +9,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{450F1A37-6A4
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{FD4981FF-1BEF-4DAF-9BFA-ED74E112A765}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Checklist.UnitTests", "..\..\..\tests\Checklist.UnitTests\Checklist.UnitTests.csproj", "{9A0DE7A2-F6AD-4723-95C7-91A8D513E0CF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Checklist.UnitTests", "..\..\..\tests\Checklist.UnitTests\Checklist.UnitTests.csproj", "{9A0DE7A2-F6AD-4723-95C7-91A8D513E0CF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

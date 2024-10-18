@@ -9,6 +9,7 @@ using Xunit;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication;
 using Checklist_API.Features.JWT.Features.Interfaces;
+using System.Security.Principal;
 
 namespace Checklist.UnitTests.Controllers
 {
@@ -24,22 +25,28 @@ namespace Checklist.UnitTests.Controllers
             _loginController = new LoginController(_authServiceMock.Object, _tokenGeneratorMock.Object, _controllerLoggerMock.Object);
         }
 
+        #region SuccessfulLogin
+
         [Fact]
         public async Task Login_WhenSuccess_ShouldReturnJwtToken()
         {
             // Arrange
+
             var loginDTO = new LoginDTO { UserName = "ketilSveberg#", Password = "S1eberg#" };
             var user = new User { Id = UserId.NewId, FirstName = "Ketil", LastName = "Sveberg", Email = "ketilsveberg@gmail.com", HashedPassword = "hashedPassword" };
             var tokenString = "diddydidit";
 
             // Set up mocks to return expected values
+
             _authServiceMock.Setup(x => x.AuthenticateUserAsync(loginDTO)).ReturnsAsync(user);
             _tokenGeneratorMock.Setup(x => x.GenerateJSONWebTokenAsync(user)).ReturnsAsync(tokenString);
 
             // Act
+
             var result = await _loginController.Login(loginDTO);
 
             // Assert
+
             Assert.NotNull(result);
             Assert.IsType<OkObjectResult>(result);
             var okResult = result as OkObjectResult;
@@ -51,5 +58,38 @@ namespace Checklist.UnitTests.Controllers
             _authServiceMock.Verify(x => x.AuthenticateUserAsync(loginDTO), Times.Once);
             _tokenGeneratorMock.Verify(x => x.GenerateJSONWebTokenAsync(user), Times.Once);
         }
+
+        #endregion SuccessfulLogin
+
+        #region InvalidPasswordLoginFail
+
+        [Fact]
+        public async Task Login_WhenUsingInvalidPassword_ShouldNotReturnToken()
+        {
+            // Arrange
+
+            var InvalidloginDTO = new LoginDTO { UserName = "ketilSveberg#", Password = "S1eberg#" };
+            User? user = null;
+            TokenResponse InvalidToken = new TokenResponse { Token = "abcde" };
+
+            _authServiceMock.Setup(x => x.AuthenticateUserAsync(InvalidloginDTO)).ReturnsAsync(user);
+
+            // Act
+
+            var result = await _loginController.Login(InvalidloginDTO);
+
+            //Assert
+
+            Assert.NotNull(result);
+            Assert.IsType<UnauthorizedObjectResult>(result);
+            var unauthorizedResult = result as UnauthorizedObjectResult;
+            Assert.Equal("Not Authorized", unauthorizedResult!.Value); 
+
+            _authServiceMock.Verify(x => x.AuthenticateUserAsync(InvalidloginDTO), Times.Once);
+            _tokenGeneratorMock.Verify(x => x.GenerateJSONWebTokenAsync(It.IsAny<User>()), Times.Never);
+        }
+
+        #endregion InvalidPasswordLoginFail
+
     }
 }
