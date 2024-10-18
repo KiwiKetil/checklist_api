@@ -25,7 +25,7 @@ public class UserControllerTests
     [InlineData(1, 10)]
     [InlineData(1, 5)]
 
-    public async Task GetAllUsersAsync_ShouldReturn_AllUsers_WithPagingValues(int page, int pageSize)
+    public async Task GetAllUsersAsync_WithPagingValues_ShouldReturnOKAndAllUsers(int page, int pageSize)
     {
         // arrange
 
@@ -69,7 +69,7 @@ public class UserControllerTests
     [InlineData(1, 10)]
     [InlineData(1, 5)]
 
-    public async Task GetAllUsersAsync_ShouldReturnNotFound_AllUsers_WithPagingValues(int page, int pageSize)
+    public async Task GetAllUsersAsync_WithPagingValues_ShouldReturnNotFound(int page, int pageSize)
     {
         // arrange
 
@@ -123,17 +123,20 @@ public class UserControllerTests
     }
 
     [Theory]
-    [MemberData(nameof(GetUserRegistrationDTOsWithExpectedResults))] // kunne brukt ClassDtaa or InlineData for p ikke ha warning, lar være her pga DTOs er serializable
+    [MemberData(nameof(GetUserRegistrationDTOsWithExpectedResults))] // kunne brukt ClassDtaa or InlineData for å ikke ha warning, lar være her pga DTOs er serializable
 
-    public async Task RegisterUserAsync_ShouldReturnOK_AndUserDTO(UserRegistrationDTO dto, UserDTO expectedUserDTO)
+    public async Task RegisterUserAsync_RegisterUser_ShouldReturnOKAndUserDTO(UserRegistrationDTO dto, UserDTO expectedUserDTO)
     {
         // Arrange
+
         _userServiceMock.Setup(x => x.RegisterUserAsync(dto)).ReturnsAsync(expectedUserDTO);
 
         // Act
+
         var result = await _userController.RegisterUser(dto);
 
         // Assert
+
         var actionResult = Assert.IsType<ActionResult<UserDTO>>(result);
         var returnValue = Assert.IsType<OkObjectResult>(actionResult.Result);
         var returnedDTO = Assert.IsType<UserDTO>(returnValue.Value);
@@ -164,7 +167,7 @@ public class UserControllerTests
     [Theory]
     [MemberData(nameof(GetUserRegistrationDTOs))] // warning i tilfelle ikke er serializable: ikke primitive datatyper i DTO.
  
-    public async Task RegisterUserAsync_ShouldReturnOK_AndUserDTOV2(UserRegistrationDTO dto)
+    public async Task RegisterUserAsync_RegisterUser_ShouldReturnOKAndUserDTOV2(UserRegistrationDTO dto)
     {
         // arrange
 
@@ -202,7 +205,7 @@ public class UserControllerTests
     [InlineData("Quyen", "Ho", "42534253", "Quyen99@gmail.com", "password2")]
     [InlineData("Nico", "Ho", "42534253", "Nico@gmail.com", "password3")]
 
-    public async Task RegisterUserAsync_ShouldReturnOK_AndUserDTOV3(string firstName, string lastName, string phoneNumber, string email, string password)
+    public async Task RegisterUserAsync_RegisterUser_ShouldReturnOKAndUserDTOV3(string firstName, string lastName, string phoneNumber, string email, string password)
     {
         // Arrange
 
