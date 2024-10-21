@@ -48,7 +48,7 @@ public class UserRepository(CheckListDbContext dbContext, ILogger<UserRepository
 
         var res = await _dbContext.User.AddAsync(user);
 
-        JWTUserRole roleAssignment = new()
+        UserRole roleAssignment = new()
         {
             RoleName = "User",
             UserId = user.Id,            
@@ -56,7 +56,7 @@ public class UserRepository(CheckListDbContext dbContext, ILogger<UserRepository
             DateUpdated = DateTime.Now
         }; 
 
-        await _dbContext.JWTUserRole.AddAsync(roleAssignment);
+        await _dbContext.UserRole.AddAsync(roleAssignment);
         await _dbContext.SaveChangesAsync();
 
         return res.Entity;

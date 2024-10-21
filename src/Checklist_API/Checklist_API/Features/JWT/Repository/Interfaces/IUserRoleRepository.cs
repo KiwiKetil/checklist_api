@@ -5,5 +5,5 @@ namespace Checklist_API.Features.JWT.Repository.Interfaces;
 
 public interface IUserRoleRepository
 {
-    Task<IEnumerable<JWTUserRole>> GetUserRolesAsync(UserId id);
+    Task<IEnumerable<UserRole>> GetUserRolesAsync(UserId id);
 }

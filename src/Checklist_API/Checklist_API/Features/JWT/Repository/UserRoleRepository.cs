@@ -11,11 +11,11 @@ public class UserRoleRepository(CheckListDbContext dbContext, ILogger<UserRoleRe
     private readonly CheckListDbContext _dbContext = dbContext;
     private readonly ILogger<UserRoleRepository> _logger = logger;   
 
-    public async Task<IEnumerable<JWTUserRole>> GetUserRolesAsync(UserId id)
+    public async Task<IEnumerable<UserRole>> GetUserRolesAsync(UserId id)
     {
         _logger.LogInformation("Retrieving roles for user with ID: {UserId}", id);
 
-        var userRoles = await _dbContext.JWTUserRole.Where(ur => ur.UserId == id).AsNoTracking().ToListAsync();
+        var userRoles = await _dbContext.UserRole.Where(ur => ur.UserId == id).AsNoTracking().ToListAsync();
         return userRoles;
     }
 }
