@@ -85,7 +85,7 @@ public class UserControllerTests
         var actionResult = Assert.IsType<ActionResult<IEnumerable<UserDTO>>>(res); // This checks that res is of type ActionResult<IEnumerable<UserDTO>>.
         var returnValue = Assert.IsType<NotFoundObjectResult>(actionResult.Result); // This asserts that the Result inside actionResult is of type NotFoundObjectResult.
         var errorMessage = Assert.IsType<string>(returnValue.Value); // This asserts that the Value inside the OkObjectResult is a List<UserDTO>, AND IT CONTAINS ALL THE DATA.
-        Assert.Equal("Could not find any users", errorMessage);
+        Assert.Equal("No users found", errorMessage);
 
         _userServiceMock.Verify(x => x.GetAllAsync(page, pageSize), Times.Once);
     }

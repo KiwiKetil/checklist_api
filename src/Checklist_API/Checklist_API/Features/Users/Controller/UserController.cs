@@ -26,7 +26,7 @@ public class UserController : ControllerBase
     [HttpGet]
     public async Task<ActionResult<IEnumerable<UserDTO>>> GetAll(int page = 1, int pageSize = 10)
     {
-        _logger.LogInformation("Getting all Users");
+        _logger.LogInformation("Retrieving all users");
 
         if (page < 1 || pageSize < 1 || pageSize > 50)
         {
@@ -37,7 +37,7 @@ public class UserController : ControllerBase
 
         var res = await _userService.GetAllAsync(page, pageSize);
 
-        return res != null ? Ok(res) : NotFound("Could not find any users");
+        return res != null ? Ok(res) : NotFound("No users found");
     }
 
     // GET api/<UserController>/5 
