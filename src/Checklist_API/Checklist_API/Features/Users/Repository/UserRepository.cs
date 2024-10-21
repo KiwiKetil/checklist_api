@@ -1,25 +1,20 @@
 ﻿using Check_List_API.Data;
 using Checklist_API.Features.JWT.Entity;
+using Checklist_API.Features.Login.DTOs;
 using Checklist_API.Features.Users.Entity;
 using Checklist_API.Features.Users.Repository.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 namespace Checklist_API.Features.Users.Repository;
 
-public class UserRepository : IUserRepository
+public class UserRepository(CheckListDbContext dbContext, ILogger<UserRepository> logger) : IUserRepository
 {
-    private readonly CheckListDbContext _dbContext;
-    private readonly ILogger<UserRepository> _logger;
-
-    public UserRepository(CheckListDbContext dbContext, ILogger<UserRepository> logger)
-    {
-        _dbContext = dbContext;
-        _logger = logger;
-    }
+    private readonly CheckListDbContext _dbContext = dbContext;
+    private readonly ILogger<UserRepository> _logger = logger;
 
     public async Task<IEnumerable<User>> GetAllAsync(int page, int pageSize)
     {
-        _logger.LogDebug("Getting users from db");
+        _logger.LogDebug("Retrieving users from db");
 
         int itemToSkip = (page - 1) * pageSize;
 
@@ -69,7 +64,7 @@ public class UserRepository : IUserRepository
 
     public async Task<User?> GetByEmailAsync(string email)
     {
-        _logger.LogDebug("Getting user by email: {email} from db", email);
+        _logger.LogDebug("Retrieving user by email: {email} from db", email);
 
         var res = await _dbContext.User.FirstOrDefaultAsync(x => x.Email.Equals(email));
         return res;
