@@ -2,9 +2,13 @@
 using Checklist_API.Features.JWT.Features;
 using Checklist_API.Features.Login.DTOs;
 using Checklist_API.Features.Users.Entity;
+using Checklist_API.Features.Users.Repository.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Moq;
+using Serilog;
+using System.Reflection.Metadata;
+using System.Runtime.Intrinsics.X86;
 
 namespace Checklist.UnitTests.AuthenticationServiceTests;
 
@@ -23,6 +27,12 @@ public class UserAuthenticationServiceTests
         _dbContext = new CheckListDbContext(options);
         _userAuthenticationService = new UserAuthenticationService(_dbContext, _loggerMock.Object);
     }
+
+//    Yes, exactly! You should use your existing UserRepository as the repository for your AuthenticateUser(or AuthenticationService) class. By doing so, you align with best practices in software architecture and testing, enabling you to:
+
+//Encapsulate Authentication Logic in the Service Layer: Keep your authentication logic within a service class rather than directly in the controller or repository.
+//    Enhance Testability: Mock the IUserRepository in your unit tests to test the authentication logic in isolation.
+//Maintain Separation of Concerns: Ensure that the repository handles data access while the service handles business logic.
 
     [Fact]
     public async Task AuthenticateUserAsync_WhenUserIsAuthenticated_ShouldReturnUser()

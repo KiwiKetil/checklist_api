@@ -11,7 +11,6 @@ public class UserAuthenticationService(CheckListDbContext dbContext, ILogger<Use
     private readonly CheckListDbContext _dbContext = dbContext;
     private readonly ILogger<UserAuthenticationService> _logger = logger;
 
-
     public async Task<User?> AuthenticateUserAsync(LoginDTO loginDTO) 
     {
         _logger.LogInformation("Authenticating user: {username}", loginDTO.UserName);
