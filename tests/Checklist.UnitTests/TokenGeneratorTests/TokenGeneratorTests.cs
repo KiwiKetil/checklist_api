@@ -4,8 +4,8 @@ using Checklist_API.Features.JWT.Repository.Interfaces;
 using Microsoft.Extensions.Logging;
 using Moq;
 using Checklist_API.Features.Users.Entity;
-using System.IdentityModel.Tokens.Jwt;
 using Checklist_API.Features.JWT.Entity;
+using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 
 namespace Checklist.UnitTests.TokenGeneratorTests;
@@ -18,25 +18,15 @@ public class TokenGeneratorTests
 
     public TokenGeneratorTests()
     {
-        _tokenGenerator = new TokenGenerator(_configMock.Object, _userRoleRepositoryMock.Object, _loggerMock.Object);
+        _tokenGenerator = new(_configMock.Object, _userRoleRepositoryMock.Object, _loggerMock.Object);
     }
 
     [Fact]
-    public async Task Tokengenerator_WhenUserLogin_ShouldGenerateAndReturnJwtToken_WithClaims()
+    public async Task GenerateJSONWebTokenAsync_WhenUserSuccesfullyLogsIn_ShouldGenerateAndReturnJwtToken_WithClaims()
     {
-        // Arrange
+        // Arrange 
 
-        _configMock.Setup(x => x["Jwt:Key"]).Returns("ThisismySecretKeyDoNotStoreHereForGodsSake");
-        _configMock.Setup(x => x["Jwt:Issuer"]).Returns("Checklist_API");
-        _configMock.Setup(x => x["Jwt:Audience"]).Returns("Checklist_API");
-
-        List<UserRole> userRoles = new() 
-        {
-            new UserRole { RoleName = "Admin"},
-            new UserRole { RoleName = "User"}        
-        };
-
-        User user = new() 
+        User user = new()
         {
             Id = UserId.NewId,
             FirstName = "Ketil",
@@ -46,13 +36,23 @@ public class TokenGeneratorTests
             Salt = "$2a$11$55pfCgY8voiC1V4029QfR."
         };
 
+        List<UserRole> userRoles =
+        [
+            new UserRole  { RoleName = "Admin"},
+            new UserRole  { RoleName = "User"}
+        ];
+
+        _configMock.Setup(x => x["Jwt:Key"]).Returns("ThisismySecretKeyDoNotStoreHereForGodsSake");
+        _configMock.Setup(x => x["Jwt:Issuer"]).Returns("Checklist_API");
+        _configMock.Setup(x => x["Jwt:Audience"]).Returns("Checklist_API");
+
         _userRoleRepositoryMock.Setup(x => x.GetUserRolesAsync(user.Id)).ReturnsAsync(userRoles);
 
         // Act
 
         var res = await _tokenGenerator.GenerateJSONWebTokenAsync(user);
 
-        // Assert      
+        // Assert
 
         Assert.NotNull(res);
         Assert.IsType<string>(res);
