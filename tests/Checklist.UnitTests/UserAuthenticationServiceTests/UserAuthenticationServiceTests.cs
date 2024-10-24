@@ -1,11 +1,7 @@
-﻿using Check_List_API.Data;
-using Checklist_API.Features.JWT.Features;
-using Checklist_API.Features.JWT.Repository.Interfaces;
+﻿using Checklist_API.Features.JWT.Features;
 using Checklist_API.Features.Login.DTOs;
 using Checklist_API.Features.Users.Entity;
-using Checklist_API.Features.Users.Repository;
 using Checklist_API.Features.Users.Repository.Interfaces;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Moq;
 
@@ -57,15 +53,33 @@ public class UserAuthenticationServiceTests
     }
 
     [Fact]
-    public async Task AuthenticateUserAsync_WhenUserIsNotAuthenticated_ShouldReturnNull()
+    public async Task AuthenticateUserAsync_WhenValidUserUsesInvalidPassword_ShouldReturnNull()
     {
         // Arrange
 
+        var loginDTO = new LoginDTO { UserName = "ketilsveberg@gmail.com", Password = "string" };
+
+        var expectedUser = new User
+        {
+            Id = UserId.NewId,
+            FirstName = "Ketil",
+            LastName = "Sveberg",
+            Email = "ketilsveberg@gmail.com",
+            HashedPassword = "$2a$11$J/m/v5v3hOVLKREX7jMZNO1xkMbtzU3vHf3Tm0Swc2MTszc0Ip111",
+            Salt = "$2a$11$55pfCgY8voiC1V4029QfR."
+        };
+
+        _userRepositoryMock.Setup(x => x.GetByEmailAsync(loginDTO.UserName)).ReturnsAsync(expectedUser);
 
         // Act
 
+        var res = await _userAuthenticationService.AuthenticateUserAsync(loginDTO);
 
         // Assert
+
+        Assert.Null(res);
+
+        _userRepositoryMock.Verify(x => x.GetByEmailAsync(loginDTO.UserName), Times.Once);
     }
 
     [Fact]
@@ -73,10 +87,20 @@ public class UserAuthenticationServiceTests
     {
         // Arrange
 
+        var loginDTO = new LoginDTO { UserName = "ketilsveberg@gmail.com", Password = "string" };
+
+        User? nullUser = null;
+      
+        _userRepositoryMock.Setup(x => x.GetByEmailAsync(loginDTO.UserName)).ReturnsAsync(nullUser);
 
         // Act
 
+        var res = await _userAuthenticationService.AuthenticateUserAsync(loginDTO);
 
         // Assert
+
+        Assert.Null(res);
+
+        _userRepositoryMock.Verify(x => x.GetByEmailAsync(loginDTO.UserName), Times.Once);
     }
 }

@@ -11,10 +11,10 @@ using System.Text;
 
 namespace Checklist_API.Features.JWT.Features;
 
-public class TokenGenerator(IConfiguration config, IUserRoleRepository userRoleRepository, ILogger<TokenGenerator> logger) : ITokenGenerator
+public class TokenGenerator(IConfiguration config, IUserRoleRepository UserRoleRepository, ILogger<TokenGenerator> logger) : ITokenGenerator
 {
     private readonly IConfiguration _config = config; 
-    private readonly IUserRoleRepository _userRoleRepository = userRoleRepository;
+    private readonly IUserRoleRepository _UserRoleRepository = UserRoleRepository;
     private readonly ILogger<TokenGenerator> _logger = logger;
 
     public async Task<string> GenerateJSONWebTokenAsync(User user) 
@@ -25,10 +25,10 @@ public class TokenGenerator(IConfiguration config, IUserRoleRepository userRoleR
         var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
 
         List<Claim> claims = [];
-        var userRoles = await _userRoleRepository.GetUserRolesAsync(user.Id);
+        var userRoles = await _UserRoleRepository.GetUserRolesAsync(user.Id);
 
-        claims.Add(new Claim("UserId", user.Id.ToString()));
-        claims.Add(new Claim("UserName", user.Email.ToString()));
+        claims.Add(new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()));
+        claims.Add(new Claim(JwtRegisteredClaimNames.Name, user.Email.ToString()));
 
         foreach (var role in userRoles) 
         {
