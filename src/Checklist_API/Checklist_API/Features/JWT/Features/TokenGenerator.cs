@@ -14,7 +14,7 @@ namespace Checklist_API.Features.JWT.Features;
 public class TokenGenerator(IConfiguration config, IUserRoleRepository UserRoleRepository, ILogger<TokenGenerator> logger) : ITokenGenerator
 {
     private readonly IConfiguration _config = config; 
-    private readonly IUserRoleRepository _UserRoleRepository = UserRoleRepository;
+    private readonly IUserRoleRepository _userRoleRepository = UserRoleRepository;
     private readonly ILogger<TokenGenerator> _logger = logger;
 
     public async Task<string> GenerateJSONWebTokenAsync(User user) 
@@ -24,9 +24,9 @@ public class TokenGenerator(IConfiguration config, IUserRoleRepository UserRoleR
         var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]!));
         var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
 
-        List<Claim> claims = [];
-        var userRoles = await _UserRoleRepository.GetUserRolesAsync(user.Id);
+        var userRoles = await _userRoleRepository.GetUserRolesAsync(user.Id);
 
+        List<Claim> claims = [];
         claims.Add(new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()));
         claims.Add(new Claim(JwtRegisteredClaimNames.Name, user.Email.ToString()));
 

@@ -5,7 +5,7 @@ using Checklist_API.Features.Users.Repository.Interfaces;
 using Microsoft.Extensions.Logging;
 using Moq;
 
-namespace Checklist.UnitTests.AuthenticationServiceTests;
+namespace Checklist.UnitTests.UserAuthenticationServiceTests;
 
 public class UserAuthenticationServiceTests
 {
@@ -14,7 +14,7 @@ public class UserAuthenticationServiceTests
     private readonly Mock<ILogger<UserAuthenticationService>> _loggerMock = new();
 
     public UserAuthenticationServiceTests()
-    {      
+    {
         _userAuthenticationService = new UserAuthenticationService(_userRepositoryMock.Object, _loggerMock.Object);
     }
 
@@ -33,7 +33,7 @@ public class UserAuthenticationServiceTests
             Email = "ketilsveberg@gmail.com",
             HashedPassword = "$2a$11$J/m/v5v3hOVLKREX7jMZNO1xkMbtzU3vHf3Tm0Swc2MTszc0IpxO2",
             Salt = "$2a$11$55pfCgY8voiC1V4029QfR."
-        };       
+        };
 
         _userRepositoryMock.Setup(x => x.GetByEmailAsync(loginDTO.UserName)).ReturnsAsync(expectedUser);
 
@@ -90,7 +90,7 @@ public class UserAuthenticationServiceTests
         var loginDTO = new LoginDTO { UserName = "ketilsveberg@gmail.com", Password = "string" };
 
         User? nullUser = null;
-      
+
         _userRepositoryMock.Setup(x => x.GetByEmailAsync(loginDTO.UserName)).ReturnsAsync(nullUser);
 
         // Act

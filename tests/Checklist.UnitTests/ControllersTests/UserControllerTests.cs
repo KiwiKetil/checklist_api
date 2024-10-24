@@ -2,12 +2,10 @@ using Checklist_API.Features.Users.Controller;
 using Checklist_API.Features.Users.DTOs;
 using Checklist_API.Features.Users.Service.Interfaces;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 using Moq;
-using System.Drawing.Printing;
 
-namespace Checklist.UnitTests.Controllers;
+namespace Checklist.UnitTests.ControllersTests;
 public class UserControllerTests
 {
     private readonly UserController _userController;
