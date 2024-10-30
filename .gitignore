@@ -3,9 +3,6 @@
 ##
 ## Get latest from https://github.com/github/gitignore/blob/master/VisualStudio.gitignore
 
-# Migrations
- src/Checklist_API/Checklist_API/Data/Migrations
-
 *.bak
 *.sql
 .gitattributes

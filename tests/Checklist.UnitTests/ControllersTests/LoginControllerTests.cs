@@ -27,22 +27,17 @@ public class LoginControllerTests
     public async Task Login_WhenSuccess_ShouldReturnJwtToken()
     {
         // Arrange
-
         var loginDTO = new LoginDTO { UserName = "ketilSveberg#", Password = "S1eberg#" };
         var user = new User { Id = UserId.NewId, FirstName = "Ketil", LastName = "Sveberg", Email = "ketilsveberg@gmail.com", HashedPassword = "hashedPassword" };
         var tokenString = "diddydidit";
-
-        // Set up mocks to return expected values
 
         _authServiceMock.Setup(x => x.AuthenticateUserAsync(loginDTO)).ReturnsAsync(user);
         _tokenGeneratorMock.Setup(x => x.GenerateJSONWebTokenAsync(user)).ReturnsAsync(tokenString);
 
         // Act
-
         var result = await _loginController.Login(loginDTO);
 
         // Assert
-
         Assert.NotNull(result);
         Assert.IsType<OkObjectResult>(result);
         var okResult = result as OkObjectResult;
@@ -63,7 +58,6 @@ public class LoginControllerTests
     public async Task Login_WhenUsingInvalidPassword_ShouldNotReturnToken()
     {
         // Arrange
-
         var InvalidloginDTO = new LoginDTO { UserName = "ketilSveberg#", Password = "S1eberg#" };
         User? user = null;
         TokenResponse InvalidToken = new() { Token = "abcde" };
@@ -71,11 +65,9 @@ public class LoginControllerTests
         _authServiceMock.Setup(x => x.AuthenticateUserAsync(InvalidloginDTO)).ReturnsAsync(user);
 
         // Act
-
         var result = await _loginController.Login(InvalidloginDTO);
 
         //Assert
-
         Assert.NotNull(result);
         Assert.IsType<UnauthorizedObjectResult>(result);
         var unauthorizedResult = result as UnauthorizedObjectResult;

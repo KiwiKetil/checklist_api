@@ -12,7 +12,6 @@ public class UserRegistrationMapperTests
     public void MapToEntity_WhenMappingRegistrationDTOToUser_ShouldReturnUser()
     {
         // Arrange
-
         UserRegistrationDTO userRegistrationDTO = new(
             "Ketil",
             "Sveberg",
@@ -22,11 +21,9 @@ public class UserRegistrationMapperTests
             );
 
         // Act
-
         var user = _userRegistrationMapper.MapToEntity( userRegistrationDTO );
 
         // Assert
-
         Assert.NotNull( user );
         Assert.Equal(user.FirstName, userRegistrationDTO.FirstName);
         Assert.Equal(user.LastName, userRegistrationDTO.LastName);

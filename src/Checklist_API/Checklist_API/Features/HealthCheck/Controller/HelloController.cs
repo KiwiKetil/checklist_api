@@ -12,9 +12,9 @@ public class HelloController : ControllerBase
     public string Hello()
     {
         string hostName = System.Net.Dns.GetHostName();
-        StringBuilder sb = new StringBuilder();
+        StringBuilder sb = new();
         foreach (var adr in System.Net.Dns.GetHostEntry(hostName).AddressList)
             sb.Append($"Adress: {adr.AddressFamily} {adr.ToString()}\n");
-        return $"Hello from host: {hostName}\n{sb.ToString()}";
+        return $"Hello from host: {hostName}\n{sb}";
     }
 }

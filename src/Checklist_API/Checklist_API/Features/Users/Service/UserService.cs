@@ -56,7 +56,7 @@ public class UserService : IUserService
         var existingUser = await _userRepository.GetByEmailAsync(dto.Email);
         if (existingUser != null)
         {
-            _logger.LogDebug("User already exist: {Email}", dto.Email);
+            _logger.LogInformation("User already exist: {Email}", dto.Email);
 
             throw new UserAlreadyExistsException();
         }       

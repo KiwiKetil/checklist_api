@@ -18,7 +18,6 @@ public class UserMapperTests
     public void MapToDTO_WhenMappingUserToUserDTO_ShouldReturnUserDTO()
     {
         // Arrange
-
         User user = new User()
         {
             Id = UserId.NewId,
@@ -32,12 +31,10 @@ public class UserMapperTests
             DateUpdated = new DateTime(2023, 12, 13, 11, 00, 00),
         };
 
-        // Act
-      
+        // Act      
         var userDTO = _userMapper.MapToDTO(user);
 
         // Assert
-
         Assert.NotNull(userDTO);
         Assert.Equal(user.FirstName, userDTO.FirstName);
         Assert.Equal(user.LastName, userDTO.LastName);
@@ -51,7 +48,6 @@ public class UserMapperTests
     public void MapToEntity_WhenMappingUserDTOToUser_ShouldReturnUser()
     {
         // Arrange
-
         UserDTO userDTO = new
             ("Ketil",
             "Sveberg",
@@ -61,11 +57,9 @@ public class UserMapperTests
             new DateTime(2023, 12, 13, 11, 00, 00));      
 
         // Act
-
         var user = _userMapper.MapToEntity(userDTO);
 
         // Assert
-
         Assert.NotNull(user);
         Assert.Equal(user.FirstName, userDTO.FirstName);
         Assert.Equal(user.LastName, userDTO.LastName);

@@ -1,9 +1,6 @@
-﻿using Check_List_API.Data;
-using Checklist_API.Features.JWT.Features.Interfaces;
-using Checklist_API.Features.JWT.Repository;
+﻿using Checklist_API.Features.JWT.Features.Interfaces;
 using Checklist_API.Features.JWT.Repository.Interfaces;
 using Checklist_API.Features.Users.Entity;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;

@@ -1,5 +1,4 @@
-﻿using Check_List_API.Data;
-using Checklist_API.Features.JWT.Features.Interfaces;
+﻿using Checklist_API.Features.JWT.Features.Interfaces;
 using Checklist_API.Features.Login.DTOs;
 using Checklist_API.Features.Users.Entity;
 using Checklist_API.Features.Users.Repository.Interfaces;
