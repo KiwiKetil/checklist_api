@@ -25,8 +25,7 @@ public class UserControllerTests
 
     public async Task GetAllUsersAsync_WithPagingValues_ShouldReturnOKAndAllUsers(int page, int pageSize)
     {
-        // arrange
-
+        // Arrange
         List<UserDTO> dtos = new() 
         {
             new UserDTO("Ketil", "Sveberg", "12345678", "Sveberg@.gmail.com", new DateTime(2024, 10, 17, 02, 50, 00), new DateTime(2024, 10, 17, 02, 52, 30)),
@@ -37,12 +36,9 @@ public class UserControllerTests
         _userServiceMock.Setup(x => x.GetAllAsync(page, pageSize)).ReturnsAsync(dtos);
 
         // Act
-
         var res = await _userController.GetAll(page, pageSize);
 
         // Assert
-
-        // disse unpacker res:
         var actionResult = Assert.IsType<ActionResult<IEnumerable<UserDTO>>>(res); // This checks that res is of type ActionResult<IEnumerable<UserDTO>>.
         var returnValue = Assert.IsType<OkObjectResult>(actionResult.Result); // This asserts that the Result inside actionResult is of type OkObjectResult.
         var dtoCollection = Assert.IsType<List<UserDTO>>(returnValue.Value); // This asserts that the Value inside the OkObjectResult is a List<UserDTO>, AND IT CONTAINS ALL THE DATA.
@@ -69,17 +65,13 @@ public class UserControllerTests
 
     public async Task GetAllUsersAsync_WithPagingValues_ShouldReturnNotFound(int page, int pageSize)
     {
-        // arrange
-
+        // Arrange
         _userServiceMock.Setup(x => x.GetAllAsync(page, pageSize)).ReturnsAsync(() => null!);
 
         // Act
-
         var res = await _userController.GetAll(page, pageSize);
 
         // Assert
-
-        // disse unpacker res:
         var actionResult = Assert.IsType<ActionResult<IEnumerable<UserDTO>>>(res); // This checks that res is of type ActionResult<IEnumerable<UserDTO>>.
         var returnValue = Assert.IsType<NotFoundObjectResult>(actionResult.Result); // This asserts that the Result inside actionResult is of type NotFoundObjectResult.
         var errorMessage = Assert.IsType<string>(returnValue.Value); // This asserts that the Value inside the OkObjectResult is a List<UserDTO>, AND IT CONTAINS ALL THE DATA.
@@ -126,15 +118,12 @@ public class UserControllerTests
     public async Task RegisterUserAsync_RegisterUser_ShouldReturnOKAndUserDTO(UserRegistrationDTO dto, UserDTO expectedUserDTO)
     {
         // Arrange
-
         _userServiceMock.Setup(x => x.RegisterUserAsync(dto)).ReturnsAsync(expectedUserDTO);
 
         // Act
-
         var result = await _userController.RegisterUser(dto);
 
         // Assert
-
         var actionResult = Assert.IsType<ActionResult<UserDTO>>(result);
         var returnValue = Assert.IsType<OkObjectResult>(actionResult.Result);
         var returnedDTO = Assert.IsType<UserDTO>(returnValue.Value);
@@ -167,8 +156,7 @@ public class UserControllerTests
  
     public async Task RegisterUserAsync_RegisterUser_ShouldReturnOKAndUserDTOV2(UserRegistrationDTO dto)
     {
-        // arrange
-
+        // Arrange
         var dtNow = DateTime.UtcNow;
 
         var expectedUserDTO = new UserDTO(
@@ -182,11 +170,9 @@ public class UserControllerTests
         _userServiceMock.Setup(x => x.RegisterUserAsync(dto)).ReturnsAsync(expectedUserDTO);
 
         // Act
-
         var result = await _userController.RegisterUser(dto);
 
         // Assert
-
         var actionResult = Assert.IsType<ActionResult<UserDTO>>(result);
         var returnValue = Assert.IsType<OkObjectResult>(actionResult.Result);
         var returnedDTO = Assert.IsType<UserDTO>(returnValue.Value);
@@ -206,7 +192,6 @@ public class UserControllerTests
     public async Task RegisterUserAsync_RegisterUser_ShouldReturnOKAndUserDTOV3(string firstName, string lastName, string phoneNumber, string email, string password)
     {
         // Arrange
-
         var userRegistrationDTO = new UserRegistrationDTO(firstName, lastName, phoneNumber, email, password);
 
         _userServiceMock.Setup(x => x.RegisterUserAsync(userRegistrationDTO))
@@ -220,11 +205,9 @@ public class UserControllerTests
                     );
 
         // Act
-
         var res = await _userController.RegisterUser(userRegistrationDTO);
 
         // Assert
-
         var actionResult = Assert.IsType<ActionResult<UserDTO>>(res);
         var returnValue = Assert.IsType<OkObjectResult>(actionResult.Result);
         var returnedDTO = Assert.IsType<UserDTO>(returnValue.Value);

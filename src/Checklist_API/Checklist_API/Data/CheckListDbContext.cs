@@ -3,14 +3,10 @@ using Checklist_API.Features.JWT.Entity;
 using Checklist_API.Features.Users.Entity;
 using Microsoft.EntityFrameworkCore;
 
-namespace Check_List_API.Data;
+namespace Checklist_API.Data;
 
-public class CheckListDbContext : DbContext
+public class CheckListDbContext(DbContextOptions options) : DbContext(options)
 {
-    public CheckListDbContext(DbContextOptions options) : base(options)
-    {
-    }
-
     public DbSet<CheckList> CheckList { get; set; }
     public DbSet<User> User { get; set; }
     public DbSet<Role> Role { get; set; }
@@ -18,17 +14,17 @@ public class CheckListDbContext : DbContext
 
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
-    {       
-        base.OnModelCreating(modelBuilder);       
+    {
+        base.OnModelCreating(modelBuilder);
 
         #region CheckList
 
-      modelBuilder.Entity<CheckList>()  // Strongly typed id deklarert
-            .Property(x => x.Id)
-            .HasConversion(
-                id => id.checklistId,
-                value => new ChecklistId(value)
-         );
+        modelBuilder.Entity<CheckList>()  // Strongly typed id deklarert
+              .Property(x => x.Id)
+              .HasConversion(
+                  id => id.checklistId,
+                  value => new ChecklistId(value)
+           );
 
         modelBuilder.Entity<CheckList>()  // Strongly typed id deklarert
             .Property(x => x.UserId)
@@ -37,10 +33,10 @@ public class CheckListDbContext : DbContext
                value => new UserId(value)
          );
 
-        modelBuilder.Entity<CheckList>() 
+        modelBuilder.Entity<CheckList>()
             .HasKey(x => x.Id);
 
-        modelBuilder.Entity<CheckList>() 
+        modelBuilder.Entity<CheckList>()
             .HasOne(c => c.User)
             .WithMany(u => u.Checklists)
             .HasForeignKey(c => c.UserId);
@@ -49,50 +45,50 @@ public class CheckListDbContext : DbContext
            .Property(x => x.Id)
            .IsRequired();
 
-        modelBuilder.Entity<CheckList>() 
+        modelBuilder.Entity<CheckList>()
             .Property(x => x.Title)
             .IsRequired()
             .HasMaxLength(100);
 
-        modelBuilder.Entity<CheckList>() 
+        modelBuilder.Entity<CheckList>()
             .Property(x => x.Description)
             .IsRequired()
             .HasMaxLength(100);
 
-        modelBuilder.Entity<CheckList>() 
+        modelBuilder.Entity<CheckList>()
             .Property(x => x.Status)
             .IsRequired()
             .HasMaxLength(100);
 
-        modelBuilder.Entity<CheckList>() 
+        modelBuilder.Entity<CheckList>()
             .Property(x => x.Priority)
             .IsRequired()
             .HasMaxLength(100);
 
-        modelBuilder.Entity<CheckList>() 
+        modelBuilder.Entity<CheckList>()
             .Property(x => x.AssignedTo)
             .IsRequired()
             .HasMaxLength(100);
 
-        modelBuilder.Entity<CheckList>() 
+        modelBuilder.Entity<CheckList>()
             .Property(x => x.Comments)
             .IsRequired()
             .HasMaxLength(100);
 
-        modelBuilder.Entity<CheckList>() 
+        modelBuilder.Entity<CheckList>()
             .Property(x => x.DueDate)
             .IsRequired();
 
 
-        modelBuilder.Entity<CheckList>() 
+        modelBuilder.Entity<CheckList>()
             .Property(x => x.DateCreated)
             .IsRequired();
 
-        modelBuilder.Entity<CheckList>() 
+        modelBuilder.Entity<CheckList>()
             .Property(x => x.DateUpdated)
-            .IsRequired(); 
-        
-        modelBuilder.Entity<CheckList>() 
+            .IsRequired();
+
+        modelBuilder.Entity<CheckList>()
             .Property(x => x.DateCompleted)
             .IsRequired();
 
@@ -152,11 +148,11 @@ public class CheckListDbContext : DbContext
            .Property(x => x.Salt)
            .IsRequired();
 
-        modelBuilder.Entity<User>() 
+        modelBuilder.Entity<User>()
             .Property(x => x.DateCreated)
             .IsRequired();
 
-        modelBuilder.Entity<User>() 
+        modelBuilder.Entity<User>()
             .Property(x => x.DateUpdated)
             .IsRequired();
 
@@ -169,7 +165,7 @@ public class CheckListDbContext : DbContext
        new Role { RoleName = "User" });
 
         modelBuilder.Entity<Role>()
-            .HasKey(x => x.RoleName);      
+            .HasKey(x => x.RoleName);
 
         modelBuilder.Entity<Role>()
             .HasMany(x => x.UserRoles)

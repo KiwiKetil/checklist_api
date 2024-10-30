@@ -1,17 +1,6 @@
-using Check_List_API.Data;
 using Checklist_API.Extensions;
-using Checklist_API.Features.ExceptionHandling;
-using Checklist_API.Features.JWT.Features;
-using Checklist_API.Features.Users.Repository;
-using Checklist_API.Features.Users.Repository.Interfaces;
-using Checklist_API.Features.Users.Service;
-using Checklist_API.Features.Users.Service.Interfaces;
 using Checklist_API.Middleware;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
 using Serilog;
-using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 

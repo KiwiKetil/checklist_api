@@ -2,16 +2,9 @@
 using static Checklist_API.Features.ExceptionHandling.CustomExceptions;
 
 namespace Checklist_API.Middleware;
-public class GlobalExceptionMiddleware : IMiddleware
+public class GlobalExceptionMiddleware(ExceptionHandler exceptionHandler) : IMiddleware
 {
-    private readonly ILogger<GlobalExceptionMiddleware> _logger;
-    private readonly ExceptionHandler _exceptionHandler;
-
-    public GlobalExceptionMiddleware(ILogger<GlobalExceptionMiddleware> logger, ExceptionHandler exceptionHandler)
-    {
-        _logger = logger;
-        _exceptionHandler = exceptionHandler;
-    }
+    private readonly ExceptionHandler _exceptionHandler = exceptionHandler;    
 
     public async Task InvokeAsync(HttpContext context, RequestDelegate next)
     {

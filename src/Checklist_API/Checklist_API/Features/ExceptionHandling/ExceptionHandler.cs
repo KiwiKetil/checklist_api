@@ -1,16 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using static Checklist_API.Features.ExceptionHandling.CustomExceptions;
 
 namespace Checklist_API.Features.ExceptionHandling;
 
-public class ExceptionHandler
+public class ExceptionHandler(ILogger<ExceptionHandler> logger)
 {
-    private readonly ILogger<ExceptionHandler> _logger;
-
-    public ExceptionHandler(ILogger<ExceptionHandler> logger)
-    {
-        _logger = logger;
-    }
+    private readonly ILogger<ExceptionHandler> _logger = logger;  
 
     public async Task HandleException(HttpContext context, Exception ex)
     {
@@ -20,7 +14,7 @@ public class ExceptionHandler
 
         var (statusCode, title) = ex switch
         {
-            UserAlreadyExistsException => (StatusCodes.Status409Conflict, ex.Message),
+            CustomExceptions.UserAlreadyExistsException => (StatusCodes.Status409Conflict, ex.Message),
             _ => (StatusCodes.Status500InternalServerError, "An unexpected error occurred")
         };
 

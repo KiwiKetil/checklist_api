@@ -1,5 +1,4 @@
-﻿using Check_List_API.Data;
-using Checklist_API.Features.ExceptionHandling;
+﻿using Checklist_API.Features.ExceptionHandling;
 using Checklist_API.Features.JWT.Features;
 using Checklist_API.Features.Users.Repository.Interfaces;
 using Checklist_API.Features.Users.Repository;
@@ -13,6 +12,7 @@ using System.Text;
 using Checklist_API.Features.JWT.Features.Interfaces;
 using Checklist_API.Features.JWT.Repository.Interfaces;
 using Checklist_API.Features.JWT.Repository;
+using Checklist_API.Data;
 
 namespace Checklist_API.Extensions;
 

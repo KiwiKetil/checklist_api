@@ -2,24 +2,14 @@
 using Checklist_API.Features.Users.Service.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
-using System.Security.Claims;
-
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace Checklist_API.Features.Users.Controller;
 [Route("api/v1/users")]
 [ApiController]
-public class UserController : ControllerBase
+public class UserController(IUserService userService, ILogger<UserController> logger) : ControllerBase
 {
-    private readonly IUserService _userService;
-    private readonly ILogger<UserController> _logger;
-
-    public UserController(IUserService userService, ILogger<UserController> logger)
-    {
-        _userService = userService;
-        _logger = logger;
-    }
+    private readonly IUserService _userService = userService;
+    private readonly ILogger<UserController> _logger = logger;  
 
     [Authorize(Roles = "User")]
     // GET https://localhost:7070/api/v1/users?page=1&pageSize=10
@@ -30,7 +20,7 @@ public class UserController : ControllerBase
 
         if (page < 1 || pageSize < 1 || pageSize > 50)
         {
-            _logger.LogWarning("Invalid pagination parameters Page: {page}, PageSize: {pageSize}", page, pageSize);
+            _logger.LogDebug("Invalid pagination parameters Page: {page}, PageSize: {pageSize}", page, pageSize);
 
             return BadRequest("Invalid pagination parameters - MIN page = 1, MAX pageSize = 50 ");
         }
@@ -65,7 +55,7 @@ public class UserController : ControllerBase
     [HttpPost("register", Name = "RegisterUser")]
     public async Task<ActionResult<UserDTO>> RegisterUser([FromBody] UserRegistrationDTO dto)
     {
-        _logger.LogDebug("Registering new user: {email}", dto.Email);
+        _logger.LogInformation("Registering new user: {email}", dto.Email);
 
         var res = await _userService.RegisterUserAsync(dto);
         return res != null ? Ok(res) : BadRequest("Could not register new user");
