@@ -7,8 +7,7 @@ using Checklist_API.Features.Users.Entity;
 using Checklist_API.Features.JWT.Entity;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using Microsoft.IdentityModel.Tokens;
-using System.Text;
+using System;
 
 namespace Checklist.UnitTests.TokenGeneratorTests;
 public class TokenGeneratorTests
@@ -24,7 +23,7 @@ public class TokenGeneratorTests
     }
 
     [Fact]
-    public async Task GenerateJSONWebTokenAsync_WhenUserSuccesfullyLogsIn_ShouldGenerateAndReturnJwtToken_WithClaims()
+    public async Task GenerateJSONWebTokenAsync_WhenUserSuccesfullyLogsIn_ShouldGenerateAndReturnJwtToken_WithCorrectClaims()
     {
         // Arrange 
         User user = new()
@@ -37,15 +36,16 @@ public class TokenGeneratorTests
             Salt = "$2a$11$55pfCgY8voiC1V4029QfR."
         };
 
+        _configMock.Setup(x => x["Jwt:Key"]).Returns("ThisismySecretKeyDoNotStoreHereForGodsSake");
+        _configMock.Setup(x => x["Jwt:Issuer"]).Returns("Checklist_API");
+        _configMock.Setup(x => x["Jwt:Audience"]).Returns("Checklist_API");
+
+
         List<UserRole> userRoles =
         [
             new UserRole  { RoleName = "Admin"},
             new UserRole  { RoleName = "User"}
         ];
-
-        _configMock.Setup(x => x["Jwt:Key"]).Returns("ThisismySecretKeyDoNotStoreHereForGodsSake");
-        _configMock.Setup(x => x["Jwt:Issuer"]).Returns("Checklist_API");
-        _configMock.Setup(x => x["Jwt:Audience"]).Returns("Checklist_API");
 
         _userRoleRepositoryMock.Setup(x => x.GetUserRolesAsync(user.Id)).ReturnsAsync(userRoles);
 
@@ -63,6 +63,8 @@ public class TokenGeneratorTests
         Assert.Equal(user.Email, jwtToken.Claims.First(c => c.Type == JwtRegisteredClaimNames.Name).Value);
         Assert.Contains(jwtToken.Claims, c => c.Type == ClaimTypes.Role && c.Value == "Admin");
         Assert.Contains(jwtToken.Claims, c => c.Type == ClaimTypes.Role && c.Value == "User");
+        Assert.Equal("Checklist_API", jwtToken.Issuer);
+        Assert.Contains("Checklist_API", jwtToken.Audiences);
     }
 
     [Fact]
@@ -98,9 +100,42 @@ public class TokenGeneratorTests
         // Assert
         var tokenHandler = new JwtSecurityTokenHandler();
         var jwtToken = tokenHandler.ReadJwtToken(token);
+
         var expirationClaim = jwtToken.Claims.First(c => c.Type == JwtRegisteredClaimNames.Exp).Value;
         var expirationDate = DateTimeOffset.FromUnixTimeSeconds(long.Parse(expirationClaim)).UtcDateTime;
 
         Assert.True(futureDateTime > expirationDate, "Token should be expired");
     }
+
+    [Fact]
+    public async Task GenerateJSONWebTokenAsync_UpToExpirationtime_ShouldStillBeValid()
+    {
+        // Arrange
+
+        User user = new()
+        {
+            Id = UserId.NewId,
+            FirstName = "Ketil",
+            LastName = "Sveberg",
+            Email = "ketilsveberg@gmail.com",
+            HashedPassword = "$2a$11$J/m/v5v3hOVLKREX7jMZNO1xkMbtzU3vHf3Tm0Swc2MTszc0IpxO2",
+            Salt = "$2a$11$55pfCgY8voiC1V4029QfR."
+        };
+
+        _configMock.Setup(x => x["Jwt:Key"]).Returns("ThisismySecretKeyDoNotStoreHereForGodsSake");
+        _configMock.Setup(x => x["Jwt:Issuer"]).Returns("Checklist_API");
+        _configMock.Setup(x => x["Jwt:Audience"]).Returns("Checklist_API");
+
+        // Act
+        var res = await _tokenGenerator.GenerateJSONWebTokenAsync(user);
+
+        // Assert
+        var tokenHandler = new JwtSecurityTokenHandler();
+        var jwtToken = tokenHandler.ReadJwtToken(res);
+
+        var expirationClaim = jwtToken.Claims.First(c => c.Type == JwtRegisteredClaimNames.Exp).Value;
+        var expirationDate = DateTimeOffset.FromUnixTimeSeconds(long.Parse(expirationClaim)).DateTime;
+
+        Assert.True(expirationDate > DateTime.UtcNow, "Token should not be expired");
+    }    
 }
