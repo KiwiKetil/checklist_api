@@ -19,14 +19,14 @@ public class CheckListDbContext(DbContextOptions options) : DbContext(options)
 
         #region CheckList
 
-        modelBuilder.Entity<CheckList>()  // Strongly typed id deklarert
+        modelBuilder.Entity<CheckList>()  
               .Property(x => x.Id)
               .HasConversion(
                   id => id.checklistId,
                   value => new ChecklistId(value)
            );
 
-        modelBuilder.Entity<CheckList>()  // Strongly typed id deklarert
+        modelBuilder.Entity<CheckList>() 
             .Property(x => x.UserId)
             .HasConversion(
                id => id.userId,
@@ -193,7 +193,7 @@ public class CheckListDbContext(DbContextOptions options) : DbContext(options)
          );
 
         modelBuilder.Entity<UserRole>()
-         .HasKey(ur => new { ur.RoleName, ur.UserId }); // Composite key
+         .HasKey(ur => new { ur.RoleName, ur.UserId }); 
 
         modelBuilder.Entity<UserRole>()
          .HasOne(j => j.Role)
