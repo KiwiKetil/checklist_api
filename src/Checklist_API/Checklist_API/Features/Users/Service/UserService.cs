@@ -8,21 +8,13 @@ using static Checklist_API.Features.ExceptionHandling.CustomExceptions;
 
 namespace Checklist_API.Features.Users.Service;
 
-public class UserService : IUserService
+public class UserService(IUserRepository userRepository, ILogger<UserService> logger, IMapper<User, UserDTO> userMapper,
+                    IMapper<User, UserRegistrationDTO> userRegistrationMapper) : IUserService
 {
-    private readonly IUserRepository _userRepository;
-    private readonly ILogger<UserService> _logger;
-    private readonly IMapper<User, UserDTO> _userMapper;
-    private readonly IMapper<User, UserRegistrationDTO> _userRegistrationMapper;
-
-    public UserService(IUserRepository userRepository, ILogger<UserService> logger, IMapper<User, UserDTO> userMapper,
-                        IMapper<User, UserRegistrationDTO> userRegistrationMapper)
-    {
-        _userRepository = userRepository;
-        _logger = logger;
-        _userMapper = userMapper;
-        _userRegistrationMapper = userRegistrationMapper;
-    }
+    private readonly IUserRepository _userRepository = userRepository;
+    private readonly ILogger<UserService> _logger = logger;
+    private readonly IMapper<User, UserDTO> _userMapper = userMapper;
+    private readonly IMapper<User, UserRegistrationDTO> _userRegistrationMapper = userRegistrationMapper;
 
     public async Task<IEnumerable<UserDTO>> GetAllAsync(int page, int pageSize)
     {
