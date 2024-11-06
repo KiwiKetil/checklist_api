@@ -26,12 +26,12 @@ public class UserControllerTests
     public async Task GetAllUsersAsync_WithPagingValues_ShouldReturnOKAndAllUsers(int page, int pageSize)
     {
         // Arrange
-        List<UserDTO> dtos = new() 
-        {
-            new UserDTO("Ketil", "Sveberg", "12345678", "Sveberg@.gmail.com", new DateTime(2024, 10, 17, 02, 50, 00), new DateTime(2024, 10, 17, 02, 52, 30)),
+        List<UserDTO> dtos =
+        [
+            new UserDTO("Ketil", "Sveberg", "12345678", "Sveberg@gmail.com", new DateTime(2024, 10, 17, 02, 50, 00), new DateTime(2024, 10, 17, 02, 52, 30)),
             new UserDTO("Quyen", "Ho", "23456789", "quyen99@gmail.com", new DateTime(2024, 10, 18, 02, 51, 00), new DateTime(2024, 10, 17, 03, 55, 40)),
             new UserDTO("Nico", "Ho", "12345678", "nico@gmail.com", new DateTime(2024, 10, 19, 02, 52, 00), new DateTime(2024, 10, 17, 12, 00, 45))
-        };
+        ];
 
         _userServiceMock.Setup(x => x.GetAllAsync(page, pageSize)).ReturnsAsync(dtos);
 
@@ -143,12 +143,12 @@ public class UserControllerTests
 
     public static TheoryData<UserRegistrationDTO> GetUserRegistrationDTOs()
     {
-        return new TheoryData<UserRegistrationDTO>
-        {
+        return
+        [
         new("Ketil", "Sveberg", "12345678", "Sveberg@gmail.com", "password"),
         new("Quyen", "Ho", "42534253", "Quyen99@gmail.com", "password2"),
         new("Nico", "Ho", "42534253", "Nico@gmail.com", "password3")
-        };
+        ];
     }
 
     [Theory]

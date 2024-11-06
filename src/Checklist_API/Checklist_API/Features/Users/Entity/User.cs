@@ -5,7 +5,7 @@ using System.Numerics;
 
 namespace Checklist_API.Features.Users.Entity;
 
-public readonly record struct UserId(Guid userId)
+public readonly record struct UserId(Guid Value)
 {
     public static UserId NewId => new(Guid.NewGuid());
     public static UserId Empty => new(Guid.Empty);

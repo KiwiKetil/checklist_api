@@ -29,7 +29,7 @@ public class CheckListDbContext(DbContextOptions options) : DbContext(options)
         modelBuilder.Entity<CheckList>() 
             .Property(x => x.UserId)
             .HasConversion(
-               id => id.userId,
+               id => id.Value,
                value => new UserId(value)
          );
 
@@ -99,7 +99,7 @@ public class CheckListDbContext(DbContextOptions options) : DbContext(options)
         modelBuilder.Entity<User>()
           .Property(x => x.Id)
           .HasConversion(
-              id => id.userId,
+              id => id.Value,
               value => new UserId(value)
           );
 
@@ -188,7 +188,7 @@ public class CheckListDbContext(DbContextOptions options) : DbContext(options)
         modelBuilder.Entity<UserRole>()
          .Property(x => x.UserId)
          .HasConversion(
-               id => id.userId,
+               id => id.Value,
                value => new UserId(value)
          );
 
