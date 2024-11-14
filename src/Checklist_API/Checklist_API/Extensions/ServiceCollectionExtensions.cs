@@ -10,8 +10,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Checklist_API.Features.JWT.Features.Interfaces;
-using Checklist_API.Features.JWT.Repository.Interfaces;
-using Checklist_API.Features.JWT.Repository;
 using Checklist_API.Data;
 
 namespace Checklist_API.Extensions;
@@ -50,7 +48,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IUserRoleRepository, UserRoleRepository>();
 
         services.AddScoped<GlobalExceptionMiddleware>();
-        services.AddSingleton<ExceptionHandler>();
+        services.AddScoped<ExceptionHandler>();
         services.AddScoped<IUserAuthenticationService, UserAuthenticationService>();
         services.AddScoped<ITokenGenerator, TokenGenerator>();
 

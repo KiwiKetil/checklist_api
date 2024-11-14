@@ -56,8 +56,8 @@ public class UserService(IUserRepository userRepository, ILogger<UserService> lo
         var user = _userRegistrationMapper.MapToEntity(dto);
 
         user.Id = UserId.NewId;
-        user.Salt = BCrypt.Net.BCrypt.GenerateSalt();
         user.HashedPassword = BCrypt.Net.BCrypt.HashPassword(dto.Password);
+        user.Salt = BCrypt.Net.BCrypt.GenerateSalt();
 
         var res = await _userRepository.RegisterAsync(user);
 

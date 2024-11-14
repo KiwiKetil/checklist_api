@@ -1,6 +1,5 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Checklist_API.Features.JWT.Features;
-using Checklist_API.Features.JWT.Repository.Interfaces;
 using Microsoft.Extensions.Logging;
 using Moq;
 using Checklist_API.Features.Users.Entity;
@@ -8,6 +7,7 @@ using Checklist_API.Features.JWT.Entity;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System;
+using Checklist_API.Features.Users.Repository.Interfaces;
 
 namespace Checklist.UnitTests.TokenGeneratorTests;
 public class TokenGeneratorTests
