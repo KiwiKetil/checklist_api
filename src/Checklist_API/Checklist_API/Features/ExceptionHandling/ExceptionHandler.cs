@@ -21,6 +21,7 @@ public class ExceptionHandler(ILogger<ExceptionHandler> logger)
         var problemDetails = new ProblemDetails
         {
             Title = title,
+            Detail = ex.Message,
             Status = statusCode,
             Extensions = { ["traceId"] = System.Diagnostics.Activity.Current?.Id }
         };

@@ -1,9 +1,12 @@
 using Checklist_API.Features.Users.Controller;
 using Checklist_API.Features.Users.DTOs;
 using Checklist_API.Features.Users.Service.Interfaces;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Moq;
+using MySqlX.XDevAPI.Common;
+using System.Security.Policy;
 
 namespace Checklist.UnitTests.ControllersTests;
 public class UserControllerTests
@@ -84,12 +87,7 @@ public class UserControllerTests
 
     #region RegisterUserTests    
 
-    #region using TheoryData V1
-
-    //Use approach with TheoryData if:
-
-    //The expected UserDTO is always a direct transformation of the input.
-    //You want a more concise and easily maintainable test.
+    #region using TheoryData V1 (also contains the Fact test for Badrequest.) 
 
     public static TheoryData<UserRegistrationDTO, UserDTO> GetUserRegistrationDTOsWithExpectedResults()
     {
@@ -115,7 +113,7 @@ public class UserControllerTests
     [Theory]
     [MemberData(nameof(GetUserRegistrationDTOsWithExpectedResults))] // kunne brukt ClassDtaa or InlineData for å ikke ha warning, lar være her pga DTOs er serializable
 
-    public async Task RegisterUserAsync_RegisterUser_ShouldReturnOKAndUserDTO(UserRegistrationDTO dto, UserDTO expectedUserDTO)
+    public async Task RegisterUserAsync_WhenUserRegistersWithSuccess_ShouldReturnOKAndUserDTO(UserRegistrationDTO dto, UserDTO expectedUserDTO)
     {
         // Arrange
         _userServiceMock.Setup(x => x.RegisterUserAsync(dto)).ReturnsAsync(expectedUserDTO);
@@ -125,14 +123,33 @@ public class UserControllerTests
 
         // Assert
         var actionResult = Assert.IsType<ActionResult<UserDTO>>(result);
-        var returnValue = Assert.IsType<OkObjectResult>(actionResult.Result);
-        var returnedDTO = Assert.IsType<UserDTO>(returnValue.Value);
+        var okResult = Assert.IsType<OkObjectResult>(actionResult.Result);
+        var returnedDTO = Assert.IsType<UserDTO>(okResult.Value);
         Assert.Equal(expectedUserDTO, returnedDTO);
 
         _userServiceMock.Verify(x => x.RegisterUserAsync(dto), Times.Once);
     }
 
-    #endregion using TheoryData V1
+    [Fact]
+    public async Task RegisterUserAsync_WhenUserRegistrationFails_ShouldReturnBadRequest400()
+    {
+        //Arrange
+        UserRegistrationDTO dto = new("Nico", "Ho", "42534253", "Nico@gmail.com", "password3");
+
+        _userServiceMock.Setup(x => x.RegisterUserAsync(dto)).ReturnsAsync((UserDTO?)null);
+
+        //Act
+        var res = await _userController.RegisterUser(dto);
+
+        // Assert
+        var actionResult = Assert.IsType<ActionResult<UserDTO>>(res);
+        var badRequestResult = Assert.IsType<BadRequestObjectResult>(actionResult.Result);
+        Assert.Equal(StatusCodes.Status400BadRequest, badRequestResult.StatusCode);
+
+        _userServiceMock.Verify(x => x.RegisterUserAsync(dto), Times.Once);        
+    }
+
+    #endregion using TheoryData V1 (also contains the Fact test for Badrequest.) 
 
     #region using TheoryData V2
 
@@ -154,7 +171,7 @@ public class UserControllerTests
     [Theory]
     [MemberData(nameof(GetUserRegistrationDTOs))] // warning i tilfelle ikke er serializable: ikke primitive datatyper i DTO.
  
-    public async Task RegisterUserAsync_RegisterUser_ShouldReturnOKAndUserDTOV2(UserRegistrationDTO dto)
+    public async Task RegisterUserAsync_WhenUserRegistersWithSuccess_ShouldReturnOKAndUserDTOV2(UserRegistrationDTO dto)
     {
         // Arrange
         var dtNow = DateTime.UtcNow;
@@ -189,7 +206,7 @@ public class UserControllerTests
     [InlineData("Quyen", "Ho", "42534253", "Quyen99@gmail.com", "password2")]
     [InlineData("Nico", "Ho", "42534253", "Nico@gmail.com", "password3")]
 
-    public async Task RegisterUserAsync_RegisterUser_ShouldReturnOKAndUserDTOV3(string firstName, string lastName, string phoneNumber, string email, string password)
+    public async Task RegisterUserAsync_WhenUserRegistersWithSuccess_ShouldReturnOKAndUserDTOV3(string firstName, string lastName, string phoneNumber, string email, string password)
     {
         // Arrange
         var userRegistrationDTO = new UserRegistrationDTO(firstName, lastName, phoneNumber, email, password);
