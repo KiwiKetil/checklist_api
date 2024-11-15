@@ -2,6 +2,7 @@
 using Checklist_API.Features.Users.DTOs;
 using Checklist_API.Features.Users.Entity;
 using Checklist_API.Features.Users.Mappers;
+using Checklist_API.Features.Users.Repository;
 using Checklist_API.Features.Users.Repository.Interfaces;
 using Checklist_API.Features.Users.Service.Interfaces;
 using static Checklist_API.Features.ExceptionHandling.CustomExceptions;
@@ -26,9 +27,17 @@ public class UserService(IUserRepository userRepository, ILogger<UserService> lo
         return dtos;
     }
 
-    public Task<UserDTO?> GetByIdAsync(Guid UserId)
+    public async Task<UserDTO?> GetByIdAsync(Guid id)
     {
-        throw new NotImplementedException();
+        _logger.LogInformation("Retrieving user with ID: {id}", id);
+
+        var res = await _userRepository.GetByIdAsync(new UserId(id));
+        if (res == null) 
+        {
+            _logger.LogInformation("User not found");
+            return null;
+        }
+        return _userMapper.MapToDTO(res);
     }
 
     public Task<UserDTO?> UpdateAsync(Guid id, UserDTO dto)

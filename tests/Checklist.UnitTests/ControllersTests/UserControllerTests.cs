@@ -5,8 +5,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Moq;
-using MySqlX.XDevAPI.Common;
-using System.Security.Policy;
 
 namespace Checklist.UnitTests.ControllersTests;
 public class UserControllerTests
@@ -39,7 +37,7 @@ public class UserControllerTests
         _userServiceMock.Setup(x => x.GetAllAsync(page, pageSize)).ReturnsAsync(dtos);
 
         // Act
-        var res = await _userController.GetAll(page, pageSize);
+        var res = await _userController.GetAllUsers(page, pageSize);
 
         // Assert
         var actionResult = Assert.IsType<ActionResult<IEnumerable<UserDTO>>>(res); // This checks that res is of type ActionResult<IEnumerable<UserDTO>>.
@@ -72,7 +70,7 @@ public class UserControllerTests
         _userServiceMock.Setup(x => x.GetAllAsync(page, pageSize)).ReturnsAsync(() => null!);
 
         // Act
-        var res = await _userController.GetAll(page, pageSize);
+        var res = await _userController.GetAllUsers(page, pageSize);
 
         // Assert
         var actionResult = Assert.IsType<ActionResult<IEnumerable<UserDTO>>>(res); // This checks that res is of type ActionResult<IEnumerable<UserDTO>>.
@@ -84,6 +82,12 @@ public class UserControllerTests
     }
 
     #endregion GetAllUsersTests
+
+    #region GetByIdTests
+
+
+
+    #endregion GetByIdTests
 
     #region RegisterUserTests    
 

@@ -27,6 +27,8 @@ public class UserServiceTests
         _userService = new UserService(_userRepositoryMock.Object, _loggerMock.Object, _userMapper, _userRegistrationMapper);
     }
 
+    #region GetallAsyncTests
+
     [Fact]
     public async Task GetAllAsync_WhenRetrievingAllUsers_ShouldReturnAllUsers()
     {
@@ -107,6 +109,16 @@ public class UserServiceTests
         Assert.Empty(res);
     }
 
+    #endregion GetallAsyncTests
+
+    #region GetByIdAsyncTests
+
+
+
+    #endregion GetByIdAsyncTests
+
+    #region RegisterUserAsync
+
     [Fact]
     public async Task RegisterUserAsync_WhenUserRegistersWithSuccess_ShouldReturnUserDTO()
     {
@@ -171,4 +183,6 @@ public class UserServiceTests
         // Act & Assert
         await Assert.ThrowsAsync<UserAlreadyExistsException>(() => _userService.RegisterUserAsync(dto));
     }
+
+    #endregion RegisterUserAsync
 }

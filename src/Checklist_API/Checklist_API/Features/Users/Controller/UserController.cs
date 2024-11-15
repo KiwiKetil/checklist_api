@@ -9,32 +9,33 @@ namespace Checklist_API.Features.Users.Controller;
 public class UserController(IUserService userService, ILogger<UserController> logger) : ControllerBase
 {
     private readonly IUserService _userService = userService;
-    private readonly ILogger<UserController> _logger = logger;  
+    private readonly ILogger<UserController> _logger = logger;
 
     [Authorize(Roles = "User")]
     // GET https://localhost:7070/api/v1/users?page=1&pageSize=10
-    [HttpGet]
-    public async Task<ActionResult<IEnumerable<UserDTO>>> GetAll(int page = 1, int pageSize = 10)
+    [HttpGet(Name = "GetAllUsers")]
+    public async Task<ActionResult<IEnumerable<UserDTO>>> GetAllUsers(int page = 1, int pageSize = 10)
     {
         _logger.LogInformation("Retrieving all users");
 
         if (page < 1 || pageSize < 1 || pageSize > 50)
         {
             _logger.LogDebug("Invalid pagination parameters Page: {page}, PageSize: {pageSize}", page, pageSize);
-
             return BadRequest("Invalid pagination parameters - MIN page = 1, MAX pageSize = 50 ");
         }
 
         var res = await _userService.GetAllAsync(page, pageSize);
-
         return res != null ? Ok(res) : NotFound("No users found");
     }
 
-    // GET api/<UserController>/5 
-    [HttpGet("{id}")]
-    public string Get(int id)
+    // GET https://localhost:7070/api/v1/users/
+    [HttpGet("{id}", Name = "GetUserById")]
+    public async Task<ActionResult<UserDTO>> GetUserById([FromRoute] Guid id)
     {
-        return "value";
+        _logger.LogInformation("Retrieving user with ID: {id}", id);
+
+        var res = await _userService.GetByIdAsync(id);
+        return res != null ? Ok(res) : NotFound($"No user with ID {id} was found"); // logge?????
     }
 
     // PUT api/<UserController>/5

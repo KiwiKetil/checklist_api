@@ -4,6 +4,7 @@ using Checklist_API.Features.Login.DTOs;
 using Checklist_API.Features.Users.Entity;
 using Checklist_API.Features.Users.Repository.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Checklist_API.Features.Users.Repository;
 
@@ -19,7 +20,7 @@ public class UserRepository(CheckListDbContext dbContext, ILogger<UserRepository
         int itemToSkip = (page - 1) * pageSize;
 
         return await _dbContext.User
-            .OrderBy(x => x.Id)
+            .OrderBy(x => x.LastName)
             .Skip(itemToSkip)
             .Take(pageSize)
             .Distinct()
@@ -27,9 +28,11 @@ public class UserRepository(CheckListDbContext dbContext, ILogger<UserRepository
             .ToListAsync();
     }
 
-    public Task<User?> GetByIdAsync(UserId id)
+    public async Task<User?> GetByIdAsync(UserId id)
     {
-        throw new NotImplementedException();
+        _logger.LogInformation("Retrieving user with ID: {id}", id); // Logger not found eller ikke?`?`?
+
+        return await _dbContext.User.FirstOrDefaultAsync(c => c.Id == id);
     }
 
     public Task<User?> UpdateAsync(UserId id, User user)
