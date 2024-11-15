@@ -108,8 +108,8 @@ public class CheckListDbContext(DbContextOptions options) : DbContext(options)
 
         modelBuilder.Entity<User>()
            .HasMany(u => u.Checklists)
-           .WithOne(c => c.User)
-           .HasForeignKey(c => c.UserId);
+           .WithOne(c => c.User);
+           //.HasForeignKey(c => c.UserId);
 
         modelBuilder.Entity<User>()
            .HasMany(u => u.UserRoles)

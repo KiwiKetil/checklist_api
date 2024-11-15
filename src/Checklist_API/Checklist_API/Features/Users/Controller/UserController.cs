@@ -14,7 +14,7 @@ public class UserController(IUserService userService, ILogger<UserController> lo
     [Authorize(Roles = "User")]
     // GET https://localhost:7070/api/v1/users?page=1&pageSize=10
     [HttpGet(Name = "GetAllUsers")]
-    public async Task<ActionResult<IEnumerable<UserDTO>>> GetAll(int page = 1, int pageSize = 10)
+    public async Task<ActionResult<IEnumerable<UserDTO>>> GetAllUsers(int page = 1, int pageSize = 10)
     {
         _logger.LogInformation("Retrieving all users");
 
