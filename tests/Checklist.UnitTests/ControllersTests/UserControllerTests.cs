@@ -1,5 +1,6 @@
 using Checklist_API.Features.Users.Controller;
 using Checklist_API.Features.Users.DTOs;
+using Checklist_API.Features.Users.Entity;
 using Checklist_API.Features.Users.Service.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -24,7 +25,7 @@ public class UserControllerTests
     [InlineData(1, 10)]
     [InlineData(1, 5)]
 
-    public async Task GetAllUsersAsync_WithPagingValues_ShouldReturnOKAndAllUsers(int page, int pageSize)
+    public async Task GetAllUsers_WithPagingValues_ShouldReturnOKAndAllUsers(int page, int pageSize)
     {
         // Arrange
         List<UserDTO> dtos =
@@ -34,7 +35,7 @@ public class UserControllerTests
             new UserDTO("Nico", "Ho", "12345678", "nico@gmail.com", new DateTime(2024, 10, 19, 02, 52, 00), new DateTime(2024, 10, 17, 12, 00, 45))
         ];
 
-        _userServiceMock.Setup(x => x.GetAllAsync(page, pageSize)).ReturnsAsync(dtos);
+        _userServiceMock.Setup(x => x.GetAllUsersAsync(page, pageSize)).ReturnsAsync(dtos);
 
         // Act
         var res = await _userController.GetAllUsers(page, pageSize);
@@ -56,7 +57,7 @@ public class UserControllerTests
             Assert.Equal(expected.DateUpdated, actual.DateUpdated);
         }
 
-        _userServiceMock.Verify(x => x.GetAllAsync(page, pageSize), Times.Once);
+        _userServiceMock.Verify(x => x.GetAllUsersAsync(page, pageSize), Times.Once);
     }
 
 
@@ -64,10 +65,10 @@ public class UserControllerTests
     [InlineData(1, 10)]
     [InlineData(1, 5)]
 
-    public async Task GetAllUsersAsync_WithPagingValues_ShouldReturnNotFound(int page, int pageSize)
+    public async Task GetAllUsers_WithPagingValues_ShouldReturnNotFound(int page, int pageSize)
     {
         // Arrange
-        _userServiceMock.Setup(x => x.GetAllAsync(page, pageSize)).ReturnsAsync(() => null!);
+        _userServiceMock.Setup(x => x.GetAllUsersAsync(page, pageSize)).ReturnsAsync(() => null!);
 
         // Act
         var res = await _userController.GetAllUsers(page, pageSize);
@@ -78,13 +79,61 @@ public class UserControllerTests
         var errorMessage = Assert.IsType<string>(returnValue.Value); // This asserts that the Value inside the OkObjectResult is a List<UserDTO>, AND IT CONTAINS ALL THE DATA.
         Assert.Equal("No users found", errorMessage);
 
-        _userServiceMock.Verify(x => x.GetAllAsync(page, pageSize), Times.Once);
+        _userServiceMock.Verify(x => x.GetAllUsersAsync(page, pageSize), Times.Once);
     }
 
     #endregion GetAllUsersTests
 
     #region GetByIdTests
 
+    [Fact]
+    public async Task GetUserById_WhenRetrievingValidUser_ShouldReturnUserDTO() 
+    {
+        // Arrange
+        Guid id = Guid.NewGuid();
+
+        UserDTO userDTO = new(
+            "Ketil", 
+            "Sveberg", 
+            "12345678",
+            "Sveberg@gmail.com", 
+            new DateTime(2024, 10, 17, 02, 50, 00), 
+            new DateTime(2024, 10, 17, 02, 52, 30));
+
+        _userServiceMock.Setup(x => x.GetUserByIdAsync(id)).ReturnsAsync(userDTO);
+
+        // Act
+        var res = await _userController.GetUserById(id);
+
+        // Assert
+        var actionResult = Assert.IsType<ActionResult<UserDTO>>(res);
+        var returnValue = Assert.IsType<OkObjectResult>(actionResult.Result);
+        var dto = Assert.IsType<UserDTO>(returnValue.Value);
+
+        Assert.Equal(dto.FirstName, userDTO.FirstName);
+        Assert.Equal(dto.LastName, userDTO.LastName);
+        Assert.Equal(dto.PhoneNumber, userDTO.PhoneNumber);
+        Assert.Equal(dto.Email, userDTO.Email);
+        Assert.Equal(dto.DateCreated, userDTO.DateCreated);
+        Assert.Equal(dto.DateUpdated, userDTO.DateUpdated);
+    }
+
+    [Fact]
+    public async Task GetUserById_WhenRetrievingUserUsingNonExistingId_ShouldReturnNotFound()
+    {
+        // Arrange
+        Guid id = Guid.NewGuid();
+
+        _userServiceMock.Setup(x => x.GetUserByIdAsync(id)).ReturnsAsync((UserDTO?)null);
+
+        // Act
+        var res = await _userController.GetUserById(id);
+
+        // Assert
+        var actionResult = Assert.IsType<ActionResult< UserDTO>> (res);
+        var returnValue = Assert.IsType<NotFoundObjectResult>(actionResult.Result);
+        Assert.Equal($"No user with ID {id} was found", returnValue.Value);
+    }
 
 
     #endregion GetByIdTests
@@ -117,7 +166,7 @@ public class UserControllerTests
     [Theory]
     [MemberData(nameof(GetUserRegistrationDTOsWithExpectedResults))] // kunne brukt ClassDtaa or InlineData for å ikke ha warning, lar være her pga DTOs er serializable
 
-    public async Task RegisterUserAsync_WhenUserRegistersWithSuccess_ShouldReturnOKAndUserDTO(UserRegistrationDTO dto, UserDTO expectedUserDTO)
+    public async Task RegisterUser_WhenUserRegistersWithSuccess_ShouldReturnOKAndUserDTO(UserRegistrationDTO dto, UserDTO expectedUserDTO)
     {
         // Arrange
         _userServiceMock.Setup(x => x.RegisterUserAsync(dto)).ReturnsAsync(expectedUserDTO);
@@ -135,7 +184,7 @@ public class UserControllerTests
     }
 
     [Fact]
-    public async Task RegisterUserAsync_WhenUserRegistrationFails_ShouldReturnBadRequest400()
+    public async Task RegisterUser_WhenUserRegistrationFails_ShouldReturnBadRequest400()
     {
         //Arrange
         UserRegistrationDTO dto = new("Nico", "Ho", "42534253", "Nico@gmail.com", "password3");
@@ -155,12 +204,7 @@ public class UserControllerTests
 
     #endregion using TheoryData V1 (also contains the Fact test for Badrequest.) 
 
-    #region using TheoryData V2
-
-    //Use approach with TheoryData if:
-
-    //The expected UserDTO is always a direct transformation of the input.
-    //You want a more concise and easily maintainable test.
+    #region using TheoryData V2  
 
     public static TheoryData<UserRegistrationDTO> GetUserRegistrationDTOs()
     {
@@ -175,7 +219,7 @@ public class UserControllerTests
     [Theory]
     [MemberData(nameof(GetUserRegistrationDTOs))] // warning i tilfelle ikke er serializable: ikke primitive datatyper i DTO.
  
-    public async Task RegisterUserAsync_WhenUserRegistersWithSuccess_ShouldReturnOKAndUserDTOV2(UserRegistrationDTO dto)
+    public async Task RegisterUser_WhenUserRegistersWithSuccess_ShouldReturnOKAndUserDTOV2(UserRegistrationDTO dto)
     {
         // Arrange
         var dtNow = DateTime.UtcNow;
@@ -210,7 +254,7 @@ public class UserControllerTests
     [InlineData("Quyen", "Ho", "42534253", "Quyen99@gmail.com", "password2")]
     [InlineData("Nico", "Ho", "42534253", "Nico@gmail.com", "password3")]
 
-    public async Task RegisterUserAsync_WhenUserRegistersWithSuccess_ShouldReturnOKAndUserDTOV3(string firstName, string lastName, string phoneNumber, string email, string password)
+    public async Task RegisterUser_WhenUserRegistersWithSuccess_ShouldReturnOKAndUserDTOV3(string firstName, string lastName, string phoneNumber, string email, string password)
     {
         // Arrange
         var userRegistrationDTO = new UserRegistrationDTO(firstName, lastName, phoneNumber, email, password);

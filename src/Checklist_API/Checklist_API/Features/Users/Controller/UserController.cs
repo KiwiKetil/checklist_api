@@ -24,7 +24,7 @@ public class UserController(IUserService userService, ILogger<UserController> lo
             return BadRequest("Invalid pagination parameters - MIN page = 1, MAX pageSize = 50 ");
         }
 
-        var res = await _userService.GetAllAsync(page, pageSize);
+        var res = await _userService.GetAllUsersAsync(page, pageSize);
         return res != null ? Ok(res) : NotFound("No users found");
     }
 
@@ -34,7 +34,7 @@ public class UserController(IUserService userService, ILogger<UserController> lo
     {
         _logger.LogInformation("Retrieving user with ID: {id}", id);
 
-        var res = await _userService.GetByIdAsync(id);
+        var res = await _userService.GetUserByIdAsync(id);
         return res != null ? Ok(res) : NotFound($"No user with ID {id} was found"); // logge?????
     }
 
