@@ -15,7 +15,7 @@ public class UserAuthenticationService(IUserRepository userRepository, ILogger<U
     {
         _logger.LogInformation("Authenticating user: {username}", loginDTO.UserName);
 
-        var user = await _userRepository.GetByEmailAsync(loginDTO.UserName);
+        var user = await _userRepository.GetUserByEmailAsync(loginDTO.UserName);
 
         if (user != null && BCrypt.Net.BCrypt.Verify(loginDTO.Password, user.HashedPassword)) 
         {

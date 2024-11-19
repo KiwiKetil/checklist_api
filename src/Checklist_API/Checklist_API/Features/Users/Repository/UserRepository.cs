@@ -13,7 +13,7 @@ public class UserRepository(CheckListDbContext dbContext, ILogger<UserRepository
     private readonly CheckListDbContext _dbContext = dbContext;
     private readonly ILogger<UserRepository> _logger = logger;
 
-    public async Task<IEnumerable<User>> GetAllAsync(int page, int pageSize)
+    public async Task<IEnumerable<User>> GetAllUsersAsync(int page, int pageSize)
     {
         _logger.LogInformation("Retrieving users from db");
 
@@ -28,24 +28,24 @@ public class UserRepository(CheckListDbContext dbContext, ILogger<UserRepository
             .ToListAsync();
     }
 
-    public async Task<User?> GetByIdAsync(UserId id)
+    public async Task<User?> GetUserByIdAsync(UserId id)
     {
-        _logger.LogInformation("Retrieving user with ID: {id}", id); // Logger not found eller ikke?`?`?
+        _logger.LogInformation("Retrieving user with ID: {id}", id);
 
         return await _dbContext.User.FirstOrDefaultAsync(c => c.Id == id);
     }
 
-    public Task<User?> UpdateAsync(UserId id, User user)
+    public Task<User?> UpdateUserAsync(UserId id, User user)
     {
         throw new NotImplementedException();
     }
 
-    public Task<User?> DeleteAsync(UserId id)
+    public Task<User?> DeleteUserAsync(UserId id)
     {
         throw new NotImplementedException();
     }
 
-    public async Task<User?> RegisterAsync(User user)
+    public async Task<User?> RegisterUserAsync(User user)
     {
         _logger.LogInformation("Adding user: {user} to db", user.Email);
 
@@ -65,7 +65,7 @@ public class UserRepository(CheckListDbContext dbContext, ILogger<UserRepository
         return res.Entity;
     }
 
-    public async Task<User?> GetByEmailAsync(string email)
+    public async Task<User?> GetUserByEmailAsync(string email)
     {
         _logger.LogInformation("Retrieving user by email: {email} from db", email);
 

@@ -34,7 +34,7 @@ public class UserAuthenticationServiceTests
             Salt = "$2a$11$55pfCgY8voiC1V4029QfR."
         };
 
-        _userRepositoryMock.Setup(x => x.GetByEmailAsync(loginDTO.UserName)).ReturnsAsync(expectedUser);
+        _userRepositoryMock.Setup(x => x.GetUserByEmailAsync(loginDTO.UserName)).ReturnsAsync(expectedUser);
 
         // Act
         var result = await _userAuthenticationService.AuthenticateUserAsync(loginDTO);
@@ -46,7 +46,7 @@ public class UserAuthenticationServiceTests
         Assert.Equal(expectedUser.LastName, result.LastName);
         Assert.Equal(expectedUser.Email, result.Email);
 
-        _userRepositoryMock.Verify(x => x.GetByEmailAsync(loginDTO.UserName), Times.Once);
+        _userRepositoryMock.Verify(x => x.GetUserByEmailAsync(loginDTO.UserName), Times.Once);
     }
 
     [Fact]
@@ -65,7 +65,7 @@ public class UserAuthenticationServiceTests
             Salt = "$2a$11$55pfCgY8voiC1V4029QfR."
         };
 
-        _userRepositoryMock.Setup(x => x.GetByEmailAsync(loginDTO.UserName)).ReturnsAsync(expectedUser);
+        _userRepositoryMock.Setup(x => x.GetUserByEmailAsync(loginDTO.UserName)).ReturnsAsync(expectedUser);
 
         // Act
         var res = await _userAuthenticationService.AuthenticateUserAsync(loginDTO);
@@ -73,7 +73,7 @@ public class UserAuthenticationServiceTests
         // Assert
         Assert.Null(res);
 
-        _userRepositoryMock.Verify(x => x.GetByEmailAsync(loginDTO.UserName), Times.Once);
+        _userRepositoryMock.Verify(x => x.GetUserByEmailAsync(loginDTO.UserName), Times.Once);
     }
 
     [Fact]
@@ -83,7 +83,7 @@ public class UserAuthenticationServiceTests
         var loginDTO = new LoginDTO { UserName = "ketilsveberg@gmail.com", Password = "string" };
         User? nullUser = null;
 
-        _userRepositoryMock.Setup(x => x.GetByEmailAsync(loginDTO.UserName)).ReturnsAsync(nullUser);
+        _userRepositoryMock.Setup(x => x.GetUserByEmailAsync(loginDTO.UserName)).ReturnsAsync(nullUser);
 
         // Act
         var res = await _userAuthenticationService.AuthenticateUserAsync(loginDTO);
@@ -91,6 +91,6 @@ public class UserAuthenticationServiceTests
         // Assert
         Assert.Null(res);
 
-        _userRepositoryMock.Verify(x => x.GetByEmailAsync(loginDTO.UserName), Times.Once);
+        _userRepositoryMock.Verify(x => x.GetUserByEmailAsync(loginDTO.UserName), Times.Once);
     }
 }
