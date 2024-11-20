@@ -113,7 +113,55 @@ public class UserServiceTests
 
     #region GetByIdAsyncTests
 
+    [Fact]
+    public async Task GetUserByIdAsync_WhenRetrievingValidUser_ShouldReturnUserDTO() 
+    {
+        // Arrange
+        User user = new()
+        {
+            Id = UserId.NewId,
+            FirstName = "Jimmy",
+            LastName = "Stallone",
+            PhoneNumber = "73463577",
+            Email = "stallone@gmail.com",
+            HashedPassword = "hashedPassword",
+            Salt = "salt",
+            DateCreated = new DateTime(2024, 11, 17, 02, 50, 00),
+            DateUpdated = new DateTime(2024, 12, 17, 02, 52, 30)
+        };
 
+        _userRepositoryMock.Setup(x => x.GetUserByIdAsync(user.Id)).ReturnsAsync(user);
+
+        // Act
+        var res = await _userService.GetUserByIdAsync(user.Id.Value);
+
+        // Assert   
+        Assert.NotNull(res);
+        Assert.IsType<UserDTO>(res);
+        Assert.Equal(user.FirstName, res.FirstName);
+        Assert.Equal(user.LastName, res.LastName);
+        Assert.Equal(user.PhoneNumber, res.PhoneNumber);
+        Assert.Equal(user.Email, res.Email);
+        Assert.Equal(user.DateCreated, res.DateCreated);
+        Assert.Equal(user.DateUpdated, res.DateUpdated);   
+
+        _userRepositoryMock.Verify(x => x.GetUserByIdAsync(user.Id), Times.Once);
+    }
+
+    [Fact]
+    public async Task GetUserByIdAsync_WhenRetrievingUserUsingNonExistingId_ShouldReturnNull()
+    {
+        // Arrange
+
+
+
+        // Act
+
+
+
+        // Assert   
+
+    }
 
     #endregion GetByIdAsyncTests
 

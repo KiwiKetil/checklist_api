@@ -3,7 +3,7 @@ using System.Numerics;
 
 namespace Checklist_API.Features.Checklists.Entity;
 
-public readonly record struct ChecklistId(Guid checklistId)
+public readonly record struct ChecklistId(Guid Value)
 {
     public static ChecklistId NewId => new(Guid.NewGuid());
     public static ChecklistId Empty => new(Guid.Empty);

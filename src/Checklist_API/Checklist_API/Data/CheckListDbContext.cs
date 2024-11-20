@@ -22,7 +22,7 @@ public class CheckListDbContext(DbContextOptions options) : DbContext(options)
         modelBuilder.Entity<CheckList>()  
               .Property(x => x.Id)
               .HasConversion(
-                  id => id.checklistId,
+                  id => id.Value,
                   value => new ChecklistId(value)
            );
 
