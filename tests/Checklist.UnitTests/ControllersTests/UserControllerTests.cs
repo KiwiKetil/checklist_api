@@ -4,6 +4,7 @@ using Checklist_API.Features.Users.Entity;
 using Checklist_API.Features.Users.Service.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 using Moq;
 
@@ -116,6 +117,8 @@ public class UserControllerTests
         Assert.Equal(dto.Email, userDTO.Email);
         Assert.Equal(dto.DateCreated, userDTO.DateCreated);
         Assert.Equal(dto.DateUpdated, userDTO.DateUpdated);
+
+        _userServiceMock.Verify(x => x.GetUserByIdAsync(id), Times.Once);
     }
 
     [Fact]
@@ -133,8 +136,9 @@ public class UserControllerTests
         var actionResult = Assert.IsType<ActionResult< UserDTO>> (res);
         var returnValue = Assert.IsType<NotFoundObjectResult>(actionResult.Result);
         Assert.Equal($"No user with ID {id} was found", returnValue.Value);
-    }
 
+        _userServiceMock.Verify(x => x.GetUserByIdAsync(id), Times.Once);
+    }
 
     #endregion GetByIdTests
 
