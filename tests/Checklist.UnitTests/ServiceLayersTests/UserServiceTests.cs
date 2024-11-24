@@ -148,20 +148,20 @@ public class UserServiceTests
         _userRepositoryMock.Verify(x => x.GetUserByIdAsync(user.Id), Times.Once);
     }
 
-    [Fact]
-    public async Task GetUserByIdAsync_WhenRetrievingUserUsingNonExistingId_ShouldReturnNull()
-    {
-        // Arrange
+    //[Fact]
+    //public async Task GetUserByIdAsync_WhenRetrievingUserUsingNonExistingId_ShouldReturnNull()
+    //{
+    //    // Arrange
 
 
 
-        // Act
+    //    // Act
 
 
 
-        // Assert   
+    //    // Assert   
 
-    }
+    //}
 
     #endregion GetByIdAsyncTests
 
