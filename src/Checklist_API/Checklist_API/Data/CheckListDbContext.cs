@@ -7,10 +7,10 @@ namespace Checklist_API.Data;
 
 public class CheckListDbContext(DbContextOptions options) : DbContext(options)
 {
-    public DbSet<CheckList> CheckList { get; set; }
-    public DbSet<User> User { get; set; }
-    public DbSet<Role> Role { get; set; }
-    public DbSet<UserRole> UserRole { get; set; }
+    public required DbSet<CheckList> CheckList { get; set; }
+    public required DbSet<User> User { get; set; }
+    public required DbSet<Role> Role { get; set; }
+    public required DbSet<UserRole> UserRole { get; set; }
 
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)

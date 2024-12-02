@@ -35,15 +35,17 @@ public class UserController(IUserService userService, ILogger<UserController> lo
         _logger.LogInformation("Retrieving user with ID: {id}", id);
 
         var res = await _userService.GetUserByIdAsync(id);
-        return res != null ? Ok(res) : NotFound($"No user with ID {id} was found"); // logge?????
+        return res != null ? Ok(res) : NotFound($"No user with ID {id} found"); 
     }
 
-    // PUT api/<UserController>/5
-    [HttpPut("{id}")]
-    public void Put(int id, [FromBody] string value)
+    // PUT https://localhost:7070/api/v1/users/
+    [HttpPut("{id}", Name = "UpdateUserById")]
+    public async Task<ActionResult<UserDTO>> UpdateUser([FromRoute] Guid id, [FromBody] UserUpdateDTO dto)
     {
-        //var userId = User.FindFirst("UserId")?.Value; // brukes for å sjekke at en bruker kun kan endre sine gne checklists
+        _logger.LogInformation("Updating user with ID: {id}", id);
 
+        var res =  await _userService.UpdateUserAsync(id, dto);
+        return res != null ? Ok(res) : NotFound($"No user with ID {id} found. Could not update user.");
     }
 
     // DELETE api/<UserController>/5
