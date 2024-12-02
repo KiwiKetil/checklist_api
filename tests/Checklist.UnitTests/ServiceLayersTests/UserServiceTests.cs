@@ -1,12 +1,9 @@
 ﻿using Checklist_API.Features.Common.Interfaces;
-using Checklist_API.Features.Login.DTOs;
 using Checklist_API.Features.Users.DTOs;
 using Checklist_API.Features.Users.Entity;
 using Checklist_API.Features.Users.Mappers;
-using Checklist_API.Features.Users.Repository;
 using Checklist_API.Features.Users.Repository.Interfaces;
 using Checklist_API.Features.Users.Service;
-using Checklist_API.Features.Users.Service.Interfaces;
 using Microsoft.Extensions.Logging;
 using Moq;
 using static Checklist_API.Features.ExceptionHandling.CustomExceptions;
@@ -18,13 +15,15 @@ public class UserServiceTests
     private readonly Mock<IUserRepository> _userRepositoryMock = new();
     private readonly Mock<ILogger<UserService>> _loggerMock = new();
     private readonly IMapper<User, UserDTO> _userMapper;
+    private readonly IMapper<User, UserUpdateDTO> _userUpdateMapper;
     private readonly IMapper<User, UserRegistrationDTO> _userRegistrationMapper;
 
     public UserServiceTests()
     {
         _userMapper = new UserMapper();
+        _userUpdateMapper = new UserUpdateMapper();
         _userRegistrationMapper = new UserRegistrationMapper();
-        _userService = new UserService(_userRepositoryMock.Object, _loggerMock.Object, _userMapper, _userRegistrationMapper);
+        _userService = new UserService(_userRepositoryMock.Object, _loggerMock.Object, _userMapper, _userUpdateMapper, _userRegistrationMapper);
     }
 
     #region GetallAsyncTests
@@ -114,7 +113,7 @@ public class UserServiceTests
     #region GetByIdAsyncTests
 
     [Fact]
-    public async Task GetUserByIdAsync_WhenRetrievingValidUser_ShouldReturnUserDTO() 
+    public async Task GetUserByIdAsync_WhenRetrievingValidUser_ShouldReturnUserDTO()
     {
         // Arrange
         User user = new()
@@ -143,25 +142,26 @@ public class UserServiceTests
         Assert.Equal(user.PhoneNumber, res.PhoneNumber);
         Assert.Equal(user.Email, res.Email);
         Assert.Equal(user.DateCreated, res.DateCreated);
-        Assert.Equal(user.DateUpdated, res.DateUpdated);   
+        Assert.Equal(user.DateUpdated, res.DateUpdated);
 
         _userRepositoryMock.Verify(x => x.GetUserByIdAsync(user.Id), Times.Once);
     }
 
-    //[Fact]
-    //public async Task GetUserByIdAsync_WhenRetrievingUserUsingNonExistingId_ShouldReturnNull()
-    //{
-    //    // Arrange
+    [Fact]
+    public async Task GetUserByIdAsync_WhenUsingNonExistingId_ShouldReturnNull()
+    {
+        // Arrange
+        var id = UserId.NewId;
 
+        _userRepositoryMock.Setup(x => x.GetUserByIdAsync(id)).ReturnsAsync((User?)null);
 
+        // Act
+        var res = await _userService.GetUserByIdAsync(id.Value);
 
-    //    // Act
-
-
-
-    //    // Assert   
-
-    //}
+        // Assert   
+        Assert.Null(res);
+        _userRepositoryMock.Verify(x => x.GetUserByIdAsync(id), Times.Once);
+    }
 
     #endregion GetByIdAsyncTests
 
@@ -208,7 +208,7 @@ public class UserServiceTests
     }
 
     [Fact]
-    public async Task RegisterUserAsync_WhenUserAlreadyExists_ShouldThrowUserAlreadyExistException() 
+    public async Task RegisterUserAsync_WhenUserAlreadyExists_ShouldThrowUserAlreadyExistException()
     {
         // Arrange
         UserRegistrationDTO dto = new("Nils", "Jensen", "83542435", "jensen@gmail.com", "fakePassword");

@@ -9,12 +9,15 @@ using static Checklist_API.Features.ExceptionHandling.CustomExceptions;
 
 namespace Checklist_API.Features.Users.Service;
 
-public class UserService(IUserRepository userRepository, ILogger<UserService> logger, IMapper<User, UserDTO> userMapper,
+public class UserService(IUserRepository userRepository, ILogger<UserService> logger, 
+                    IMapper<User, UserDTO> userMapper,
+                    IMapper<User, UserUpdateDTO> userUpdateMapper,
                     IMapper<User, UserRegistrationDTO> userRegistrationMapper) : IUserService
 {
     private readonly IUserRepository _userRepository = userRepository;
     private readonly ILogger<UserService> _logger = logger;
     private readonly IMapper<User, UserDTO> _userMapper = userMapper;
+    private readonly IMapper<User, UserUpdateDTO> _userUpdateMapper = userUpdateMapper;
     private readonly IMapper<User, UserRegistrationDTO> _userRegistrationMapper = userRegistrationMapper;
 
     public async Task<IEnumerable<UserDTO>> GetAllUsersAsync(int page, int pageSize)
@@ -32,17 +35,35 @@ public class UserService(IUserRepository userRepository, ILogger<UserService> lo
         _logger.LogInformation("Retrieving user with ID: {id}", id);
 
         var res = await _userRepository.GetUserByIdAsync(new UserId(id));
-        if (res == null) 
-        {
-            _logger.LogInformation("User not found");
-            return null;
-        }
-        return _userMapper.MapToDTO(res);
+
+        return res != null ? _userMapper.MapToDTO(res) : null;
+
+        //if (res == null) 
+        //{
+        //    _logger.LogInformation("No user with ID {id} found", id);
+        //    return null;
+        //}
+        //return _userMapper.MapToDTO(res);
     }
 
-    public Task<UserDTO?> UpdateUserAsync(Guid id, UserDTO dto)
+    public async Task<UserDTO?> UpdateUserAsync(Guid id, UserUpdateDTO dto)
     {
-        throw new NotImplementedException();
+        _logger.LogInformation("Updating user with ID: {id}", id);
+
+        var user = _userUpdateMapper.MapToEntity(dto);
+        var res = await _userRepository.UpdateUserAsync(new UserId(id), user);
+
+        return res != null ? _userMapper.MapToDTO(res) : null;
+
+        //if (res == null) 
+        //{
+        //    _logger.LogInformation("No user with ID {id} found", id);
+        //    return null;        
+        //}
+
+        //var userDTO = _userMapper.MapToDTO(res);
+
+        //return userDTO; 
     }
 
     public Task<UserDTO?> DeleteUserAsync(Guid id)

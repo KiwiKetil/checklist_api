@@ -135,7 +135,7 @@ public class UserControllerTests
         // Assert
         var actionResult = Assert.IsType<ActionResult< UserDTO>> (res);
         var returnValue = Assert.IsType<NotFoundObjectResult>(actionResult.Result);
-        Assert.Equal($"No user with ID {id} was found", returnValue.Value);
+        Assert.Equal($"No user with ID {id} found", returnValue.Value);
 
         _userServiceMock.Verify(x => x.GetUserByIdAsync(id), Times.Once);
     }

@@ -35,9 +35,22 @@ public class UserRepository(CheckListDbContext dbContext, ILogger<UserRepository
         return await _dbContext.User.FirstOrDefaultAsync(c => c.Id == id);
     }
 
-    public Task<User?> UpdateUserAsync(UserId id, User user)
+    public async Task<User?> UpdateUserAsync(UserId id, User user)
     {
-        throw new NotImplementedException();
+        var usr = await _dbContext.User.FindAsync(id);  // firstordefault?
+
+        if (usr == null)
+        {
+            return null;
+        }
+
+        usr.FirstName = string.IsNullOrEmpty(user.FirstName) ? usr.FirstName : user.FirstName;
+        usr.LastName = string.IsNullOrEmpty(user.LastName) ? usr.LastName : user.LastName;
+        usr.PhoneNumber = string.IsNullOrEmpty(user.PhoneNumber) ? usr.PhoneNumber : user.PhoneNumber;
+        usr.Email = string.IsNullOrEmpty(user.Email) ? usr.Email : user.Email;
+
+        await _dbContext.SaveChangesAsync();
+        return usr;
     }
 
     public Task<User?> DeleteUserAsync(UserId id)
