@@ -19,19 +19,19 @@ public class CheckListDbContext(DbContextOptions options) : DbContext(options)
 
         #region CheckList
 
-        modelBuilder.Entity<CheckList>()  
-              .Property(x => x.Id)
-              .HasConversion(
+        modelBuilder.Entity<CheckList>()
+            .Property(x => x.Id)
+            .HasConversion(
                   id => id.Value,
                   value => new ChecklistId(value)
-           );
+            );
 
-        modelBuilder.Entity<CheckList>() 
+        modelBuilder.Entity<CheckList>()
             .Property(x => x.UserId)
             .HasConversion(
                id => id.Value,
                value => new UserId(value)
-         );
+            );
 
         modelBuilder.Entity<CheckList>()
             .HasKey(x => x.Id);
@@ -109,7 +109,7 @@ public class CheckListDbContext(DbContextOptions options) : DbContext(options)
         modelBuilder.Entity<User>()
            .HasMany(u => u.Checklists)
            .WithOne(c => c.User);
-           //.HasForeignKey(c => c.UserId);
+        //.HasForeignKey(c => c.UserId);
 
         modelBuilder.Entity<User>()
            .HasMany(u => u.UserRoles)
@@ -193,7 +193,7 @@ public class CheckListDbContext(DbContextOptions options) : DbContext(options)
          );
 
         modelBuilder.Entity<UserRole>()
-         .HasKey(ur => new { ur.RoleName, ur.UserId }); 
+         .HasKey(ur => new { ur.RoleName, ur.UserId });
 
         modelBuilder.Entity<UserRole>()
          .HasOne(j => j.Role)

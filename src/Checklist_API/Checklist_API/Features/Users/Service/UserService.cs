@@ -36,16 +36,9 @@ public class UserService(IUserRepository userRepository, ILogger<UserService> lo
 
         var res = await _userRepository.GetUserByIdAsync(new UserId(id));
 
-        return res != null ? _userMapper.MapToDTO(res) : null;
-
-        //if (res == null) 
-        //{
-        //    _logger.LogInformation("No user with ID {id} found", id);
-        //    return null;
-        //}
-        //return _userMapper.MapToDTO(res);
+        return res != null ? _userMapper.MapToDTO(res) : null;    
     }
-
+        
     public async Task<UserDTO?> UpdateUserAsync(Guid id, UserUpdateDTO dto)
     {
         _logger.LogInformation("Updating user with ID: {id}", id);
@@ -53,22 +46,15 @@ public class UserService(IUserRepository userRepository, ILogger<UserService> lo
         var user = _userUpdateMapper.MapToEntity(dto);
         var res = await _userRepository.UpdateUserAsync(new UserId(id), user);
 
-        return res != null ? _userMapper.MapToDTO(res) : null;
-
-        //if (res == null) 
-        //{
-        //    _logger.LogInformation("No user with ID {id} found", id);
-        //    return null;        
-        //}
-
-        //var userDTO = _userMapper.MapToDTO(res);
-
-        //return userDTO; 
+        return res != null ? _userMapper.MapToDTO(res) : null;       
     }
 
-    public Task<UserDTO?> DeleteUserAsync(Guid id)
+    public async Task<UserDTO?> DeleteUserAsync(Guid id)
     {
-        throw new NotImplementedException();
+        _logger.LogInformation("Deleting user with ID: {id}", id);
+
+        var res = await _userRepository.DeleteUserAsync(new UserId(id));
+        return res != null ? _userMapper.MapToDTO(res) : null;
     }
 
     public async Task<UserDTO?> RegisterUserAsync(UserRegistrationDTO dto)
