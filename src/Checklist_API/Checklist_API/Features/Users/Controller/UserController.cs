@@ -48,11 +48,16 @@ public class UserController(IUserService userService, ILogger<UserController> lo
         return res != null ? Ok(res) : NotFound($"No user with ID {id} found. Could not update user.");
     }
 
-    // DELETE api/<UserController>/5
-    [HttpDelete("{id}")]
-    public void Delete(int id)
+    // DELETE https://localhost:7070/api/v1/users/
+    [HttpDelete("{id}" , Name = "DeleteUser")]
+    public async Task<ActionResult<UserDTO>> DeleteUser([FromRoute]Guid id)
     {
+        _logger.LogInformation("Deleting user with ID: {id}", id);
+
+        var res = await _userService.DeleteUserAsync(id);
+        return res != null ? Ok(res) : NotFound($"No user with ID {id} found. Could not delete user.");
     }
+    
 
     // POST https://localhost:7070/api/v1/users/register
     [HttpPost("register", Name = "RegisterUser")]

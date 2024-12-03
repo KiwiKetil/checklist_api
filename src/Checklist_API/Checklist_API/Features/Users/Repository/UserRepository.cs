@@ -30,32 +30,47 @@ public class UserRepository(CheckListDbContext dbContext, ILogger<UserRepository
 
     public async Task<User?> GetUserByIdAsync(UserId id)
     {
-        _logger.LogInformation("Retrieving user with ID: {id}", id);
+        _logger.LogInformation("Retrieving user with ID: {id} from db", id);
 
-        return await _dbContext.User.FirstOrDefaultAsync(c => c.Id == id);
+        return await _dbContext.User.FindAsync(id);
     }
 
     public async Task<User?> UpdateUserAsync(UserId id, User user)
     {
-        var usr = await _dbContext.User.FindAsync(id);  // firstordefault?
+        _logger.LogInformation("Updating user with ID: {id} in db", id);
+
+        var usr = await _dbContext.User.FindAsync(id);
 
         if (usr == null)
         {
             return null;
         }
 
-        usr.FirstName = string.IsNullOrEmpty(user.FirstName) ? usr.FirstName : user.FirstName;
-        usr.LastName = string.IsNullOrEmpty(user.LastName) ? usr.LastName : user.LastName;
-        usr.PhoneNumber = string.IsNullOrEmpty(user.PhoneNumber) ? usr.PhoneNumber : user.PhoneNumber;
-        usr.Email = string.IsNullOrEmpty(user.Email) ? usr.Email : user.Email;
+        usr.FirstName = string.IsNullOrWhiteSpace(user.FirstName) ? usr.FirstName : user.FirstName;
+        usr.LastName = string.IsNullOrWhiteSpace(user.LastName) ? usr.LastName : user.LastName;
+        usr.PhoneNumber = string.IsNullOrWhiteSpace(user.PhoneNumber) ? usr.PhoneNumber : user.PhoneNumber;
+        usr.Email = string.IsNullOrWhiteSpace(user.Email) ? usr.Email : user.Email;
+        usr.DateUpdated = DateTime.Now;
 
         await _dbContext.SaveChangesAsync();
         return usr;
     }
 
-    public Task<User?> DeleteUserAsync(UserId id)
+    public async Task<User?> DeleteUserAsync(UserId id)
     {
-        throw new NotImplementedException();
+        _logger.LogInformation("Deleting user with ID: {id} from db", id);
+
+        var user = await _dbContext.User.FindAsync(id);
+
+        if (user == null)
+        {
+            return null;
+        }
+
+        _dbContext.User.Remove(user);
+        await _dbContext.SaveChangesAsync();
+
+        return user;
     }
 
     public async Task<User?> RegisterUserAsync(User user)
