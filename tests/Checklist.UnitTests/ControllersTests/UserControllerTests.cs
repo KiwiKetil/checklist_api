@@ -1,12 +1,12 @@
 using Checklist_API.Features.Users.Controller;
 using Checklist_API.Features.Users.DTOs;
-using Checklist_API.Features.Users.Entity;
 using Checklist_API.Features.Users.Service.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 using Moq;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 
 namespace Checklist.UnitTests.ControllersTests;
 public class UserControllerTests
@@ -29,6 +29,20 @@ public class UserControllerTests
     public async Task GetAllUsers_WithPagingValues_ShouldReturnOKAndAllUsers(int page, int pageSize)
     {
         // Arrange
+        var mockUser = new Mock<ClaimsPrincipal>();
+        mockUser.Setup(u => u.Claims).Returns(new List<Claim>
+        {
+            new(JwtRegisteredClaimNames.Sub, "fakeUserId123"),
+            new(JwtRegisteredClaimNames.Name, "fakeUserName"),
+            new(ClaimTypes.Role, "Admin"),
+        });
+
+        var controllerContext = new ControllerContext
+        {
+            HttpContext = new DefaultHttpContext { User = mockUser.Object }
+        };
+        _userController.ControllerContext = controllerContext;
+
         List<UserDTO> dtos =
         [
             new UserDTO("Ketil", "Sveberg", "12345678", "Sveberg@gmail.com", new DateTime(2024, 10, 17, 02, 50, 00), new DateTime(2024, 10, 17, 02, 52, 30)),
@@ -48,7 +62,7 @@ public class UserControllerTests
 
         Assert.Equal(dtos.Count, dtoCollection.Count);
 
-        foreach (var (expected, actual) in dtos.Zip(dtoCollection, (expected, actual) => (expected, actual))) 
+        foreach (var (expected, actual) in dtos.Zip(dtoCollection, (expected, actual) => (expected, actual)))
         {
             Assert.Equal(expected.FirstName, actual.FirstName);
             Assert.Equal(expected.LastName, actual.LastName);
@@ -66,9 +80,23 @@ public class UserControllerTests
     [InlineData(1, 10)]
     [InlineData(1, 5)]
 
-    public async Task GetAllUsers_WithPagingValues_ShouldReturnNotFound(int page, int pageSize)
+    public async Task GetAllUsers_WhenNoUsersFound_WithPagingValues_ShouldReturnNotFound(int page, int pageSize)
     {
         // Arrange
+        var mockUser = new Mock<ClaimsPrincipal>();
+        mockUser.Setup(u => u.Claims).Returns(new List<Claim>
+        {
+            new(JwtRegisteredClaimNames.Sub, "fakeUserId123"),
+            new(JwtRegisteredClaimNames.Name, "fakeUserName"),
+            new(ClaimTypes.Role, "Admin"),
+        });
+
+        var controllerContext = new ControllerContext
+        {
+            HttpContext = new DefaultHttpContext { User = mockUser.Object }
+        };
+        _userController.ControllerContext = controllerContext;
+
         _userServiceMock.Setup(x => x.GetAllUsersAsync(page, pageSize)).ReturnsAsync(() => null!);
 
         // Act
@@ -88,17 +116,17 @@ public class UserControllerTests
     #region GetByIdTests
 
     [Fact]
-    public async Task GetUserById_WhenRetrievingValidUser_ShouldReturnUserDTO() 
+    public async Task GetUserById_WhenRetrievingValidUser_ShouldReturnUserDTO()
     {
         // Arrange
         Guid id = Guid.NewGuid();
 
         UserDTO userDTO = new(
-            "Ketil", 
-            "Sveberg", 
+            "Ketil",
+            "Sveberg",
             "12345678",
-            "Sveberg@gmail.com", 
-            new DateTime(2024, 10, 17, 02, 50, 00), 
+            "Sveberg@gmail.com",
+            new DateTime(2024, 10, 17, 02, 50, 00),
             new DateTime(2024, 10, 17, 02, 52, 30));
 
         _userServiceMock.Setup(x => x.GetUserByIdAsync(id)).ReturnsAsync(userDTO);
@@ -133,7 +161,7 @@ public class UserControllerTests
         var res = await _userController.GetUserById(id);
 
         // Assert
-        var actionResult = Assert.IsType<ActionResult< UserDTO>> (res);
+        var actionResult = Assert.IsType<ActionResult<UserDTO>>(res);
         var returnValue = Assert.IsType<NotFoundObjectResult>(actionResult.Result);
         Assert.Equal($"No user with ID {id} found", returnValue.Value);
 
@@ -203,7 +231,7 @@ public class UserControllerTests
         var badRequestResult = Assert.IsType<BadRequestObjectResult>(actionResult.Result);
         Assert.Equal(StatusCodes.Status400BadRequest, badRequestResult.StatusCode);
 
-        _userServiceMock.Verify(x => x.RegisterUserAsync(dto), Times.Once);        
+        _userServiceMock.Verify(x => x.RegisterUserAsync(dto), Times.Once);
     }
 
     #endregion using TheoryData V1 (also contains the Fact test for Badrequest.) 
@@ -222,7 +250,7 @@ public class UserControllerTests
 
     [Theory]
     [MemberData(nameof(GetUserRegistrationDTOs))] // warning i tilfelle ikke er serializable: ikke primitive datatyper i DTO.
- 
+
     public async Task RegisterUser_WhenUserRegistersWithSuccess_ShouldReturnOKAndUserDTOV2(UserRegistrationDTO dto)
     {
         // Arrange

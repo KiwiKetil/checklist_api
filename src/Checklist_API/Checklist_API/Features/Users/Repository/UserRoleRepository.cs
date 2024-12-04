@@ -13,7 +13,7 @@ public class UserRoleRepository(CheckListDbContext dbContext, ILogger<UserRoleRe
 
     public async Task<IEnumerable<UserRole>> GetUserRolesAsync(UserId id)
     {
-        _logger.LogInformation("Retrieving roles for user with ID: {UserId}", id);
+        _logger.LogDebug("Retrieving roles for user with ID: {UserId}", id);
 
         var userRoles = await _dbContext.UserRole.Where(ur => ur.UserId == id).AsNoTracking().ToListAsync();
         return userRoles;

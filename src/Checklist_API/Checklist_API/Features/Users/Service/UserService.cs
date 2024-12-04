@@ -22,8 +22,6 @@ public class UserService(IUserRepository userRepository, ILogger<UserService> lo
 
     public async Task<IEnumerable<UserDTO>> GetAllUsersAsync(int page, int pageSize)
     {
-        _logger.LogInformation("Retrieving all users");
-
         var res = await _userRepository.GetAllUsersAsync(page, pageSize);
 
         var dtos = res.Select(user => _userMapper.MapToDTO(user)).ToList();
@@ -32,8 +30,6 @@ public class UserService(IUserRepository userRepository, ILogger<UserService> lo
 
     public async Task<UserDTO?> GetUserByIdAsync(Guid id)
     {
-        _logger.LogInformation("Retrieving user with ID: {id}", id);
-
         var res = await _userRepository.GetUserByIdAsync(new UserId(id));
 
         return res != null ? _userMapper.MapToDTO(res) : null;    
@@ -41,8 +37,6 @@ public class UserService(IUserRepository userRepository, ILogger<UserService> lo
         
     public async Task<UserDTO?> UpdateUserAsync(Guid id, UserUpdateDTO dto)
     {
-        _logger.LogInformation("Updating user with ID: {id}", id);
-
         var user = _userUpdateMapper.MapToEntity(dto);
         var res = await _userRepository.UpdateUserAsync(new UserId(id), user);
 
@@ -51,16 +45,12 @@ public class UserService(IUserRepository userRepository, ILogger<UserService> lo
 
     public async Task<UserDTO?> DeleteUserAsync(Guid id)
     {
-        _logger.LogInformation("Deleting user with ID: {id}", id);
-
         var res = await _userRepository.DeleteUserAsync(new UserId(id));
         return res != null ? _userMapper.MapToDTO(res) : null;
     }
 
-    public async Task<UserDTO?> RegisterUserAsync(UserRegistrationDTO dto)
+    public async Task<UserDTO?> RegisterUserAsync(UserRegistrationDTO dto) 
     {
-        _logger.LogDebug("Registering new user: {email}", dto.Email);
-
         var existingUser = await _userRepository.GetUserByEmailAsync(dto.Email);
         if (existingUser != null)
         {

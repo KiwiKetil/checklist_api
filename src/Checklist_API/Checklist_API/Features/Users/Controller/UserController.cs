@@ -2,6 +2,8 @@
 using Checklist_API.Features.Users.Service.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 
 namespace Checklist_API.Features.Users.Controller;
 [Route("api/v1/users")]
@@ -11,12 +13,14 @@ public class UserController(IUserService userService, ILogger<UserController> lo
     private readonly IUserService _userService = userService;
     private readonly ILogger<UserController> _logger = logger;
 
-    [Authorize(Roles = "User")]
-    // GET https://localhost:7070/api/v1/users?page=1&pageSize=10
+    [Authorize(Roles = "Admin")]
+    // GET https://localhost:7070/api/v1/users?page=1&pageSize=10 // logge hvem som henter users?? validuser eller anonymous
     [HttpGet(Name = "GetAllUsers")]
     public async Task<ActionResult<IEnumerable<UserDTO>>> GetAllUsers(int page = 1, int pageSize = 10)
     {
-        _logger.LogInformation("Retrieving all users");
+        var userId1 = User.FindFirst(JwtRegisteredClaimNames.Sub)?.Value;
+        var username1 = User.FindFirst(JwtRegisteredClaimNames.Name)?.Value;
+        var roles1 = User.Claims.Where(c => c.Type == ClaimTypes.Role).Select(c => c.Value).ToList();
 
         if (page < 1 || pageSize < 1 || pageSize > 50)
         {
@@ -28,43 +32,34 @@ public class UserController(IUserService userService, ILogger<UserController> lo
         return res != null ? Ok(res) : NotFound("No users found");
     }
 
-    // GET https://localhost:7070/api/v1/users/
+    // GET https://localhost:7070/api/v1/users/ // logge hvem som henter validuser eller anonmymous
     [HttpGet("{id}", Name = "GetUserById")]
     public async Task<ActionResult<UserDTO>> GetUserById([FromRoute] Guid id)
     {
-        _logger.LogInformation("Retrieving user with ID: {id}", id);
-
         var res = await _userService.GetUserByIdAsync(id);
-        return res != null ? Ok(res) : NotFound($"No user with ID {id} found"); 
+        return res != null ? Ok(res) : NotFound($"No user with ID {id} found");
     }
 
     // PUT https://localhost:7070/api/v1/users/
-    [HttpPut("{id}", Name = "UpdateUserById")]
+    [HttpPut("{id}", Name = "UpdateUser")]
     public async Task<ActionResult<UserDTO>> UpdateUser([FromRoute] Guid id, [FromBody] UserUpdateDTO dto)
     {
-        _logger.LogInformation("Updating user with ID: {id}", id);
-
-        var res =  await _userService.UpdateUserAsync(id, dto);
+        var res = await _userService.UpdateUserAsync(id, dto);
         return res != null ? Ok(res) : NotFound($"No user with ID {id} found. Could not update user.");
     }
 
     // DELETE https://localhost:7070/api/v1/users/
-    [HttpDelete("{id}" , Name = "DeleteUser")]
-    public async Task<ActionResult<UserDTO>> DeleteUser([FromRoute]Guid id)
+    [HttpDelete("{id}", Name = "DeleteUser")]
+    public async Task<ActionResult<UserDTO>> DeleteUser([FromRoute] Guid id)
     {
-        _logger.LogInformation("Deleting user with ID: {id}", id);
-
         var res = await _userService.DeleteUserAsync(id);
         return res != null ? Ok(res) : NotFound($"No user with ID {id} found. Could not delete user.");
     }
-    
 
-    // POST https://localhost:7070/api/v1/users/register
+    // POST https://localhost:7070/api/v1/users/register // logge hva user registrerte seg som???
     [HttpPost("register", Name = "RegisterUser")]
     public async Task<ActionResult<UserDTO>> RegisterUser([FromBody] UserRegistrationDTO dto)
     {
-        _logger.LogInformation("Registering new user: {email}", dto.Email);
-
         var res = await _userService.RegisterUserAsync(dto);
         return res != null ? Ok(res) : BadRequest("Could not register new user");
     }

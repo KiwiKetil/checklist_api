@@ -1,5 +1,6 @@
 using Checklist_API.Extensions;
 using Checklist_API.Middleware;
+using Microsoft.IdentityModel.JsonWebTokens;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -23,6 +24,7 @@ if (app.Environment.IsDevelopment())
 app.UseSerilogRequestLogging();
 app.UseHttpsRedirection();
 app.UseMiddleware<GlobalExceptionMiddleware>();
+JsonWebTokenHandler.DefaultInboundClaimTypeMap.Clear();
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
