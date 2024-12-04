@@ -1,22 +1,22 @@
-﻿using Checklist_API.Features.ExceptionHandling;
+﻿using Checklist_API.Data;
+using Checklist_API.Features.ExceptionHandling;
 using Checklist_API.Features.JWT.Features;
-using Checklist_API.Features.Users.Repository.Interfaces;
+using Checklist_API.Features.JWT.Features.Interfaces;
 using Checklist_API.Features.Users.Repository;
-using Checklist_API.Features.Users.Service.Interfaces;
+using Checklist_API.Features.Users.Repository.Interfaces;
 using Checklist_API.Features.Users.Service;
+using Checklist_API.Features.Users.Service.Interfaces;
 using Checklist_API.Middleware;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
-using Checklist_API.Features.JWT.Features.Interfaces;
-using Checklist_API.Data;
 
 namespace Checklist_API.Extensions;
 
 public static class ServiceCollectionExtensions
 {
-    public static IServiceCollection AddServices(this IServiceCollection services, IConfiguration configuration) 
+    public static IServiceCollection AddServices(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddControllers();
         services.AddEndpointsApiExplorer();
@@ -35,7 +35,7 @@ public static class ServiceCollectionExtensions
                     ValidAudience = configuration["Jwt:Issuer"],
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Jwt:Key"]!))
                 };
-             });
+            });
         services.AddAuthorization();
 
         services.AddDbContext<CheckListDbContext>(options =>

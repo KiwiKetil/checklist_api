@@ -13,12 +13,11 @@ public class UserAuthenticationService(IUserRepository userRepository, ILogger<U
 
     public async Task<User?> AuthenticateUserAsync(LoginDTO loginDTO) 
     {
-        _logger.LogInformation("Authenticating user: {username}", loginDTO.UserName);
-
         var user = await _userRepository.GetUserByEmailAsync(loginDTO.UserName);
 
         if (user != null && BCrypt.Net.BCrypt.Verify(loginDTO.Password, user.HashedPassword)) 
         {
+            _logger.LogInformation("User Authenticated: {username}", loginDTO.UserName);
             return user;
         }
 

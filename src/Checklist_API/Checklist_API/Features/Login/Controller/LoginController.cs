@@ -2,7 +2,6 @@
 using Checklist_API.Features.JWT.Features.Interfaces;
 using Checklist_API.Features.Login.DTOs;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 
@@ -19,7 +18,7 @@ public class LoginController(IUserAuthenticationService authService, ITokenGener
     [AllowAnonymous]
     // POST https://localhost:7070/api/v1/login
     [HttpPost]
-    public async Task<IActionResult> Login([FromBody] LoginDTO loginDTO) 
+    public async Task<IActionResult> Login([FromBody] LoginDTO loginDTO)
     {
         _logger.LogInformation("User logging in: {username}", loginDTO.UserName);
 
