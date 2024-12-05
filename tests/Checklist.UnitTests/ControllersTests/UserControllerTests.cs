@@ -1,5 +1,6 @@
 using Checklist_API.Features.Users.Controller;
 using Checklist_API.Features.Users.DTOs;
+using Checklist_API.Features.Users.Entity;
 using Checklist_API.Features.Users.Service.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -12,12 +13,27 @@ namespace Checklist.UnitTests.ControllersTests;
 public class UserControllerTests
 {
     private readonly UserController _userController;
+    private readonly Mock<ClaimsPrincipal> _mockUser;
     private readonly Mock<IUserService> _userServiceMock = new();
     private readonly Mock<ILogger<UserController>> _loggerMock = new();
 
     public UserControllerTests()
     {
-        _userController = new UserController(_userServiceMock.Object, _loggerMock.Object);
+        _mockUser = new Mock<ClaimsPrincipal>();
+        _mockUser.Setup(u => u.Claims).Returns(new List<Claim>
+        {
+            new(JwtRegisteredClaimNames.Sub, "894efa5f-d594-4064-9200-fad11766bd83")
+        });
+
+        var controllerContext = new ControllerContext
+        {
+            HttpContext = new DefaultHttpContext { User = _mockUser.Object }
+        };
+
+        _userController = new(_userServiceMock.Object, _loggerMock.Object)
+        {
+            ControllerContext = controllerContext
+        };
     }
 
     #region GetAllUsersTests
@@ -29,19 +45,6 @@ public class UserControllerTests
     public async Task GetAllUsers_WithPagingValues_ShouldReturnOKAndAllUsers(int page, int pageSize)
     {
         // Arrange
-        var mockUser = new Mock<ClaimsPrincipal>();
-        mockUser.Setup(u => u.Claims).Returns(new List<Claim>
-        {
-            new(JwtRegisteredClaimNames.Sub, "fakeUserId123"),
-            new(JwtRegisteredClaimNames.Name, "fakeUserName"),
-            new(ClaimTypes.Role, "Admin"),
-        });
-
-        var controllerContext = new ControllerContext
-        {
-            HttpContext = new DefaultHttpContext { User = mockUser.Object }
-        };
-        _userController.ControllerContext = controllerContext;
 
         List<UserDTO> dtos =
         [
@@ -113,14 +116,13 @@ public class UserControllerTests
 
     #endregion GetAllUsersTests
 
-    #region GetByIdTests
+    #region GetUserByIdTests
 
     [Fact]
     public async Task GetUserById_WhenRetrievingValidUser_ShouldReturnUserDTO()
     {
         // Arrange
-        Guid id = Guid.NewGuid();
-
+        Guid id = new("894efa5f-d594-4064-9200-fad11766bd83");
         UserDTO userDTO = new(
             "Ketil",
             "Sveberg",
@@ -130,6 +132,7 @@ public class UserControllerTests
             new DateTime(2024, 10, 17, 02, 52, 30));
 
         _userServiceMock.Setup(x => x.GetUserByIdAsync(id)).ReturnsAsync(userDTO);
+        _mockUser.Setup(u => u.FindFirst(JwtRegisteredClaimNames.Sub)).Returns(new Claim(JwtRegisteredClaimNames.Sub, "894efa5f-d594-4064-9200-fad11766bd83"));
 
         // Act
         var res = await _userController.GetUserById(id);
@@ -153,9 +156,10 @@ public class UserControllerTests
     public async Task GetUserById_WhenRetrievingUserUsingNonExistingId_ShouldReturnNotFound()
     {
         // Arrange
-        Guid id = Guid.NewGuid();
+        Guid id = new("6ec1e5b9-4206-41d5-8888-b4771bf9d9c1");
 
         _userServiceMock.Setup(x => x.GetUserByIdAsync(id)).ReturnsAsync((UserDTO?)null);
+        _mockUser.Setup(u => u.FindFirst(JwtRegisteredClaimNames.Sub)).Returns(new Claim(JwtRegisteredClaimNames.Sub, "6ec1e5b9-4206-41d5-8888-b4771bf9d9c1"));
 
         // Act
         var res = await _userController.GetUserById(id);
@@ -168,7 +172,33 @@ public class UserControllerTests
         _userServiceMock.Verify(x => x.GetUserByIdAsync(id), Times.Once);
     }
 
-    #endregion GetByIdTests
+    [Fact]
+    public async Task GetUserById_WhenRetrievingUser_ButUserIsNotAuthorized_ShouldReturnUnAuthorized()
+    {
+        // Arrange
+        Guid id = new("6ec1e5b9-4206-41d5-8888-b4771bf9d9c1");
+
+        _userServiceMock.Setup(x => x.GetUserByIdAsync(id)).ReturnsAsync((UserDTO?)null);
+        _mockUser.Setup(u => u.FindFirst(JwtRegisteredClaimNames.Sub)).Returns(new Claim(JwtRegisteredClaimNames.Sub, "ae045d60-8b4e-4b5e-b229-6a8c8a97bcfd"));
+
+        // Act
+        var res = await _userController.GetUserById(id);
+
+        // Assert
+        var actionResult = Assert.IsType<ActionResult<UserDTO>>(res);
+        var unauthorizedResult = Assert.IsType<UnauthorizedObjectResult>(actionResult.Result);
+        Assert.Equal("Not authorized to get this user", unauthorizedResult.Value);
+
+        _userServiceMock.Verify(x => x.GetUserByIdAsync(id), Times.Never);
+    }
+
+    #endregion GetUserByIdTests
+
+    #region UpdateUserTests
+
+    //public async Task UpdateUser_WhenUpdatingUser
+
+    #endregion UpdateUsertests
 
     #region RegisterUserTests    
 
