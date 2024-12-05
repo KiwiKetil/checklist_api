@@ -13,15 +13,11 @@ public class UserController(IUserService userService, ILogger<UserController> lo
     private readonly IUserService _userService = userService;
     private readonly ILogger<UserController> _logger = logger;
 
+    // GET https://localhost:7070/api/v1/users?page=1&pageSize=10 
     [Authorize(Roles = "Admin")]
-    // GET https://localhost:7070/api/v1/users?page=1&pageSize=10 // logge hvem som henter users?? validuser eller anonymous
     [HttpGet(Name = "GetAllUsers")]
     public async Task<ActionResult<IEnumerable<UserDTO>>> GetAllUsers(int page = 1, int pageSize = 10)
     {
-        var userId1 = User.FindFirst(JwtRegisteredClaimNames.Sub)?.Value;
-        var username1 = User.FindFirst(JwtRegisteredClaimNames.Name)?.Value;
-        var roles1 = User.Claims.Where(c => c.Type == ClaimTypes.Role).Select(c => c.Value).ToList();
-
         if (page < 1 || pageSize < 1 || pageSize > 50)
         {
             _logger.LogDebug("Invalid pagination parameters Page: {page}, PageSize: {pageSize}", page, pageSize);
@@ -32,10 +28,18 @@ public class UserController(IUserService userService, ILogger<UserController> lo
         return res != null ? Ok(res) : NotFound("No users found");
     }
 
-    // GET https://localhost:7070/api/v1/users/ // logge hvem som henter validuser eller anonmymous
+    // GET https://localhost:7070/api/v1/users/ 
+    [Authorize]
     [HttpGet("{id}", Name = "GetUserById")]
     public async Task<ActionResult<UserDTO>> GetUserById([FromRoute] Guid id)
     {
+        var userId = User.FindFirst(JwtRegisteredClaimNames.Sub)?.Value;
+
+        if (userId != id.ToString())
+        {
+            return Unauthorized("Not authorized to get this user");
+        }
+
         var res = await _userService.GetUserByIdAsync(id);
         return res != null ? Ok(res) : NotFound($"No user with ID {id} found");
     }
@@ -56,7 +60,7 @@ public class UserController(IUserService userService, ILogger<UserController> lo
         return res != null ? Ok(res) : NotFound($"No user with ID {id} found. Could not delete user.");
     }
 
-    // POST https://localhost:7070/api/v1/users/register // logge hva user registrerte seg som???
+    // POST https://localhost:7070/api/v1/users/register 
     [HttpPost("register", Name = "RegisterUser")]
     public async Task<ActionResult<UserDTO>> RegisterUser([FromBody] UserRegistrationDTO dto)
     {
