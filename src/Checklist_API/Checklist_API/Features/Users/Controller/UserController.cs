@@ -34,8 +34,10 @@ public class UserController(IUserService userService, ILogger<UserController> lo
     public async Task<ActionResult<UserDTO>> GetUserById([FromRoute] Guid id)
     {
         var userId = User.FindFirst(JwtRegisteredClaimNames.Sub)?.Value;
+        var roles = User.FindAll(ClaimTypes.Role).Select(c => c.Value).ToList();
 
-        if (userId != id.ToString())
+
+        if (!roles.Contains("Admin") && userId != id.ToString())
         {
             return Unauthorized("Not authorized to get this user");
         }
