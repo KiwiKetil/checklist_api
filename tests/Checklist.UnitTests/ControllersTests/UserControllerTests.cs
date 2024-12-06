@@ -1,6 +1,5 @@
 using Checklist_API.Features.Users.Controller;
 using Checklist_API.Features.Users.DTOs;
-using Checklist_API.Features.Users.Entity;
 using Checklist_API.Features.Users.Service.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -139,8 +138,8 @@ public class UserControllerTests
 
         // Assert
         var actionResult = Assert.IsType<ActionResult<UserDTO>>(res);
-        var returnValue = Assert.IsType<OkObjectResult>(actionResult.Result);
-        var dto = Assert.IsType<UserDTO>(returnValue.Value);
+        var okResult = Assert.IsType<OkObjectResult>(actionResult.Result);
+        var dto = Assert.IsType<UserDTO>(okResult.Value);
 
         Assert.Equal(dto.FirstName, userDTO.FirstName);
         Assert.Equal(dto.LastName, userDTO.LastName);
@@ -166,20 +165,20 @@ public class UserControllerTests
 
         // Assert
         var actionResult = Assert.IsType<ActionResult<UserDTO>>(res);
-        var returnValue = Assert.IsType<NotFoundObjectResult>(actionResult.Result);
-        Assert.Equal($"No user with ID {id} found", returnValue.Value);
+        var notFoundResult = Assert.IsType<NotFoundObjectResult>(actionResult.Result);
+        Assert.Equal($"No user with ID {id} found", notFoundResult.Value);
 
         _userServiceMock.Verify(x => x.GetUserByIdAsync(id), Times.Once);
     }
 
     [Fact]
-    public async Task GetUserById_WhenRetrievingUser_ButUserIsNotAuthorized_ShouldReturnUnAuthorized()
+    public async Task GetUserById_WhenRetrievingUser_WhenIsNotAuthorizedUser_ShouldReturnUnAuthorized()
     {
         // Arrange
-        Guid id = new("6ec1e5b9-4206-41d5-8888-b4771bf9d9c1");
+        Guid id = new("345afc12-905c-40b2-b79b-6a98df2f9c72");
 
         _userServiceMock.Setup(x => x.GetUserByIdAsync(id)).ReturnsAsync((UserDTO?)null);
-        _mockUser.Setup(u => u.FindFirst(JwtRegisteredClaimNames.Sub)).Returns(new Claim(JwtRegisteredClaimNames.Sub, "ae045d60-8b4e-4b5e-b229-6a8c8a97bcfd"));
+        _mockUser.Setup(u => u.FindFirst(JwtRegisteredClaimNames.Sub)).Returns(new Claim(JwtRegisteredClaimNames.Sub, "894efa5f-d594-4064-9200-fad11766bd83"));
 
         // Act
         var res = await _userController.GetUserById(id);
@@ -190,6 +189,55 @@ public class UserControllerTests
         Assert.Equal("Not authorized to get this user", unauthorizedResult.Value);
 
         _userServiceMock.Verify(x => x.GetUserByIdAsync(id), Times.Never);
+    }
+
+    [Fact]
+    public async Task GetUserById_WhenRetrievingUser_WhenIsAdmin_ShouldReturnUserDTO()
+    {
+        // Arrange
+        Guid id = new("894efa5f-d594-4064-9200-fad11766bd83");
+        UserDTO userDTO = new(
+        "Ketil",
+        "Sveberg",
+        "12345678",
+        "Sveberg@gmail.com",
+        new DateTime(2024, 10, 17, 02, 50, 00),
+        new DateTime(2024, 10, 17, 02, 52, 30));
+
+        _userServiceMock.Setup(x => x.GetUserByIdAsync(id)).ReturnsAsync(userDTO);
+
+        var claims = new List<Claim>
+        {
+        new Claim(JwtRegisteredClaimNames.Sub, "ae045d60-8b4e-4b5e-b229-6a8c8a97bcfd"),
+        new Claim(ClaimTypes.Role, "Admin")
+        };
+
+        _userController.ControllerContext = new ControllerContext
+        {
+            HttpContext = new DefaultHttpContext
+            {
+                User = new ClaimsPrincipal(new ClaimsIdentity(claims))
+            }
+        };
+
+        _mockUser.Setup(u => u.Claims).Returns(claims);
+
+        // Act
+        var res = await _userController.GetUserById(id);
+
+        // Assert
+        var actionResult = Assert.IsType<ActionResult<UserDTO>>(res);
+        var okResult = Assert.IsType<OkObjectResult>(actionResult.Result);
+        var dto = Assert.IsType<UserDTO>(okResult.Value);
+
+        Assert.Equal(dto.FirstName, userDTO.FirstName);
+        Assert.Equal(dto.LastName, userDTO.LastName);
+        Assert.Equal(dto.PhoneNumber, userDTO.PhoneNumber);
+        Assert.Equal(dto.Email, userDTO.Email);
+        Assert.Equal(dto.DateCreated, userDTO.DateCreated);
+        Assert.Equal(dto.DateUpdated, userDTO.DateUpdated);
+
+        _userServiceMock.Verify(x => x.GetUserByIdAsync(id), Times.Once);
     }
 
     #endregion GetUserByIdTests
