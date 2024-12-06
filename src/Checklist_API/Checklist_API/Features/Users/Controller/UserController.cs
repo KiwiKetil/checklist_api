@@ -18,6 +18,8 @@ public class UserController(IUserService userService, ILogger<UserController> lo
     [HttpGet(Name = "GetAllUsers")]
     public async Task<ActionResult<IEnumerable<UserDTO>>> GetAllUsers(int page = 1, int pageSize = 10)
     {
+        _logger.LogDebug("Retrieving all users");
+
         if (page < 1 || pageSize < 1 || pageSize > 50)
         {
             _logger.LogDebug("Invalid pagination parameters Page: {page}, PageSize: {pageSize}", page, pageSize);
@@ -33,9 +35,10 @@ public class UserController(IUserService userService, ILogger<UserController> lo
     [HttpGet("{id}", Name = "GetUserById")]
     public async Task<ActionResult<UserDTO>> GetUserById([FromRoute] Guid id)
     {
+        _logger.LogDebug("Retrieving user with ID: {id}", id);
+
         var userId = User.FindFirst(JwtRegisteredClaimNames.Sub)?.Value;
         var roles = User.FindAll(ClaimTypes.Role).Select(c => c.Value).ToList();
-
 
         if (!roles.Contains("Admin") && userId != id.ToString())
         {
@@ -50,6 +53,8 @@ public class UserController(IUserService userService, ILogger<UserController> lo
     [HttpPut("{id}", Name = "UpdateUser")]
     public async Task<ActionResult<UserDTO>> UpdateUser([FromRoute] Guid id, [FromBody] UserUpdateDTO dto)
     {
+        _logger.LogDebug("Updating user with ID: {id}", id);
+
         var res = await _userService.UpdateUserAsync(id, dto);
         return res != null ? Ok(res) : NotFound($"No user with ID {id} found. Could not update user.");
     }
@@ -58,6 +63,8 @@ public class UserController(IUserService userService, ILogger<UserController> lo
     [HttpDelete("{id}", Name = "DeleteUser")]
     public async Task<ActionResult<UserDTO>> DeleteUser([FromRoute] Guid id)
     {
+        _logger.LogDebug("Deleting user with ID: {id}", id);
+
         var res = await _userService.DeleteUserAsync(id);
         return res != null ? Ok(res) : NotFound($"No user with ID {id} found. Could not delete user.");
     }
@@ -66,6 +73,8 @@ public class UserController(IUserService userService, ILogger<UserController> lo
     [HttpPost("register", Name = "RegisterUser")]
     public async Task<ActionResult<UserDTO>> RegisterUser([FromBody] UserRegistrationDTO dto)
     {
+        _logger.LogDebug("Registering new user");
+
         var res = await _userService.RegisterUserAsync(dto);
         return res != null ? Ok(res) : BadRequest("Could not register new user");
     }

@@ -22,6 +22,8 @@ public class UserService(IUserRepository userRepository, ILogger<UserService> lo
 
     public async Task<IEnumerable<UserDTO>> GetAllUsersAsync(int page, int pageSize)
     {
+        _logger.LogDebug("Retrieving all users");
+
         var res = await _userRepository.GetAllUsersAsync(page, pageSize);
 
         var dtos = res.Select(user => _userMapper.MapToDTO(user)).ToList();
@@ -30,6 +32,8 @@ public class UserService(IUserRepository userRepository, ILogger<UserService> lo
 
     public async Task<UserDTO?> GetUserByIdAsync(Guid id)
     {
+        _logger.LogDebug("Retrieving user with ID: {id}", id);
+
         var res = await _userRepository.GetUserByIdAsync(new UserId(id));
 
         return res != null ? _userMapper.MapToDTO(res) : null;    
@@ -37,6 +41,8 @@ public class UserService(IUserRepository userRepository, ILogger<UserService> lo
         
     public async Task<UserDTO?> UpdateUserAsync(Guid id, UserUpdateDTO dto)
     {
+        _logger.LogDebug("Updating user with ID: {id}", id);
+
         var user = _userUpdateMapper.MapToEntity(dto);
         var res = await _userRepository.UpdateUserAsync(new UserId(id), user);
 
@@ -45,16 +51,20 @@ public class UserService(IUserRepository userRepository, ILogger<UserService> lo
 
     public async Task<UserDTO?> DeleteUserAsync(Guid id)
     {
+        _logger.LogDebug("Deleting user with ID: {id}", id);
+
         var res = await _userRepository.DeleteUserAsync(new UserId(id));
         return res != null ? _userMapper.MapToDTO(res) : null;
     }
 
     public async Task<UserDTO?> RegisterUserAsync(UserRegistrationDTO dto) 
     {
+        _logger.LogDebug("Registering new user");
+
         var existingUser = await _userRepository.GetUserByEmailAsync(dto.Email);
         if (existingUser != null)
         {
-            _logger.LogInformation("User already exist: {Email}", dto.Email);
+            _logger.LogInformation("User already exists");
 
             throw new UserAlreadyExistsException();
         }       
