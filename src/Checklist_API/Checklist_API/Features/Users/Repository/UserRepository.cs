@@ -16,6 +16,8 @@ public class UserRepository(CheckListDbContext dbContext, ILogger<UserRepository
 
     public async Task<IEnumerable<User>> GetAllUsersAsync(int page, int pageSize)
     {
+        _logger.LogDebug("Retrieving users from db");
+
         int itemToSkip = (page - 1) * pageSize;
 
         return await _dbContext.User
@@ -29,11 +31,15 @@ public class UserRepository(CheckListDbContext dbContext, ILogger<UserRepository
 
     public async Task<User?> GetUserByIdAsync(UserId id)
     {
+        _logger.LogDebug("Retrieving user with ID: {id}", id);
+
         return await _dbContext.User.FindAsync(id);
     }
 
     public async Task<User?> UpdateUserAsync(UserId id, User user)
     {
+        _logger.LogDebug("Updating user with ID: {id}", id);
+
         var usr = await _dbContext.User.FindAsync(id);
 
         if (usr == null)
@@ -53,6 +59,8 @@ public class UserRepository(CheckListDbContext dbContext, ILogger<UserRepository
 
     public async Task<User?> DeleteUserAsync(UserId id)
     {
+        _logger.LogDebug("Deleting user with ID: {id}", id);
+
         var user = await _dbContext.User.FindAsync(id);
 
         if (user == null)
@@ -68,7 +76,7 @@ public class UserRepository(CheckListDbContext dbContext, ILogger<UserRepository
 
     public async Task<User?> RegisterUserAsync(User user)
     {
-        _logger.LogInformation("Registering new user: {user}", user); // eller logge hele user med alle props??
+        _logger.LogDebug("Registering new user"); 
 
         var res = await _dbContext.User.AddAsync(user);
 
@@ -88,6 +96,8 @@ public class UserRepository(CheckListDbContext dbContext, ILogger<UserRepository
 
     public async Task<User?> GetUserByEmailAsync(string email)
     {
+        _logger.LogDebug("Retrieving user by email");
+
         var res = await _dbContext.User.FirstOrDefaultAsync(x => x.Email.Equals(email));
         return res;
     }
