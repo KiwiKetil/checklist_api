@@ -167,30 +167,30 @@ public class UserServiceTests
 
     #region UpdateUserTests
 
-    [Fact]
-    public async Task UpdateUser_WhenUpdatingUser_ShouldUpdateAndReturnUpdatedUser() 
-    {
-        // Arrange
+    //[Fact]
+    //public async Task UpdateUser_WhenUpdatingUser_ShouldUpdateAndReturnUpdatedUser() 
+    //{
+    //    // Arrange
 
-        User user = new()
-        {
-            Id = UserId.NewId,
-            FirstName = "Nils",
-            LastName = "Jensen",
-            PhoneNumber = "83542435",
-            Email = "jensen@gmail.com",
-            HashedPassword = "hashedPassword",
-            Salt = "salt",
-            DateCreated = new DateTime(2024, 11, 17, 02, 50, 00),
-            DateUpdated = new DateTime(2024, 12, 17, 02, 52, 30)
-        };
+    //    User user = new()
+    //    {
+    //        Id = UserId.NewId,
+    //        FirstName = "Nils",
+    //        LastName = "Jensen",
+    //        PhoneNumber = "83542435",
+    //        Email = "jensen@gmail.com",
+    //        HashedPassword = "hashedPassword",
+    //        Salt = "salt",
+    //        DateCreated = new DateTime(2024, 11, 17, 02, 50, 00),
+    //        DateUpdated = new DateTime(2024, 12, 17, 02, 52, 30)
+    //    };
 
 
-        // Act
+    //    // Act
 
-        // Assert
+    //    // Assert
 
-    }
+    //}
 
     #endregion UpdateUserTests
 

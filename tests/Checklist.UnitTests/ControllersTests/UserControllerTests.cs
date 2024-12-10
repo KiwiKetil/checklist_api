@@ -1,5 +1,6 @@
 using Checklist_API.Features.Users.Controller;
 using Checklist_API.Features.Users.DTOs;
+using Checklist_API.Features.Users.Entity;
 using Checklist_API.Features.Users.Service.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -7,6 +8,7 @@ using Microsoft.Extensions.Logging;
 using Moq;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace Checklist.UnitTests.ControllersTests;
 public class UserControllerTests
@@ -122,6 +124,7 @@ public class UserControllerTests
     {
         // Arrange
         Guid id = new("894efa5f-d594-4064-9200-fad11766bd83");
+
         UserDTO userDTO = new(
             "Ketil",
             "Sveberg",
@@ -152,7 +155,7 @@ public class UserControllerTests
     }
 
     [Fact]
-    public async Task GetUserById_WhenRetrievingUserUsingNonExistingId_ShouldReturnNotFound()
+    public async Task GetUserById_WhenRetrievingUserThatDoesNotExist_ShouldReturnNotFound()
     {
         // Arrange
         Guid id = new("6ec1e5b9-4206-41d5-8888-b4771bf9d9c1");
@@ -172,7 +175,7 @@ public class UserControllerTests
     }
 
     [Fact]
-    public async Task GetUserById_WhenRetrievingUser_WhenIsNotAuthorizedUser_ShouldReturnUnAuthorized()
+    public async Task GetUserById_WhenRetrievingUserWhenIsNotAuthorized_ShouldReturnUnAuthorized()
     {
         // Arrange
         Guid id = new("345afc12-905c-40b2-b79b-6a98df2f9c72");
@@ -192,7 +195,7 @@ public class UserControllerTests
     }
 
     [Fact]
-    public async Task GetUserById_WhenRetrievingUser_WhenIsAdmin_ShouldReturnUserDTO()
+    public async Task GetUserById_WhenRetrievingUserWhenIsAdmin_ShouldReturnUserDTO()
     {
         // Arrange
         Guid id = new("894efa5f-d594-4064-9200-fad11766bd83");
@@ -243,8 +246,87 @@ public class UserControllerTests
     #endregion GetUserByIdTests
 
     #region UpdateUserTests
+     
+    [Fact]
+    public async Task UpdateUser_WhenUpdatingUserWithValidUserID_ShouldReturnUpdatedUserDTO() 
+    {
+        // Arrange
 
-    //public async Task UpdateUser_WhenUpdatingUser
+        Guid id = new("6ec1e5b9-4206-41d5-8888-b4771bf9d9a2");
+
+        UserUpdateDTO updateDTO = new
+        (
+            "Ketil",
+            "Sveberg",
+            "71717171",
+            "ks@gmail.com"
+        );
+
+        UserDTO userDTO = new
+        (
+            "Ketil",
+            "Sveberg",
+            "71717171",
+            "ks@gmail.com",
+            DateTime.Now,
+            DateTime.Now
+        );
+
+        _userServiceMock.Setup(x => x.UpdateUserAsync(id, updateDTO)).ReturnsAsync(userDTO);
+        _mockUser.Setup(u => u.FindFirst(JwtRegisteredClaimNames.Sub)).Returns(new Claim(JwtRegisteredClaimNames.Sub, "6ec1e5b9-4206-41d5-8888-b4771bf9d9a2"));
+
+        // Act
+
+        var res = await _userController.UpdateUser(id, updateDTO);
+
+        // Assert
+
+        var actionResult = Assert.IsType<ActionResult<UserDTO>>(res);
+        var okResult = Assert.IsType<OkObjectResult>(actionResult.Result);
+        var dto = Assert.IsType<UserDTO>(okResult.Value);
+
+        Assert.NotNull(res);
+        Assert.Equal(updateDTO.FirstName, userDTO.FirstName);
+        Assert.Equal(updateDTO.LastName, userDTO.LastName);
+        Assert.Equal(updateDTO.PhoneNumber, userDTO.PhoneNumber);
+        Assert.Equal(updateDTO.Email, userDTO.Email);
+
+        _userServiceMock.Verify(x => x.UpdateUserAsync(id, updateDTO), Times.Once);
+    }
+
+    [Fact]
+    public async Task UpdateUser_WhenUpdatingUserButUserIsNotAuthorized_ShouldReturnUnauthorized()
+    {
+        // Arrange
+
+        Guid id = new("6ec1e5b9-4206-41d5-8888-b4771bf9d9c3");
+
+        UserUpdateDTO updateDTO = new
+        (
+            "Ketil",
+            "Sveberg",
+            "71717171",
+            "ks@gmail.com"
+        );
+
+        _mockUser.Setup(u => u.FindFirst(JwtRegisteredClaimNames.Sub)).Returns(new Claim(JwtRegisteredClaimNames.Sub, "6ec1e5b9-4206-41d5-8888-b4771bf9d9a2"));
+
+        // Act
+
+        var res = await _userController.UpdateUser(id, updateDTO);
+
+        // Assert
+
+        var actionResult = Assert.IsType<ActionResult<UserDTO>>(res);
+        var unauthorizedResult = Assert.IsType<UnauthorizedObjectResult>(actionResult.Result);
+        Assert.Equal("Not authorized to update this user", unauthorizedResult.Value);
+
+        _userServiceMock.Verify(x => x.UpdateUserAsync(id, updateDTO), Times.Never);
+    }
+
+    // when user not foundtest
+
+    // AsAdmin test should return ok
 
     #endregion UpdateUsertests
 
