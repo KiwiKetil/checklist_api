@@ -50,10 +50,19 @@ public class UserController(IUserService userService, ILogger<UserController> lo
     }
 
     // PUT https://localhost:7070/api/v1/users/
+    [Authorize]
     [HttpPut("{id}", Name = "UpdateUser")]
     public async Task<ActionResult<UserDTO>> UpdateUser([FromRoute] Guid id, [FromBody] UserUpdateDTO dto)
     {
         _logger.LogDebug("Updating user with ID: {id}", id);
+
+        var userId = User.FindFirst(JwtRegisteredClaimNames.Sub)?.Value;
+        var roles = User.FindAll(ClaimTypes.Role).Select(c => c.Value).ToList();
+
+        if (!roles.Contains("Admin") && userId != id.ToString())
+        {
+            return Unauthorized("Not authorized to update this user");
+        }
 
         var res = await _userService.UpdateUserAsync(id, dto);
         return res != null ? Ok(res) : NotFound($"No user with ID {id} found. Could not update user.");
