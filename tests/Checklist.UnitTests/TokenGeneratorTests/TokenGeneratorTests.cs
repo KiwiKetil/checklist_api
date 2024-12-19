@@ -26,6 +26,7 @@ public class TokenGeneratorTests
     public async Task GenerateJSONWebTokenAsync_WhenUserSuccesfullyLogsIn_ShouldGenerateAndReturnJwtToken_WithCorrectClaims()
     {
         // Arrange 
+
         User user = new()
         {
             Id = UserId.NewId,
@@ -50,9 +51,11 @@ public class TokenGeneratorTests
         _userRoleRepositoryMock.Setup(x => x.GetUserRolesAsync(user.Id)).ReturnsAsync(userRoles);
 
         // Act
+
         var res = await _tokenGenerator.GenerateJSONWebTokenAsync(user);
 
         // Assert
+
         Assert.NotNull(res);
         Assert.IsType<string>(res);
 
@@ -71,6 +74,7 @@ public class TokenGeneratorTests
     public async Task GenerateJSONWebTokenAsync_WhenUserIsNull_ShouldThrowArgumentNullException()
     {
        // Act & Assert
+
         await Assert.ThrowsAsync<ArgumentNullException>(() => _tokenGenerator.GenerateJSONWebTokenAsync(null!));
     }
 
@@ -78,6 +82,7 @@ public class TokenGeneratorTests
     public async Task GenerateJSONWebTokenAsync_ShouldExpireAfterSetDuration()
     {
         // Arrange
+
         User user = new()
         {
             Id = UserId.NewId,
@@ -95,9 +100,11 @@ public class TokenGeneratorTests
         var futureDateTime = DateTime.UtcNow.AddHours(4).AddMinutes(1);
 
         // Act
+
         var token = await _tokenGenerator.GenerateJSONWebTokenAsync(user);
 
         // Assert
+
         var tokenHandler = new JwtSecurityTokenHandler();
         var jwtToken = tokenHandler.ReadJwtToken(token);
 
@@ -127,9 +134,11 @@ public class TokenGeneratorTests
         _configMock.Setup(x => x["Jwt:Audience"]).Returns("Checklist_API");
 
         // Act
+
         var res = await _tokenGenerator.GenerateJSONWebTokenAsync(user);
 
         // Assert
+
         var tokenHandler = new JwtSecurityTokenHandler();
         var jwtToken = tokenHandler.ReadJwtToken(res);
 

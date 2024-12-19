@@ -168,7 +168,7 @@ public class UserServiceTests
     #region UpdateUserTests
 
     //[Fact]
-    //public async Task UpdateUser_WhenUpdatingUser_ShouldUpdateAndReturnUpdatedUser() 
+    //public async Task UpdateUser_WhenUpdatingUser_ShouldUpdateAndReturnUpdatedUser()
     //{
     //    // Arrange
 
@@ -184,7 +184,6 @@ public class UserServiceTests
     //        DateCreated = new DateTime(2024, 11, 17, 02, 50, 00),
     //        DateUpdated = new DateTime(2024, 12, 17, 02, 52, 30)
     //    };
-
 
     //    // Act
 
