@@ -1,15 +1,13 @@
 ﻿using Checklist_API.Features.Common.Interfaces;
 using Checklist_API.Features.Users.DTOs;
 using Checklist_API.Features.Users.Entity;
-using Checklist_API.Features.Users.Mappers;
-using Checklist_API.Features.Users.Repository;
 using Checklist_API.Features.Users.Repository.Interfaces;
 using Checklist_API.Features.Users.Service.Interfaces;
 using static Checklist_API.Features.ExceptionHandling.CustomExceptions;
 
 namespace Checklist_API.Features.Users.Service;
 
-public class UserService(IUserRepository userRepository, ILogger<UserService> logger, 
+public class UserService(IUserRepository userRepository, ILogger<UserService> logger,
                     IMapper<User, UserDTO> userMapper,
                     IMapper<User, UserUpdateDTO> userUpdateMapper,
                     IMapper<User, UserRegistrationDTO> userRegistrationMapper) : IUserService
@@ -36,9 +34,9 @@ public class UserService(IUserRepository userRepository, ILogger<UserService> lo
 
         var res = await _userRepository.GetUserByIdAsync(new UserId(id));
 
-        return res != null ? _userMapper.MapToDTO(res) : null;    
+        return res != null ? _userMapper.MapToDTO(res) : null;
     }
-        
+
     public async Task<UserDTO?> UpdateUserAsync(Guid id, UserUpdateDTO dto)
     {
         _logger.LogDebug("Updating user with ID: {id}", id);
@@ -46,7 +44,7 @@ public class UserService(IUserRepository userRepository, ILogger<UserService> lo
         var user = _userUpdateMapper.MapToEntity(dto);
         var res = await _userRepository.UpdateUserAsync(new UserId(id), user);
 
-        return res != null ? _userMapper.MapToDTO(res) : null;       
+        return res != null ? _userMapper.MapToDTO(res) : null;
     }
 
     public async Task<UserDTO?> DeleteUserAsync(Guid id)
@@ -57,7 +55,7 @@ public class UserService(IUserRepository userRepository, ILogger<UserService> lo
         return res != null ? _userMapper.MapToDTO(res) : null;
     }
 
-    public async Task<UserDTO?> RegisterUserAsync(UserRegistrationDTO dto) 
+    public async Task<UserDTO?> RegisterUserAsync(UserRegistrationDTO dto)
     {
         _logger.LogDebug("Registering new user");
 
@@ -67,7 +65,7 @@ public class UserService(IUserRepository userRepository, ILogger<UserService> lo
             _logger.LogInformation("User already exists");
 
             throw new UserAlreadyExistsException();
-        }       
+        }
 
         var user = _userRegistrationMapper.MapToEntity(dto);
 
